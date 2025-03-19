@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLOPSAN - Página Principal</title>
+  <link rel="stylesheet" href="/Public/css/styles.css">
+</head>
+<body>
+
+  <!-- Encabezado con navbar y banner -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">FLOPSAN</div>
+      <ul class="nav-links">
+        <li><a href="#quienes-somos">Quiénes Somos</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#experiencia">Experiencia</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="banner">
+      <h1>Diseño y Edificación, Alta y Baja Tensión</h1>
+      <p>Estructuras Metálicas · Cancelería · Carpintería · Plomería</p>
+      <a href="#servicios" class="btn-banner">Conoce nuestros servicios</a>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main>
+
+    <!-- Sección "Quiénes Somos" -->
+    <section id="quienes-somos" class="seccion">
+      <h2>Quiénes Somos</h2>
+      <p>
+        FLOPSAN es una empresa especializada en edificación, obra civil y mantenimiento industrial y habitacional.
+        Nos dedicamos a la construcción de estructuras metálicas, instalaciones eléctricas, hidráulicas y más.
+      </p>
+    </section>
+
+    <!-- Sección "Servicios" -->
+    <section id="servicios" class="seccion">
+      <h2>Nuestros Servicios</h2>
+      <ul>
+        <li>Diseño y cálculo de estructuras</li>
+        <li>Instalaciones eléctricas e hidrosanitarias</li>
+        <li>Albañilería y mantenimiento industrial</li>
+        <li>Canceles, ventanas y estructuras metálicas</li>
+      </ul>
+    </section>
+
+    <!-- Sección "Experiencia" -->
+    <section id="experiencia" class="seccion">
+      <h2>Experiencia</h2>
+      <p>Más de 20 años de experiencia en el sector construcción, con clientes como Bonafont, Joyco, ICA, y Grupo GA3.</p>
+    </section>
+
+  </main>
+
+  <!-- Pie de página con formularios y contacto -->
+  <footer>
+    <section id="contacto" class="footer-contacto">
+      <h2>Contáctanos</h2>
+
+      <!-- Formulario de Contacto -->
+      <form id="form-contacto">
+        <h3>Contacto General</h3>
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="correo">Correo Electrónico:</label>
+          <input type="email" id="correo" name="correo" required>
+        </div>
+        <div class="form-group">
+          <label for="mensaje">Mensaje:</label>
+          <textarea id="mensaje" name="mensaje" rows="4"></textarea>
+        </div>
+        <button type="submit">Enviar</button>
+      </form>
+
+
+
+      <div class="datos-empresa">
+        <h3>Información de la Empresa</h3>
+        <p><strong>Dirección:</strong> Calz. Ermita Iztapalapa No. 1591, CDMX</p>
+        <p><strong>Teléfono:</strong> 7162 7745</p>
+        <p><strong>Correo:</strong> <a href="mailto:oficina_flopsandf@outlook.com">oficina_flopsandf@outlook.com</a></p>
+      </div>
+    </section>
+  </footer>
+
+  <script src="/Public/scripts/script.js"></script>
+</body>
+</html>
