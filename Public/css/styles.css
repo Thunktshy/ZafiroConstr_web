@@ -1,140 +1,734 @@
-/* Reseteo básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+/* Variables globales */
+:root {
+  --color-text-light: rgb(255, 255, 255);
+  --color-primary: rgb(45,71,120); 
+  --color-secondary: rgb(100,140,188);
+  --max-width-container: 1200px;
+  --spacing-standard: 1rem;
+
+
+}
+
+/* Barra de navegación principal */
+.navigation-primary {
+  background-color: transparent;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-standard) 2rem;
+  z-index: 1000;
+  transition: background-color .3s ease
+}
+
+/* Contenedor para alinear logo y enlaces */
+.navigation-container {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigation-primary.scrolled {
+  background-color: var(--color-primary);
+  transition: background-color 1s ease;
+}
+
+
+/* Logo como imagen de fondo */
+.company-logo {
+  background-image: url('/Public/images/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 160px;
+  height: 60px;
+  display: block;
+}
+
+.company-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color:var(--color-text-light);
+  text-align: center;
+  text-decoration: none;
+}
+
+/* Menú de navegación */
+.navigation-menu {
+  display: flex;
+  align-items: center;
+}
+
+/* Lista de enlaces */
+.navigation-links-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+/* Elementos individuales del menú */
+.navigation-item {
+  margin: 0;
+}
+
+/* Estilo de los enlaces */
+.navigation-link {
+  text-decoration: none;
+  color: var(--color-text-light);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+/* Hover de enlaces */
+.navigation-link:hover {
+  color: var(--color-primary); /* Color amarillo de acento */
+}
+
+/* Sección Hero */
+.hero-section {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--color-text-light);
+  text-align: center;
+  transition: background-image 1s ease-in-out;
+  background-image: url('/Public/images/silder-images/hero-background (1).jpg'); /* Imagen inicial */
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgb(100,140,188,.5);
+  z-index: 0;
+}
+
+.hero-content-container {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-width-container);
+  padding: 0 2rem;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.hero-description {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.button-primary-cta {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.button-primary-cta:hover {
+  background-color: var(--color-secondary);
+  color: #ffffff;
+}
+
+.services-section {
+  padding: 4rem 2rem;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2.8rem;
+  margin-bottom: 3rem;
+  color: var(--color-primary);
+}
+.services-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.services-container {
+
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 0 1rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* Grid normal */
+.services-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2rem;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 2rem 0;
+}
+
+.service-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  min-width: 350px;
+  max-width: 350px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-header {
+  cursor: pointer;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.service-icon i {
+  font-size: 3rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.service-title {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.service-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 2px solid #eee;
+}
+
+.service-body {
+  display: none; /* empieza oculta */
+  padding: 1rem;
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.service-body ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.service-body li {
+  margin-bottom: 0.5rem;
+  color: #444;
+
+
+}
+
+/* Al hacer clic, mostramos la descripción */
+.service-card.active .service-body {
+  display: block;
+}
+
+/* ESTILOS PARA MODO FOCO (tarjeta grande al centro) */
+
+/* Esta clase se añade a la tarjeta seleccionada */
+.focused-card {
+  position: relative;
+  width: 1000px;
+  max-width: 95vw;
+  margin: 2rem auto;
+  z-index: 999;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  padding: 2.5rem;
+  gap: 3rem;
+}
+
+.focused-card .service-header {
+  flex: 0 0 40%;
+  padding: 0;
+}
+
+.focused-card .service-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: none;
+}
+
+.focused-card .service-body {
+  flex: 1;
+  display: block;
+  padding: 0;
+  background-color: transparent;
+}
+
+.focused-card .service-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.focused-card .service-icon {
+  display: none;
+}
+
+.focused-card .service-body ul {
+  padding-left: 1.2rem;
+}
+
+.focused-card .service-body li {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.services-grid.focus-mode {
+  overflow: hidden;
+}
+
+/* Ocultamos el resto de tarjetas en el grid */
+.services-grid.focus-mode .service-card:not(.focused-card) {
+  display: none;
+}
+
+/* Footer Styles */
+.footer-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  padding: 4rem 0;
+}
+
+.footer-container {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+  align-items: start;
+}
+
+.contact-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.map-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.map-section h2 {
+  color: var(--color-text-light);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--color-secondary);
+  padding-bottom: 1rem;
+}
+
+.map-container {
+  flex-grow: 1;
+  min-height: 450px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.company-info-container {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+  height: auto;
+  min-height: 450px;
+  text-align: center;
+}
+
+.company-info-container h2 {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--color-secondary);
+  padding-bottom: 1rem;
+}
+
+.company-info-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.company-info-container li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.company-info-container i {
+  width: 24px;
+  margin-right: 1rem;
+  color: var(--color-secondary);
+}
+
+.company-info-container a {
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.company-info-container a:hover {
+  color: var(--color-secondary);
+}
+
+.contact-form-container {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.contact-section-title {
+  color: var(--color-text-light);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.contact-form .form-label {
+  color: var(--color-text-light);
+  margin-bottom: 0.5rem;
+}
+
+.contact-form .form-control {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-text-light);
+  padding: 0.8rem;
+}
+
+.contact-form .form-control:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-secondary);
+  box-shadow: none;
+}
+
+.contact-form .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.contact-form .btn-primary {
+  background-color: var(--color-secondary);
+  border: none;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.contact-form .btn-primary:hover {
+  background-color: var(--color-text-light);
+  color: var(--color-primary);
+}
+
+/* Estilos para los botones de contacto */
+.contact-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: center;
+}
+
+.contact-button {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.contact-button h3 {
+  color: var(--color-text-light);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-contact {
+  width: 100%;
+  padding: 1rem;
+  color: var(--color-text-light);
+  background-color: var(--color-secondary);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.btn-contact i {
+  margin: 0;
+}
+
+.btn-contact span {
+  flex: 1;
+  text-align: center;
+}
+
+/* Estilos para el correo copiable */
+.email-copy-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.email-text {
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.copy-tooltip {
+  position: absolute;
+  background: var(--color-secondary);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.email-copy-container:hover .copy-tooltip {
+  opacity: 1;
+}
+
+/* Sección Sobre Nosotros */
+.about-section {
+  padding: 6rem 2rem;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.about-container {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 2.8rem;
+  margin-bottom: 3rem;
+  color: var(--color-primary);
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: var(--color-secondary);
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  align-items: center;
+  text-align: center;
+}
+
+.about-text {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.about-description {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.about-stats {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background-color: var(--color-primary);
+  border-radius: 12px;
+  color: var(--color-text-light);
+  min-width: 200px;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-item i {
+  font-size: 2.5rem;
+  color: var(--color-secondary);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .about-stats {
+    gap: 2rem;
   }
   
-  /* Estilos del body */
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  .stat-item {
+    min-width: 150px;
+    padding: 1.5rem;
   }
-  
-  /* NAVBAR */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #333;
-    padding: 1rem;
-  }
-  
-  .navbar .logo {
-    color: #fff;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .nav-links li a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  /* BANNER */
-  .banner {
-    position: relative;
-    background: #555 url('https://via.placeholder.com/1200x400') center/cover no-repeat;
-    color: #fff;
-    text-align: center;
-    padding: 4rem 2rem;
-  }
-  
-  .banner h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .banner p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .btn-banner {
-    background-color: #ff6600;
-    color: #fff;
-    padding: 0.8rem 1.2rem;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 4px;
-  }
-  
-  /* SECCIONES DEL MAIN */
-  .seccion {
-    padding: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  
-  .seccion h2 {
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-  }
-  
-  /* FOOTER */
-  footer {
-    background-color: #f1f1f1;
-    margin-top: auto;
-    padding: 2rem 1rem;
-  }
-  
-  .footer-contacto {
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  
-  /* FORMULARIO */
-  #form-contacto {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 2rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-  
-  button[type="submit"] {
-    background-color: #333;
-    color: #fff;
-    padding: 0.7rem 1.2rem;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #555;
-  }
-  
-  /* DATOS DE LA EMPRESA */
-  .datos-empresa h3 {
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-  }
-  
-  .datos-empresa p {
-    margin-bottom: 0.3rem;
-  }
-  
+}
+
+/* Estilos para el modal */
+.modal-content {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 12px;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem;
+}
+
+.modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.modal-title {
+  color: var(--color-text-light);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.modal .contact-form .form-control {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-text-light);
+  padding: 1rem;
+}
+
+.modal .contact-form .form-control:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-secondary);
+  box-shadow: none;
+}
+
+.modal .contact-form .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal .contact-form .form-label {
+  color: var(--color-text-light);
+  margin-bottom: 0.5rem;
+}
+
+.modal .contact-form .btn-primary {
+  background-color: var(--color-secondary);
+  border: none;
+  padding: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal .contact-form .btn-primary:hover {
+  background-color: var(--color-text-light);
+  color: var(--color-primary);
+}
+
+/* Animación del modal */
+.modal.fade .modal-dialog {
+  transform: scale(0.8);
+  transition: transform 0.3s ease-in-out;
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+}
+
+
