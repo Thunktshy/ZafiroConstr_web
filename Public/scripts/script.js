@@ -28,31 +28,6 @@ setInterval(changeHeroBackground, 5000);
 
 
 
-function toggleFocus(headerElement) {
-  const card = headerElement.closest('.service-card');
-  const grid = document.querySelector('.services-grid');
-  
-
-  if (!card.classList.contains('focused-card')) {
-  
-    document.querySelectorAll('.service-card').forEach(c => {
-      c.classList.remove('focused-card', 'active');
-    });
-
-
-    grid.classList.add('focus-mode');
-
-
-    card.classList.add('focused-card', 'active');
-  }
-
-  else {
-    card.classList.remove('focused-card', 'active');
- 
-    grid.classList.remove('focus-mode');
-  }
-}
-
 function copyEmail() {
   const emailText = document.querySelector('.email-text').textContent;
   navigator.clipboard.writeText(emailText)
