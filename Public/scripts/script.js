@@ -14,7 +14,7 @@ const totalImages = 40; // Cambia este número según la cantidad que tengas
 
 const images = [];
 for (let i = 1; i <= totalImages; i++) {
-  images.push(`/Public/images/silder-images/hero-background (${i}).jpg`);
+  images.push(`./images/silder-images/hero-background (${i}).jpg`);
 }
 
 let currentIndex = 0;
