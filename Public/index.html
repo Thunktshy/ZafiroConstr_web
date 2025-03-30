@@ -4,45 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zafiro Home Construcciones - Página Principal</title>
+  
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="css/stylesIndex.css">
+  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-light">
 
   <!-- Navbar -->
-<nav class="navigation-primary">
-  <div class="navigation-container">
-    <a class="company-logo fade-in" href="#"></a>
-    <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
-    <div class="navigation-menu" id="navbarNav">
-      <ul class="navigation-links-list">
-        <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#quienes-somos">
-            <span class="link-text fade-in">Quiénes Somos</span>
-          </a>
-        </li>
-        <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#servicios">
-            <span class="link-text fade-in">Servicios</span>
-          </a>
-        </li>
-        <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#experiencia">
-            <span class="link-text fade-in">Experiencia</span>
-          </a>
-        </li>
-        <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#contacto">
-            <span class="link-text fade-in">Contacto</span>
-          </a>
-        </li>
-      </ul>
+  <nav class="navigation-primary">
+    <div class="navigation-container">
+      <a class="company-logo fade-in" href="#"></a>
+      <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
+      <div class="navigation-menu" id="navbarNav">
+        <ul class="navigation-links-list">
+          <li class="navigation-item slide-in">
+            <a class="navigation-link hover-effect" href="sobreNosotros.html">
+              <span class="link-text fade-in">Sobre Nosotros</span>
+            </a>
+          </li>
+          <li class="navigation-item slide-in">
+            <a class="navigation-link hover-effect" href="servicios.html">
+              <span class="link-text fade-in">Servicios</span>
+            </a>
+          </li>
+          <li class="navigation-item slide-in">
+            <a class="navigation-link hover-effect" href="experiencia.html">
+              <span class="link-text fade-in">Experiencia</span>
+            </a>
+          </li>
+          <li class="navigation-item slide-in">
+            <a class="navigation-link hover-effect" href="contacto.html">
+              <span class="link-text fade-in">Contacto</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
   <!-- Hero Section -->
   <header class="hero-section">
@@ -55,7 +57,7 @@
     </div>
   </header>
 
-  <!-- Después del hero-section y antes de la sección de servicios -->
+  <!-- About Section -->
   <section id="sobre-nosotros" class="about-section">
     <div class="about-container">
       <h2 class="section-title fade-up">Sobre Nosotros</h2>
@@ -89,82 +91,78 @@
     </div>
   </section>
 
-  <!-- Contenido principal -->
-  <main>
- <!-- Sección Servicios -->
- <section id="servicios" class="services-section">
-  <div class="services-container">
-    <h2 class="section-title">Nuestros Servicios</h2>
-    <div class="services-grid">
-      
-      <!-- Tarjeta 1 -->
-      <div class="service-card fade-up">
-        <div class="service-header">
-          <div class="service-icon">
-            <i class="fas fa-drafting-compass"></i>
+  <!-- Services Section -->
+  <section id="servicios" class="services-section">
+    <div class="services-container">
+      <h2 class="section-title">Nuestros Servicios</h2>
+      <div class="services-grid">
+        
+        <!-- Service Card 1 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-drafting-compass"></i>
+            </div>
+            <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
+            <img class="service-image" 
+                 src="images/servicios-images/calculo.jpeg" 
+                 alt="Cálculo de estructuras">
           </div>
-          <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
-          <img class="service-image" 
-               src="./images/servicios-images/calculo.jpeg" 
-               alt="Cálculo de estructuras">
         </div>
-      </div>
 
-      <!-- Tarjeta 2 -->
-      <div class="service-card fade-up">
-        <div class="service-header">
-          <div class="service-icon">
-            <i class="fas fa-bolt"></i>
+        <!-- Service Card 2 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="service-title">Instalaciones Eléctricas e Hidrosanitarias</h3>
+            <img class="service-image" 
+                 src="images/servicios-images/instalaciones_hidrahulicas.jpg" 
+                 alt="Instalaciones">
           </div>
-          <h3 class="service-title">Instalaciones Eléctricas e Hidrosanitarias</h3>
-          <img class="service-image" 
-               src="./images/servicios-images/instalaciones_hidrahulicas.jpg" 
-               alt="Instalaciones">
         </div>
-      </div>
 
-      <!-- Tarjeta 3 -->
-      <div class="service-card fade-up">
-        <div class="service-header">
-          <div class="service-icon">
-            <i class="fas fa-hard-hat"></i>
+        <!-- Service Card 3 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-hard-hat"></i>
+            </div>
+            <h3 class="service-title">Albañilería y Mantenimiento Industrial</h3>
+            <img class="service-image" 
+                 src="images/servicios-images/albañileria industrial.jpg" 
+                 alt="Albañilería">
           </div>
-          <h3 class="service-title">Albañilería y Mantenimiento Industrial</h3>
-          <img class="service-image" 
-               src="./images/servicios-images/albañileria industrial.jpg" 
-               alt="Albañilería">
         </div>
-      </div>
 
-      <!-- Tarjeta 4 -->
-      <div class="service-card fade-up">
-        <div class="service-header">
-          <div class="service-icon">
-            <i class="fas fa-window-maximize"></i>
+        <!-- Service Card 4 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-window-maximize"></i>
+            </div>
+            <h3 class="service-title">Canceles, Ventanas y Estructuras Metálicas</h3>
+            <img class="service-image" 
+                 src="images/servicios-images/canceleria.jpg" 
+                 alt="Canceles y ventanas">
           </div>
-          <h3 class="service-title">Canceles, Ventanas y Estructuras Metálicas</h3>
-          <img class="service-image" 
-               src="./images/servicios-images/canceleria.jpg" 
-               alt="Canceles y ventanas">
         </div>
+
       </div>
-
-    </div> <!-- /.services-grid -->
-  </div> <!-- /.services-container -->
-</section>  
-
-  </main>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer class="footer-primary">
     <div class="footer-container">
       <div class="footer-content">
-        <!-- Sección de información de contacto -->
+        
+        <!-- Contact Info Section -->
         <div class="contact-info-section fade-up">
           <div class="company-info-container">
             <h2 class="fade-up">Contáctanos</h2>
             <div class="contact-buttons">
-              <!-- Botón de llamada -->
               <div class="contact-button fade-left">
                 <h3>¿Tienes dudas? Llámanos</h3>
                 <a href="tel:5537055255" class="btn btn-contact">
@@ -172,8 +170,6 @@
                   55 3705 5255
                 </a>
               </div>
-
-              <!-- Botón de correo con opción de copia -->
               <div class="contact-button">
                 <h3>Escríbenos</h3>
                 <a href="mailto:oficina_zafiro@outlook.com" class="btn btn-contact">
@@ -185,8 +181,6 @@
                   <span class="copy-tooltip">Haz clic para copiar</span>
                 </div>
               </div>
-
-              <!-- Botón para abrir modal -->
               <div class="contact-button">
                 <h3>¿Deseas más información?</h3>
                 <button type="button" class="btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
@@ -198,7 +192,7 @@
           </div>
         </div>
 
-        <!-- Sección del mapa (ahora fuera de contact-info-section) -->
+        <!-- Map Section -->
         <div class="map-section">
           <h2>Ubicación</h2>
           <div class="map-container">
@@ -210,16 +204,12 @@
             </iframe>
           </div>
         </div>
+
       </div>
     </div>
   </footer>
 
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./scripts/script.js"></script>
-  <script src="./scripts/animations.js"></script>
-
-  <!-- Agregar el modal justo antes del cierre del body -->
+  <!-- Modal -->
   <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -247,5 +237,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts/script.js"></script>
+  <script src="scripts/animations.js"></script>
+
 </body>
 </html>

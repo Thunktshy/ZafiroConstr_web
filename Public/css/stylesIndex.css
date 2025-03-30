@@ -1,245 +1,246 @@
 /* Variables globales */
 :root {
-  --color-text-light: rgb(255, 255, 255);
-  --color-primary: rgb(45,71,120); 
-  --color-secondary: rgb(100,140,188);
-  --max-width-container: 1200px;
-  --spacing-standard: 1rem;
-
-
+  --color-text-light: rgb(255, 255, 255); /* Color de texto claro */
+  --color-primary: rgb(45,71,120); /* Color principal (azul oscuro) */
+  --color-secondary: rgb(100,140,188); /* Color secundario (azul claro) */
+  --max-width-container: 1200px; /* Ancho máximo para contenedores */
+  --spacing-standard: 1rem; /* Espaciado estándar */
 }
 
 /* Barra de navegación principal */
 .navigation-primary {
-  background-color: transparent;
-  position: fixed;
+  background-color: transparent; /* Fondo transparente inicialmente */
+  position: fixed; /* Fija la barra en la parte superior */
   top: 0;
   left: 0;
   right: 0;
-  padding: var(--spacing-standard) 2rem;
-  z-index: 1000;
-  transition: background-color .3s ease
-  
+  padding: var(--spacing-standard) 2rem; /* Espaciado interno */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  transition: background-color .3s ease; /* Transición suave para el fondo */
 }
-
-/* Contenedor para alinear logo y enlaces */
-.navigation-container {
-  max-width: var(--max-width-container);
-  margin: 0 auto;
+.logo-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
-
-.navigation-primary.scrolled {
-  background-color: var(--color-primary);
-  transition: background-color 1s ease;
+/* Contenedor para alinear logo y enlaces */
+.navigation-container {
+  max-width: var(--max-width-container); /* Limita el ancho máximo */
+  margin: 0 auto; /* Centra el contenedor */
+  display: flex; /* Flexbox para alinear elementos */
+  justify-content: space-between; /* Espaciado entre logo y menú */
+  align-items: center; /* Alinea verticalmente los elementos */
 }
 
+/* Cambia el fondo de la barra al hacer scroll */
+.navigation-primary.scrolled {
+  background-color: var(--color-primary); /* Fondo azul oscuro */
+  transition: background-color 1s ease; /* Transición suave */
+}
 
 /* Logo como imagen de fondo */
 .company-logo {
-  background-image: url('/Public/images/logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 160px;
-  height: 60px;
-  display: block;
+  background-image: url('/Public/images/logo.png'); /* Imagen del logo */
+  background-size: contain; /* Ajusta la imagen al contenedor */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  background-position: center; /* Centra la imagen */
+  width: 160px; /* Ancho del logo */
+  height: 60px; /* Alto del logo */
+  display: block; /* Asegura que sea un bloque */
 }
 
+/* Nombre de la empresa */
 .company-name {
-  font-size: 2rem;
-  font-weight: bold;
-  color:var(--color-text-light);
-  text-align: center;
-  text-decoration: none;
+  font-size: 2rem; /* Tamaño de fuente grande */
+  font-weight: bold; /* Texto en negrita */
+  color: var(--color-text-light); /* Color blanco */
+  text-align: center; /* Centra el texto */
+  text-decoration: none; /* Sin subrayado */
 }
 
 /* Menú de navegación */
 .navigation-menu {
-  display: flex;
-  align-items: center;
+  display: flex; /* Flexbox para alinear enlaces */
+  align-items: center; /* Alinea verticalmente los enlaces */
 }
 
 /* Lista de enlaces */
 .navigation-links-list {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 2rem;
+  display: flex; /* Flexbox para alinear enlaces horizontalmente */
+  list-style: none; /* Elimina los puntos de la lista */
+  margin: 0; /* Sin margen */
+  padding: 0; /* Sin relleno */
+  gap: 2rem; /* Espaciado entre enlaces */
 }
 
 /* Elementos individuales del menú */
 .navigation-item {
-  margin: 0;
+  margin: 0; /* Sin margen */
 }
 
 /* Estilo de los enlaces */
 .navigation-link {
-  text-decoration: none;
-  color: var(--color-text-light);
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: color 0.1s ease;
+  text-decoration: none; /* Sin subrayado */
+  color: var(--color-text-light); /* Color blanco */
+  font-weight: 500; /* Peso medio del texto */
+  font-size: 0.95rem; /* Tamaño de fuente pequeño */
+  transition: color 0.1s ease; /* Transición suave para el color */
 }
 
 /* Hover de enlaces */
 .navigation-link:hover {
-  color: var(--color-primary); /* Color amarillo de acento */
+  color: var(--color-secondary); /* Cambia a azul oscuro al pasar el mouse */
 }
 
 /* Sección Hero */
 .hero-section {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  color: var(--color-text-light);
-  text-align: center;
-  transition: background-image 1s ease-in-out;
-  background-image: url('/Public/images/silder-images/hero-background (1).jpg'); /* Imagen inicial */
-  overflow: hidden;
+  background-size: cover; /* La imagen cubre todo el fondo */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100vh; /* Ocupa toda la altura de la ventana */
+  display: flex; /* Flexbox para centrar contenido */
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+  position: relative; /* Posiciona elementos hijos relativos */
+  color: var(--color-text-light); /* Texto blanco */
+  text-align: center; /* Centra el texto */
+  transition: background-image 1s ease-in-out; /* Transición suave para el fondo */
+  background-image: url('/Public/images/silder-images/hero-background (1).jpg'); /* Imagen de fondo */
+  overflow: hidden; /* Oculta contenido desbordado */
 }
 
+/* Capa de superposición en el fondo */
 .hero-section::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgb(100,140,188,.5);
-  z-index: 0;
+  content: ''; /* Crea una capa vacía */
+  position: absolute; /* Posiciona la capa sobre el fondo */
+  top: 0; left: 0; right: 0; bottom: 0; /* Cubre todo el contenedor */
+  background: rgb(100,140,188,.5); /* Fondo semitransparente */
+  z-index: 0; /* Coloca la capa detrás del contenido */
 }
 
+/* Contenedor del contenido del Hero */
 .hero-content-container {
-  position: relative;
-  z-index: 1;
-  max-width: var(--max-width-container);
-  padding: 0 2rem;
+  position: relative; /* Posiciona el contenido sobre la capa */
+  z-index: 1; /* Asegura que esté encima de la capa */
+  max-width: var(--max-width-container); /* Limita el ancho máximo */
+  padding: 0 2rem; /* Espaciado interno */
 }
 
+/* Título principal del Hero */
 .hero-title {
-  font-size: 7rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
+  font-size: 7rem; /* Tamaño de fuente grande */
+  font-weight: 700; /* Texto en negrita */
+  margin-bottom: 1.5rem; /* Espaciado inferior */
 }
 
+/* Descripción del Hero */
 .hero-description {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 2rem; /* Tamaño de fuente mediano */
+  margin-bottom: 2rem; /* Espaciado inferior */
 }
 
+/* Botón principal del Hero */
 .button-primary-cta {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background-color: var(--color-primary);
-  color: #ffffff;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  transition: background-color 0.1s ease;
+  display: inline-block; /* Botón en línea */
+  padding: 1rem 2rem; /* Espaciado interno */
+  background-color: var(--color-primary); /* Fondo azul oscuro */
+  color: #ffffff; /* Texto blanco */
+  text-decoration: none; /* Sin subrayado */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 1.5rem; /* Tamaño de fuente grande */
+  font-weight: 600; /* Texto en negrita */
+  transition: background-color 0.1s ease; /* Transición suave para el fondo */
 }
 
+/* Hover del botón principal */
 .button-primary-cta:hover {
-  background-color: var(--color-secondary);
-  color: #ffffff;
+  background-color: var(--color-secondary); /* Cambia a azul claro */
+  color: #ffffff; /* Texto blanco */
 }
 
+/* Sección de Servicios */
 .services-section {
-  padding: 4rem 2rem;
-  background-color: #f9f9f9;
-  text-align: center;
+  padding: 4rem 2rem; /* Espaciado interno */
+  background-color: #f9f9f9; /* Fondo gris claro */
+  text-align: center; /* Centra el texto */
 }
 
+/* Título de la sección */
 .section-title {
-  font-size: 2.8rem;
-  margin-bottom: 3rem;
-  color: var(--color-primary);
-}
-.services-section {
-  padding: 4rem 2rem;
-  text-align: center;
-  background-color: #f9f9f9;
+  font-size: 2.8rem; /* Tamaño de fuente grande */
+  margin-bottom: 3rem; /* Espaciado inferior */
+  color: var(--color-primary); /* Color azul oscuro */
 }
 
 /* Contenedor de servicios */
 .services-container {
-  margin: 0 auto;
-
-  padding: 0 2rem;
-  overflow: hidden;
-}
-
-.section-title {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
+  margin: 0 auto; /* Centra el contenedor */
+  padding: 0 2rem; /* Espaciado interno */
+  overflow: hidden; /* Oculta contenido desbordado */
 }
 
 /* Grid de servicios */
 .services-grid {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 2rem;
-  justify-content: center;
-  align-items: stretch;
-  padding: 2rem 0;
-  min-height: 500px;
+  display: flex; /* Flexbox para alinear servicios */
+  flex-wrap: nowrap; /* No permite que los elementos se envuelvan */
+  gap: 2rem; /* Espaciado entre servicios */
+  justify-content: center; /* Centra los servicios */
+  align-items: stretch; /* Alinea verticalmente */
+  padding: 2rem 0; /* Espaciado interno */
+  min-height: 500px; /* Altura mínima */
 }
 
-/* Tarjetas individuales */
+/* Tarjetas individuales de servicios */
 .service-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  min-width: 350px;
-  max-width: 350px;
-  flex: 0 0 auto;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  background: #fff; /* Fondo blanco */
+  border-radius: 12px; /* Bordes redondeados */
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15); /* Sombra */
+  min-width: 350px; /* Ancho mínimo */
+  max-width: 350px; /* Ancho máximo */
+  flex: 0 0 auto; /* No permite que cambie de tamaño */
+  overflow: hidden; /* Oculta contenido desbordado */
+  display: flex; /* Flexbox para contenido interno */
+  flex-direction: column; /* Alinea elementos verticalmente */
 }
 
+/* Encabezado de la tarjeta */
 .service-header {
-  padding: 1.5rem;
-  text-align: center;
+  padding: 1.5rem; /* Espaciado interno */
+  text-align: center; /* Centra el texto */
 }
 
+/* Ícono del servicio */
 .service-icon i {
-  font-size: 3rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
+  font-size: 3rem; /* Tamaño del ícono */
+  color: var(--color-primary); /* Color azul oscuro */
+  margin-bottom: 1rem; /* Espaciado inferior */
 }
 
+/* Título del servicio */
 .service-title {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
+  font-size: 1.5rem; /* Tamaño de fuente mediano */
+  color: var(--color-primary); /* Color azul oscuro */
+  margin-bottom: 1rem; /* Espaciado inferior */
 }
 
+/* Imagen del servicio */
 .service-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-bottom: 2px solid #eee;
+  width: 100%; /* Ancho completo */
+  height: 200px; /* Altura fija */
+  object-fit: cover; /* Ajusta la imagen al contenedor */
+  border-bottom: 2px solid #eee; /* Borde inferior */
 }
 
 /* Ajuste para scroll horizontal en móviles */
 @media (max-width: 1200px) {
   .services-container {
-    overflow-x: auto;
-    padding: 0 1rem;
+    overflow-x: auto; /* Permite desplazamiento horizontal */
+    padding: 0 1rem; /* Espaciado interno */
   }
   
   .services-grid {
-    padding: 2rem 1rem;
-    justify-content: flex-start;
-    min-width: min-content;
+    padding: 2rem 1rem; /* Espaciado interno */
+    justify-content: flex-start; /* Alinea a la izquierda */
+    min-width: min-content; /* Ancho mínimo */
   }
 }
 
