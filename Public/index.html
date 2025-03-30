@@ -45,6 +45,47 @@
       </div>
     </div>
   </nav>
+<!-- Navbar -->
+<nav class="navigation-primary">
+  <div class="navigation-container">
+    <div class="company-info">
+      <div><a class="company-logo fade-in" href="#"></a></div>
+      <div>
+        <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
+      </div>
+    </div>
+    <div class="navigation-menu" id="navbarNav">
+      <ul class="navigation-links-list">
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#quienes-somos">
+            <span class="link-text fade-in">Quiénes Somos</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#servicios">
+            <span class="link-text fade-in">Servicios</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#experiencia">
+            <span class="link-text fade-in">Experiencia</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#contacto" onclick="scrollToFooter(event)">
+            <span class="link-text fade-in">Contacto</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" data-bs-toggle="modal" data-bs-target="#loginmodal">
+            <span class="link-text fade-in">Iniciar sesión</span>
+          </a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
 
   <!-- Hero Section -->
   <header class="hero-section">
@@ -59,6 +100,8 @@
 
   <!-- About Section -->
   <section id="sobre-nosotros" class="about-section">
+  <!-- Después del hero-section y antes de la sección de servicios -->
+  <section id="quienes-somos" class="about-section">
     <div class="about-container">
       <h2 class="section-title fade-up">Sobre Nosotros</h2>
       <div class="about-content">
@@ -109,6 +152,26 @@
                  alt="Cálculo de estructuras">
           </div>
         </div>
+  <!-- Contenido principal -->
+  <main>
+ <!-- Sección Servicios -->
+ <section id="servicios" class="services-section">
+  <div class="services-container">
+    <h2   class="section-title">Nuestros Servicios</h2>
+    <div class="services-grid">
+      
+      <!-- Tarjeta 1 -->
+      <div class="service-card fade-up">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="fas fa-drafting-compass"></i>
+          </div>
+          <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
+          <img class="service-image" 
+               src="./images/servicios-images/calculo.jpeg" 
+               alt="Cálculo de estructuras">
+        </div>
+      </div>
 
         <!-- Service Card 2 -->
         <div class="service-card fade-up">
@@ -154,7 +217,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer-primary">
+  <footer class="footer-primary" id="contacto">
     <div class="footer-container">
       <div class="footer-content">
         
@@ -210,6 +273,15 @@
   </footer>
 
   <!-- Modal -->
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./scripts/script.js"></script>
+  <script src="./scripts/animations.js"></script>
+  <script type="module" src="./scripts/Formularios/formulariocontacto.js"></script>
+  <script type="module" src="./scripts/Formularios/Login.js"></script>
+  <script type="module" src="./scripts/errorHandler.js"></script>
+
+  <!-- Agregar el modal justo antes del cierre del body -->
   <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -237,11 +309,41 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Iniciar sesión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Error Box -->
+                <div id="error-message" class="alert alert-danger"></div>
+                
+                <form class="contact-form" id="form-login">
+                    <div class="mb-3">
+                        <label for="Usuario" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="Usuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Contraseña" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="Contraseña" required>
+                    </div>
+                    <div>
+                        <a class="registrar-link" href="./Formularios/nuevoUsuario.html">Registrarse</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="scripts/script.js"></script>
   <script src="scripts/animations.js"></script>
 
+</div>
 </body>
 </html>
