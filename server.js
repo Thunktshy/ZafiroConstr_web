@@ -271,6 +271,37 @@ app.get("/users/getpassword", async (req, res) => { // Added leading slash
     }
 });
 
+app.get("/users/getUsernames", async (req, res) => {
+    try {
+        // Query to get Usuario_Id and Nombre (username) from the USUARIOS table.
+        const users = await dbInstance.queryWithParams("SELECT Email, Nombre FROM USUARIOS", []);
+        // Optionally, if you need only the usernames, you could do:
+        // const usernameList = users.map(user => user.Nombre);
+        res.json(users);
+    } catch (error) {
+        console.error("Error fetching usernames:", error);
+        res.status(500).json({ error: "Error fetching usernames" });
+    }
+});
+
+app.post("/users/register", async (req, res) => {
+    // Extract username and password from the request body
+    const { email, username, password } = req.body;
+    
+    try {
+        // Insert the new user into the USUARIOS table.
+        // Table has an auto-incrementing Usuario_Id.
+        await dbInstance.queryWithParams(
+            "INSERT INTO USUARIOS (Email, Nombre, password) VALUES (?, ?, ?)",
+            [email, username, password]
+        );
+        res.json({ success: true, message: "Usuario registrado exitosamente." });
+    } catch (error) {
+        console.error("Error registering new user:", error);
+        res.status(500).json({ error: "Error al registrar el usuario." });
+    }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -102,7 +102,9 @@
             <section id="registration" class="py-5">
                 <div class="div-form">
                     <h2 class="form-title">Formulario de Registro</h2>
-                    <form>
+                    <!-- Error Box -->
+                    <div id="error-message" class="alert alert-danger"></div>
+                    <form class="nuevoususario">
                         <div class="mb-3">
                             <label for="email" class="form-label fw-bold">Ingresa un correo electrónico</label>
                             <input type="email" class="form-control" id="email" placeholder="Ejemplo: mycorreo@mail.com" required>
@@ -124,5 +126,7 @@
                 </div>
             </section>
         </main>
+         <!-- Necessary script references -->
+        <script type="module" src="../scripts/Formularios/nuevousuario.js"></script>
     </body>
 </html>

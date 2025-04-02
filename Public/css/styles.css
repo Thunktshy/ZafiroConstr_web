@@ -906,60 +906,7 @@ h3 {
 .contact-buttons .contact-button:nth-child(2) { transition-delay: 0.2s; }
 .contact-buttons .contact-button:nth-child(3) { transition-delay: 0.3s; }
 
-/* General Styles for the Product Form Container */
-.Products-Form-container {
-  max-width: var(--max-width-container);
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
 
-/* Title Styles */
-.Products-Form-container h2 {
-  font-size: 2.5rem;
-  color: var(--color-primary);
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-/* Form Group Styles */
-.Product-form-group {
-  margin-bottom: var(--spacing-standard);
-}
-
-/* Label Styles */
-.Product-form-group label {
-  display: block;
-  font-size: 1rem;
-  color: var(--color-primary);
-  margin-bottom: 0.5rem;
-}
-
-/* Input and Textarea Styles */
-.Product-form-input,
-.Product-form-select {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #333;
-  background-color: #fff;
-  transition: border-color 0.3s ease;
-}
-
-.Product-form-input:focus,
-.Product-form-select:focus {
-  border-color: var(--color-secondary);
-  outline: none;
-}
-
-/* Textarea Specific Styles */
-textarea.Product-form-input {
-  resize: vertical; /* Allow vertical resizing */
-}
 
 
 /* Button Styles */

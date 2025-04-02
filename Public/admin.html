@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zafiro Home Construcciones - Página Principal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- External Styles -->
+  <link rel="stylesheet" href="./css/admin.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+  <!-- Integrated Fixed Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <!-- Company Info on Top -->
+      <div class="company-info">
+        <a href="#" class="company-logo fade-in"></a>
+        <a href="#" class="company-name fade-in">Zafiro Home Construcciones</a>
+      </div>
+      <!-- Navigation Wrapper Below Company Info -->
+    </div>
+    <nav class="navigation-primary">
+        <ul class="navigation-links-list">
+          <li class="navigation-item slide-in">
+            <a class="navigation-link hover-effect" href="#Users">
+              <span class="link-text fade-in">USUARIOS</span>
+            </a>
+          </li>
+          <li class="navigation-item slide-in">
+            <a class="navigation-link hover-effect" href="#almacen">
+              <span class="link-text fade-in">ALMACEN</span>
+            </a>
+          </li>
+        </ul>
+        <span class="hamburger" onclick="openSidebar()">
+          <i class="fas fa-bars"></i>
+        </span>
+      </nav>
+      
+  </header>
+
+  <!-- Sidebar for Mobile Navigation (Right side) -->
+  <div id="mySidebar" class="sidebar" >
+    <span class="closebtn" onclick="closeSidebar()">&times;</span>
+    <a href="#quienes-somos" onclick="closeSidebar()">Quiénes Somos</a>
+    <a href="#servicios" onclick="closeSidebar()">Servicios</a>
+    <a href="#experiencia" onclick="closeSidebar()">Experiencia</a>
+    <a href="#contacto" onclick="closeSidebar()">Contacto</a>
+    <a href="#" data-bs-toggle="modal" data-bs-target="#loginmodal" onclick="closeSidebar()">Iniciar sesión</a>
+  </div>
+
+  <!-- Contenido Principal -->
+  <main>
+    <section class="container py-5">
+      <div class="grid-container">
+        <!-- PRODUCTOS -->
+        <div class="category-card">
+          <div class="category-header">
+            <h3 class="category-title">PRODUCTOS</h3>
+          </div>
+          <div class="category-body">
+            <i class="fa fa-archive" aria-hidden="true"></i>
+
+            <button class="toggle-btn">Administrar</button>
+          </div>
+        </div>
+        <!-- ALMACEN -->
+        <div class="category-card">
+          <div class="category-header">
+            <h3 class="category-title">ALMACEN</h3>
+          </div>
+          <div class="category-body">
+            <i class="fa fa-home" aria-hidden="true"></i>
+
+            <button class="toggle-btn">Administrar</button>
+          </div>
+        </div>
+        <!-- USUARIOS -->
+        <div class="category-card">
+          <div class="category-header">
+            <h3 class="category-title">USUARIOS</h3>
+          </div>
+          <div class="category-body">
+            <i class="fa fa-users" aria-hidden="true"></i>
+
+            <button class="toggle-btn">Administrar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  
+
+  <!-- Footer -->
+  <footer>
+    <!-- Footer content here -->
+  </footer>
+
+  <style>
+    /* Variables globales */
+    :root {
+    /* Core Blues */
+    --color-primary: #2F4269;         /* Deep Navy: ideal for headers, nav bars, or dark backgrounds */
+    --color-secondary: #455B85;       /* Medium Blue: works well for cards, sub-headers, etc. */
+    --color-light-blue: #A3B7D6;        /* Light Blue: useful for backgrounds and hover states */
+
+    /* Neutral Colors */
+    --color-text-light: #FFFFFF;      /* Light text color */
+    --color-dark-gray: #2D2D2D;         /* Dark Gray: great for primary text on light backgrounds */
+    --color-medium-gray: #BFBFBF;       /* Medium Gray: for dividers, borders, or secondary text */
+    --color-light-gray: #F3F3F3;        /* Light Gray: perfect for page or card backgrounds */
+
+    /* Accent Colors */
+    --color-accent-orange: #F08C2E;     /* Accent Orange: for call-to-action buttons or icons */
+    --color-accent-yellow: #FFD45C;     /* Accent Yellow: for softer highlights and warnings */
+
+    /* Status Colors */
+    --color-success: #28A745;           /* Green: indicates success */
+    --color-warning: #FFC107;           /* Gold: for caution or warning messages */
+    --color-error: #DC3545;             /* Red: used for errors or danger states */
+
+    /* Layout & Spacing */
+    --max-width-container: 1200px;
+    --spacing-standard: 1rem;
+  }
+
+  main{
+    background-color: var(--color-light-blue);
+  }
+  /* Container for grid items */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  /* Category card with a max-width */
+  .category-card {
+    color: var(--color-text-light);
+    min-width: 200px;
+    max-width: 200px; /* Sets a maximum width */
+    border: 1px solid #ccc; /* Optional border */
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0 auto;
+  }
+
+  /* Header styles for the title */
+  .category-header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  /* Body styles: stack icon and button vertically */
+  .category-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem; /* Adds spacing between the icon and button */
+  }
+
+  /* Button styling with a 4px border using --secondary-color */
+  .toggle-btn {
+    color: var(--color-light-blue);
+    border-radius: 10px;
+    background: var(--color-secondary);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  /* On hover, the border color changes to --primary-color */
+  .toggle-btn:hover {
+    border-color: var(--primary-color);
+  }
+  </style>
+  
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Your external scripts -->
+  <script src="./scripts/script.js"></script>
+  <script src="./scripts/animations.js"></script>
+  <script type="module" src="./scripts/Formularios/formulariocontacto.js"></script>
+  <script type="module" src="./scripts/Formularios/Login.js"></script>
+  <script type="module" src="./scripts/errorHandler.js"></script>
+
+  <!-- JavaScript for Sidebar -->
+  <script>
+    function openSidebar() {
+      document.getElementById("mySidebar").style.width = "250px";
+    }
+    
+    function closeSidebar() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
+  </script>
+</body>
+</html>
