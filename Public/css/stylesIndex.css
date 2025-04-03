@@ -1,163 +1,168 @@
 /* Variables globales */
 :root {
-<<<<<<< HEAD:Public/css/stylesIndex.css
   --color-text-light: rgb(255, 255, 255); /* Color de texto claro */
-  --color-primary: rgb(45,71,120); /* Color principal (azul oscuro) */
-  --color-secondary: rgb(100,140,188); /* Color secundario (azul claro) */
+  --color-primary: rgb(45, 71, 120); /* Color principal (azul oscuro) */
+  --color-secondary: rgb(100, 140, 188); /* Color secundario (azul claro) */
   --max-width-container: 1200px; /* Ancho máximo para contenedores */
   --spacing-standard: 1rem; /* Espaciado estándar */
-=======
-  --color-text-light: rgb(255, 255, 255);
-  --color-primary: rgb(45,71,120); 
-  --color-secondary: rgb(100,140,188);
-  --max-width-container: 1200px;
-  --spacing-standard: 1rem;
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
 }
-
-
 
 /* Barra de navegación principal */
 .navigation-primary {
-  background-color: transparent; /* Fondo transparente inicialmente */
-  position: fixed; /* Fija la barra en la parte superior */
+  background-color: transparent;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-<<<<<<< HEAD:Public/css/stylesIndex.css
-  padding: var(--spacing-standard) 2rem; /* Espaciado interno */
-  z-index: 1000; /* Asegura que esté por encima de otros elementos */
-  transition: background-color .3s ease; /* Transición suave para el fondo */
-}
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-/* Contenedor para alinear logo y enlaces */
-.navigation-container {
-  max-width: var(--max-width-container); /* Limita el ancho máximo */
-  margin: 0 auto; /* Centra el contenedor */
-  display: flex; /* Flexbox para alinear elementos */
-  justify-content: space-between; /* Espaciado entre logo y menú */
-  align-items: center; /* Alinea verticalmente los elementos */
+  padding: var(--spacing-standard) 2rem;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
 }
 
 /* Cambia el fondo de la barra al hacer scroll */
 .navigation-primary.scrolled {
-  background-color: var(--color-primary); /* Fondo azul oscuro */
-  transition: background-color 1s ease; /* Transición suave */
-=======
-  padding: var(--spacing-standard) 2rem;
-  z-index: 1000;
-  transition: background-color .3s ease;
+  background-color: var(--color-primary);
+  transition: background-color 1s ease;
 }
 
-/* Contenedor para alinear logo y enlaces */
+/* Contenedor general del navbar */
 .navigation-container {
-  max-width: 1200px; /* Increased max-width for better layout */
+  max-width: var(--max-width-container);
   margin: 0 auto;
   display: flex;
-  justify-content: space-between; /* Space between company info and navigation menu */
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Cuando el menú se abre, alinea todo a la izquierda */
+.navigation-primary.menu-open .navigation-container {
+  justify-content: flex-start;
+}
+
+/* Información de la empresa */
+.company-info {
+  display: flex;
   align-items: center;
 }
 
-/* Cambios al fondo al hacer scroll */
-.navigation-primary.scrolled {
-  background-color: var(--color-primary);
-  transition: background-color 1s ease;
-}
-
-.scrolled {
-  background-color: var(--color-primary);
-  transition: background-color 1s ease;
-}
-
-.company-info {
-  display: flex; /* Use flexbox to align items in a row */
-  align-items: center; /* Center items vertically */
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
-}
-
-/* Logo como imagen de fondo */
+/* Logo */
 .company-logo {
-<<<<<<< HEAD:Public/css/stylesIndex.css
-  background-image: url('/Public/images/logo.png'); /* Imagen del logo */
-  background-size: contain; /* Ajusta la imagen al contenedor */
-  background-repeat: no-repeat; /* Evita que la imagen se repita */
-  background-position: center; /* Centra la imagen */
-  width: 160px; /* Ancho del logo */
-  height: 60px; /* Alto del logo */
-  display: block; /* Asegura que sea un bloque */
-=======
   background-image: url('/Public/images/logo.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  width: 160px; /* Adjust width as needed */
-  height: 60px; /* Adjust height as needed */
+  width: 160px;
+  height: 60px;
   display: block;
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
 }
 
 /* Nombre de la empresa */
 .company-name {
-<<<<<<< HEAD:Public/css/stylesIndex.css
-  font-size: 2rem; /* Tamaño de fuente grande */
-  font-weight: bold; /* Texto en negrita */
-  color: var(--color-text-light); /* Color blanco */
-  text-align: center; /* Centra el texto */
-  text-decoration: none; /* Sin subrayado */
-=======
-  font-size: 2rem;
+  font-size: 2em;
   font-weight: bold;
   color: var(--color-text-light);
-  text-align: left; /* Align text to the left */
+  text-align: center;
   text-decoration: none;
-  padding-left: 20px; /* Space between logo and company name */
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
+  padding-left: 20px;
 }
 
 /* Menú de navegación */
 .navigation-menu {
-  display: flex; /* Flexbox para alinear enlaces */
-  align-items: center; /* Alinea verticalmente los enlaces */
+  display: none;
+  align-items: center;
 }
 
 /* Lista de enlaces */
 .navigation-links-list {
-<<<<<<< HEAD:Public/css/stylesIndex.css
-  display: flex; /* Flexbox para alinear enlaces horizontalmente */
-  list-style: none; /* Elimina los puntos de la lista */
-  margin: 0; /* Sin margen */
-  padding: 0; /* Sin relleno */
-  gap: 2rem; /* Espaciado entre enlaces */
-=======
   display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 2rem; /* Space between navigation items */
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
+  gap: 2rem;
 }
 
 /* Elementos individuales del menú */
 .navigation-item {
-  margin: 0; /* Sin margen */
+  margin: 0;
+  background-color: transparent !important;
 }
 
 /* Estilo de los enlaces */
 .navigation-link {
-  text-decoration: none; /* Sin subrayado */
-  color: var(--color-text-light); /* Color blanco */
-  font-weight: 500; /* Peso medio del texto */
-  font-size: 0.95rem; /* Tamaño de fuente pequeño */
-  transition: color 0.1s ease; /* Transición suave para el color */
+  text-decoration: none;
+  color: var(--color-text-light);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.1s ease;
+  background-color: transparent !important;
 }
 
-/* Hover de enlaces */
 .navigation-link:hover {
-  color: var(--color-secondary); /* Cambia a azul oscuro al pasar el mouse */
+  color: var(--color-secondary);
 }
+
+/* Estilos para menú abierto */
+.navigation-primary.menu-open .navigation-menu {
+  display: flex;
+  margin-left: auto;
+}
+
+.hamburger-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  gap: 5px;
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+.hamburger-menu .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--color-text-light);
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .navigation-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--color-primary);
+    flex-direction: row;
+    justify-content: center;
+    padding: 1rem 0;
+    z-index: 999;
+  }
+
+  .navigation-links-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .navigation-primary.menu-open .company-info {
+    margin-left: 3rem;
+  }
+}
+
+
 /* Sección Hero */
 .hero-section {
   background-size: cover; /* La imagen cubre todo el fondo */
@@ -233,28 +238,16 @@
 
 /* Título de la sección */
 .section-title {
-<<<<<<< HEAD:Public/css/stylesIndex.css
   font-size: 2.8rem; /* Tamaño de fuente grande */
   margin-bottom: 3rem; /* Espaciado inferior */
   color: var(--color-primary); /* Color azul oscuro */
-=======
-  font-size: 2.8rem;
-  margin-bottom: 3rem;
-  color: var(--color-primary);
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
 }
 
 /* Contenedor de servicios */
 .services-container {
-<<<<<<< HEAD:Public/css/stylesIndex.css
   margin: 0 auto; /* Centra el contenedor */
   padding: 0 2rem; /* Espaciado interno */
   overflow: hidden; /* Oculta contenido desbordado */
-=======
-  margin: 0 auto;
-  padding: 0 2rem;
-  overflow: hidden;
->>>>>>> b5fbe74372a7392bc893393b3a3841c52bbe6521:Public/css/styles.css
 }
 
 /* Grid de servicios */
@@ -309,18 +302,184 @@
   border-bottom: 2px solid #eee; /* Borde inferior */
 }
 
-/* Ajuste para scroll horizontal en móviles */
-@media (max-width: 1200px) {
-  .services-container {
-    overflow-x: auto; /* Permite desplazamiento horizontal */
-    padding: 0 1rem; /* Espaciado interno */
-  }
-  
-  .services-grid {
-    padding: 2rem 1rem; /* Espaciado interno */
-    justify-content: flex-start; /* Alinea a la izquierda */
-    min-width: min-content; /* Ancho mínimo */
-  }
+/***************************************/
+/* Estilos para la sección de experiencia en “tarjetas” */
+/***************************************/
+
+/* Contenedor general de la sección */
+.experience-section {
+  background-color: #f9f9f9;
+  padding: 4rem 2rem; /* Espaciado superior/inferior */
+}
+
+.experience-container {
+  max-width: 1200px; /* Ajusta a tu preferencia */
+  margin: 0 auto;
+}
+
+/* Tarjeta individual para cada proyecto */
+.experience-card {
+  background-color: #fff;            /* Fondo blanco */
+  border-radius: 12px;              /* Bordes redondeados */
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Sombra ligera */
+  padding: 2rem;                    /* Espacio interno */
+  margin-bottom: 2rem;              /* Separación entre tarjetas */
+}
+
+/* Asegura que los carouseles (sliders) no excedan el ancho de la tarjeta */
+.experience-card .carousel {
+  max-width: 100%; 
+  margin: 1rem auto;
+  border-radius: 8px; 
+  overflow: hidden; /* Para aplicar el border-radius al contenido */
+}
+
+/* Fuerza las imágenes del carousel a un mismo tamaño (ej. 300px de alto) */
+.experience-card .carousel-item img {
+  width: 100%;
+  height: 600px;         /* Ajusta la altura según tu preferencia */
+  object-fit: cover;     /* Recorta la imagen para llenar el espacio */
+  object-position: center; 
+  display: block;
+}
+
+/* Encabezados de cada proyecto */
+.experience-card h1,
+.experience-card h2 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+/* Ajusta espaciados, tipografía, etc. */
+.experience-card p {
+  margin-bottom: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Opcional: estiliza tus listas */
+.experience-card ul.proyectos-text {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  list-style-type: disc;
+}
+
+/* Ajusta los subtítulos (dep-casa, obranueva, etc.) si quieres mayor diferenciación */
+.dep-casa,
+.dep-detalles,
+.dep-acabados,
+.agencias,
+.proyectos,
+.renovacion,
+.obranueva,
+.curso {
+  font-size: 1.25rem; 
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+}
+
+/* Ajuste extra: si quieres mantener la animación “fade-up” */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-up.animate-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ... Mantén el resto de tus clases fade-in, fade-left, etc. ... */
+
+/************************************************************/
+/* Clases de animación (fade-up, etc.) si aún no las tienes */
+/************************************************************/
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-up.animate-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ... resto de las clases fade-in, fade-left, etc. ... */
+
+/* Otras clases, variables y estilos generales ya definidos en tu stylesIndex.css */
+
+
+/* Sección Sobre Nosotros */
+.about-section {
+  padding: 6rem 2rem;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.about-container {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  align-items: center;
+  text-align: center;
+}
+
+.about-text {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.about-description {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.about-stats {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background-color: var(--color-primary);
+  border-radius: 12px;
+  color: var(--color-text-light);
+  min-width: 200px;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-item i {
+  font-size: 2.5rem;
+  color: var(--color-secondary);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  text-align: center;
 }
 
 /* Footer Styles */
@@ -561,92 +720,6 @@
 .email-copy-container:hover .copy-tooltip {
   opacity: 1;
 }
-
-/* Sección Sobre Nosotros */
-.about-section {
-  padding: 6rem 2rem;
-  background-color: #ffffff;
-  text-align: center;
-}
-
-.about-container {
-  max-width: var(--max-width-container);
-  margin: 0 auto;
-}
-
-.about-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
-  align-items: center;
-  text-align: center;
-}
-
-.about-text {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.about-description {
-  font-size: 1.25rem;
-  line-height: 1.8;
-  color: #444;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.about-stats {
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  background-color: var(--color-primary);
-  border-radius: 12px;
-  color: var(--color-text-light);
-  min-width: 200px;
-  transition: transform 0.3s ease;
-}
-
-.stat-item:hover {
-  transform: translateY(-5px);
-}
-
-.stat-item i {
-  font-size: 2.5rem;
-  color: var(--color-secondary);
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: bold;
-}
-
-.stat-label {
-  font-size: 1.1rem;
-  text-align: center;
-}
-
-/* Media queries para responsividad */
-@media (max-width: 768px) {
-  .about-stats {
-    gap: 2rem;
-  }
-  
-  .stat-item {
-    min-width: 150px;
-    padding: 1.5rem;
-  }
-}
-
 /* Estilos para el modal */
 .modal-content {
   background-color: var(--color-primary);
@@ -719,370 +792,105 @@
   transform: scale(1);
 }
 
-/* =========================
-   Table Elements Styling
-   ========================= */
 
-/* Responsive table container */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
+/* Clases base para elementos animados */
+.fade-up, .fade-right, .fade-left, .fade-in, .scale-up {
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
 }
 
-/* Base table styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-  background-color: #fff;
-  color: #333;
-  font-family: Arial, sans-serif;
+/* Estado inicial de cada animación */
+.fade-up {
+  transform: translateY(30px);
 }
 
-/* Table caption styling (if needed) */
-table caption {
-  padding: 0.5rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: left;
+.fade-right {
+  transform: translateX(-30px);
 }
 
-/* Styling for table header */
-thead {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
+.fade-left {
+  transform: translateX(30px);
 }
 
-thead th {
-  padding: 1rem;
-  border-bottom: 2px solid var(--color-secondary);
-  text-align: left;
+.fade-in {
+  opacity: 0;
 }
 
-/* Styling for table body cells */
-tbody td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #ddd;
-  width: 25%; /* Adjust this value as per your layout */
-  box-sizing: border-box; /* Ensures padding is included in the width */
+.scale-up {
+  transform: scale(0.95);
 }
 
-/* Alternating row background for better readability */
-tbody tr:nth-child(even) {
-  background-color: #f5f5f5;
+/* Estado final cuando se agrega la clase animate-visible */
+.animate-visible.fade-up,
+.animate-visible.fade-right,
+.animate-visible.fade-left {
+  opacity: 1;
+  transform: translate(0);
 }
 
-/* Hover effect for rows */
-tbody tr:hover {
-  background-color: var(--color-secondary);
-  color: var(--color-text-light);
+.animate-visible.fade-in {
+  opacity: 1;
 }
 
-/* Optional: border for the entire table */
-table, th, td {
-  border: 1px solid #ddd;
+.animate-visible.scale-up {
+  opacity: 1;
+  transform: scale(1);
 }
-
-#productList {
-  margin-top: 20px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  width: 100%; /* Ensure the list container takes full width */
-}
-
-li {
-  width: 100%; /* Ensure each row takes the full width of the parent */
-  padding: 10px;
-  margin-bottom: 5px;
-  background-color: var(--color-primary);
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex; /* Ensures content inside aligns properly */
-  justify-content: center; /* Center the text */
-  align-items: center; /* Center items vertically */
-  text-align: center;
-}
-
-li:hover {
-  background-color: #e9ecef; /* Lighter gray on hover */
-}
-
-.categories-section {
-  padding: 4rem 2rem;
-  background-color: #f9f9f9;
-  text-align: center;
-}
-
-.categories-container {
-  margin: 0 auto;
-  overflow: hidden;
-  padding: 0 1rem;
-}
-
-.categories-grid {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 2rem;
-  justify-content: flex-start;
-  overflow-x: auto;
-  padding: 2rem 0;
-}
-
-.category-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  transition: all 0.3s ease;
-  min-width: 200px;
-  max-width: 250px;
-  flex: 0 0 auto;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.category-header {
-  cursor: pointer;
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.category-icon i {
-  font-size: 3rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
-}
-
-.category-title {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-  text-align: center;  /* Centers the text horizontally */
-}
-
-.category-image {
-  width: 25%;
-  height: 40%;
-  object-fit: cover;
-  border-bottom: 2px solid #eee;
-  padding: 20px;
-  display: block;       /* Ensures margin: auto works */
-  margin-left: auto;    /* Centers horizontally */
-  margin-right: auto;   /* Centers horizontally */
-}
-
-.category-body {
-  display: none;
-  padding: 1rem;
-  background-color: #f2f2f2;
-  text-align: left;
-}
-
-.category-body ul {
-  margin: 0;
-  padding-left: 1.5rem;
-}
-
-.category-body li {
-  margin-bottom: 0.5rem;
-  color: #444;
-}
-
-.category-card.active .category-body {
-  display: block;
-}
-
-.focused-card {
-  position: relative;
-  width: 1000px;
-  max-width: 95vw;
-  margin: 2rem auto;
-  z-index: 999;
-  display: flex;
-  flex-direction: row;
-  align-items: start;
-  padding: 2.5rem;
-  gap: 3rem;
-}
-
-.focused-card .category-header {
-  flex: 0 0 40%;
-  padding: 0;
-}
-
-.focused-card .category-image {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: none;
-}
-
-.focused-card .category-body {
-  flex: 1;
-  display: block;
-  padding: 0;
-  background-color: transparent;
-}
-
-.focused-card .category-title {
+/* Texto grande del footer (titulo principal) */
+.footer-info .footer-heading {
   font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  text-align: left;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text-light);
 }
 
-.focused-card .category-icon {
-  display: none;
-}
-
-.focused-card .category-body ul {
-  padding-left: 1.2rem;
-}
-
-.focused-card .category-body li {
+/* Texto secundario bajo el título */
+.footer-info .footer-tagline {
   font-size: 1.1rem;
   margin-bottom: 1rem;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.categories-grid.focus-mode {
-  overflow: hidden;
-}
-
-.categories-grid.focus-mode .category-card:not(.focused-card) {
-  display: none;
-}
-
-h3 {
-  display: block;
-  font-size: 1.17em;
-  margin-block-start: 0px;
-  margin-block-end: 0px;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-  font-weight: bold;
-  unicode-bidi: isolate;
-}
-
-/* Retrasos escalonados para elementos en secuencia */
-.navigation-links-list .navigation-item:nth-child(1) { transition-delay: 0.1s; }
-.navigation-links-list .navigation-item:nth-child(2) { transition-delay: 0.2s; }
-.navigation-links-list .navigation-item:nth-child(3) { transition-delay: 0.3s; }
-.navigation-links-list .navigation-item:nth-child(4) { transition-delay: 0.4s; }
-
-/* Retrasos para elementos del hero */
-.hero-content-container .hero-title { transition-delay: 0.3s; }
-.hero-content-container .hero-description { transition-delay: 0.5s; }
-.hero-content-container .button-primary-cta { transition-delay: 0.7s; }
-
-/* Retrasos para las tarjetas de servicios */
-.services-grid .service-card:nth-child(1) { transition-delay: 0.1s; }
-.services-grid .service-card:nth-child(2) { transition-delay: 0.2s; }
-.services-grid .service-card:nth-child(3) { transition-delay: 0.3s; }
-.services-grid .service-card:nth-child(4) { transition-delay: 0.4s; }
-
-/* Retrasos para los botones de contacto */
-.contact-buttons .contact-button:nth-child(1) { transition-delay: 0.1s; }
-.contact-buttons .contact-button:nth-child(2) { transition-delay: 0.2s; }
-.contact-buttons .contact-button:nth-child(3) { transition-delay: 0.3s; }
-
-
-
-
-/* Button Styles */
-.btn-regresar,
-.btn-submit {
-  display: inline-block;
-  padding: 0.8rem 2rem;
-  background-color: var(--color-secondary);
-  color: var(--color-text-light);
-  border: none;
-  border-radius: 8px;
+/* Correo o texto adicional */
+.footer-info .footer-email {
   font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1rem;
+  color: var(--color-text-light);
+  margin-bottom: 2rem;
 }
 
-.btn-regresar:hover,
-.btn-submit:hover {
-  background-color: var(--color-primary);
+/* Sección que agrupa todas las columnas de enlaces */
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
 }
 
-/* Grid Styles for Dimension and Weight Inputs */
-.grid {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+/* Columnas individuales de enlaces */
+.footer-links-column h3 {
+  font-size: 1.2rem;
+  color: var(--color-text-light);
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--color-secondary);
+  padding-bottom: 0.5rem;
 }
 
-/*Styles for formularios*/
-
-body.formulario {
-  background-color: rgb(100, 140, 188); /* Set background color */
-  /* Add any other styles you want to apply */
+.footer-links-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-main.formulario {
-  margin-top: 60px; /* Space between navbar and form */
-}
-.navigation-primary-forms {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background-color: var(--color-secondary); /* Adjust as needed */
-  transition: background-color 0.3s ease;
-  z-index: 1000; /* Ensures it stays above other elements */
+.footer-links-column li {
+  margin-bottom: 0.8rem;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .grid {
-      flex-direction: column; /* Stack inputs on smaller screens */
-  }
+.footer-links-column a {
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.registrar-link {
-  color: white; /* Set text color to white */
-  text-decoration: none; /* Optional: remove underline */
-}
-.registrar-link:hover {
-  text-decoration: underline; /* Optional: underline on hover */
-}
-
-.error-message{
-  display: none; /* Hidden by default */
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-}
-/* Alert  to warn user of errors */
-
-.alert {
-  display: none; /* Hidden by default */
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-}
-
-.alert-danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
-}
-
-.alert.active {
-  display: block; /* Show the alert when active */
-  opacity: 1; /* Fully visible */
-  transition: opacity 0.5s ease; /* Transition for fading */
-}
-
-.alert.fade-out {
-  opacity: 0; /* Fade out effect */
+.footer-links-column a:hover {
+  color: var(--color-secondary);
 }

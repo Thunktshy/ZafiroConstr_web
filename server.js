@@ -103,6 +103,31 @@ app.get("/getAllCategories", async (req, res) => {
     }
 });
 
+app.post("/submit-Category-form", async (req, res) => { 
+    const { Name, Description } = req.body; 
+    try {
+      // Insert the data into the database
+      await dbInstance.queryWithParams("INSERT INTO categories (Name, Description) VALUES (?, ?)", [Name, Description]);
+      res.json({ message: "Formulario enviado con éxito." });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      res.status(500).json({ error: "Error al enviar el formulario." });
+    }
+});
+
+app.post("/submit-Brand-form", async (req, res) => { 
+    const { Name } = req.body; 
+    try {
+      // Insert the data into the database
+      await dbInstance.queryWithParams("INSERT INTO brands (Name) VALUES (?)", [Name]);
+      res.json({ message: "Formulario enviado con éxito." });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      res.status(500).json({ error: "Error al enviar el formulario." });
+    }
+});
+  
+
 
 // =============================
 // GET Routes: Fetching Data

@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Experiencia - Zafiro Home Construcciones</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Zafiro Home Construcciones - Página Principal</title>
   
   <!-- Bootstrap CSS -->
   <link 
@@ -15,209 +15,512 @@
     rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
-  <!-- Hoja de estilos para la sección de Experiencia -->
-  <link rel="stylesheet" href="css/stylesExperiencia.css">
+  <!-- Tu hoja de estilos principal -->
+  <link rel="stylesheet" href="css/stylesIndex.css">
 </head>
 <body class="bg-light">
 
-  <!-- Navbar -->
-  <nav class="navigation-primary-experiencia">
-    <div class="navigation-container">
-      <a class="company-logo fade-in" href="#"></a>
-      <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
-      <div class="navigation-menu" id="navbarNav">
+  <!-- Barra de navegación principal con animación -->
+  <nav class="navigation-primary fade-down">
+    <div class="navigation-container fade-down">
+      <!-- Bloque de logo + nombre -->
+      <div class="company-info fade-in">
+        <a class="company-logo" href="#"></a>
+        <a class="company-name" href="#">Zafiro Home Construcciones</a>
+      </div>
+  
+      <!-- Menú de navegación (animación existente: fade-left) -->
+      <div class="navigation-menu fade-left" id="navbarNav">
         <ul class="navigation-links-list">
-          <li class="navigation-item slide-in">
-            <a class="navigation-link hover-effect" href="sobreNosotros.html">
-              <span class="link-text fade-in">Sobre Nosotros</span>
-            </a>
+          <li class="navigation-item">
+            <a class="navigation-link" href="#quienes-somos">Quiénes Somos</a>
           </li>
-          <li class="navigation-item slide-in">
-            <a class="navigation-link hover-effect" href="servicios.html">
-              <span class="link-text fade-in">Servicios</span>
-            </a>
+          <li class="navigation-item">
+            <a class="navigation-link" href="#servicios">Servicios</a>
           </li>
-          <li class="navigation-item slide-in">
-            <a class="navigation-link hover-effect" href="experiencia.html">
-              <span class="link-text fade-in">Experiencia</span>
-            </a>
+          <li class="navigation-item">
+            <a class="navigation-link" href="#experiencia">Experiencia</a>
           </li>
-          <li class="navigation-item slide-in">
-            <a class="navigation-link hover-effect" href="contacto.html">
-              <span class="link-text fade-in">Contacto</span>
-            </a>
+          <li class="navigation-item">
+            <a class="navigation-link" href="#contacto" onclick="scrollToFooter(event)">Contacto</a>
+          </li>
+          <li class="navigation-item">
+            <a class="navigation-link" data-bs-toggle="modal" data-bs-target="#loginmodal">Iniciar sesión</a>
           </li>
         </ul>
       </div>
+  
+      <!-- Botón hamburguesa a la derecha -->
+      <button class="hamburger-menu fade-in" onclick="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
     </div>
   </nav>
-  <!-- Fin Navbar -->
-
-  <!-- Hero Section (encabezado para la página de Experiencia) -->
-  <header class="hero-section-experiencia">
+  
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <!-- Contenedor principal del hero con animación -->
     <div class="hero-content-container fade-up">
-      <h1 class="hero-title-experiencia fade-up">
-        Nuestra Experiencia
-      </h1>
-      <p class="hero-description-experiencia fade-up">
-        Proyectos recientes y destacados
-      </p>
+      <div class="hero-text-container">
+        <h1 class="hero-title fade-up">Diseño y Edificación<br> Alta y Baja Tensión</h1>
+        <p class="hero-description fade-up">Estructuras Metálicas · Cancelería · Carpintería · Plomería</p>
+      </div>
+      <a href="#servicios" class="button-primary-cta fade-up">Conoce nuestros servicios</a>
     </div>
   </header>
 
-  <!-- Contenido Principal de Experiencia -->
-  <main class="main-experiencia">
-    <div class="experiencia-container">
-
-      <!-- Proyecto: Celaya -->
-      <section class="experiencia-section fade-up">
-        <h1 class="celaya-title fade-up">Celaya</h1>
-        <h2 class="celaya-remodelacion fade-up">Remodelación y Ampliación</h2>
-        <img 
-          class="celaya-remodelacion-img fade-up" 
-          src="images/experiencia/remodelacion-celaya.jpg" 
-          alt="Remodelación y ampliación de sucursal en Celaya">
-        <p class="celaya-remodelacion-text fade-up">
-          Sucursal del cliente ubicada en Celaya Guanajuato; Remodelación completa y ampliación, dando como resultado un inmueble totalmente nuevo. Se terminó exitosamente esta obra, con los requerimientos establecidos por el cliente; logrando una satisfacción total por el trabajo realizado.
-        </p>
-
-        <h2 class="celaya-fachada fade-up">Fachada</h2>
-        <img 
-          class="celaya-fachada-img fade-up" 
-          src="images/experiencia/fachada-celaya.jpg" 
-          alt="Fachada principal de la sucursal en Celaya">
-        <p class="celaya-fachada-text fade-up">
-          Proceso de terminación en fachada principal. En este proyecto se trabajó a una altura máxima de 10 m. Se realizaron los acabados finales con aplanados y pintura, para finalmente colocar el logotipo y nombre de la empresa.
-        </p>
-
-        <h2 class="celaya-oficinas fade-up">Oficinas</h2>
-        <img 
-          class="celaya-oficinas-img fade-up" 
-          src="images/experiencia/oficinas-celaya.jpg" 
-          alt="Oficinas de la sucursal en Celaya">
-        <p class="celaya-oficinas-text fade-up">
-          Se realizaron todos los trabajos de acabados: pintura, aplanados, colocación de muros y lambrines de tablaroca; además se suministró y colocó mobiliario nuevo. Se colocó cancelería y herrería. Cada espacio se terminó satisfactoriamente cumpliendo con cada especificación del cliente.
-        </p>
-      </section>
-
-      <!-- Proyecto: Departamento Unifamiliar -->
-      <section class="experiencia-section fade-up">
-        <h1 class="dep-title fade-up">Departamento Unifamiliar</h1>
-        <h2 class="dep-casa fade-up">Casa Habitación</h2>
-        <img 
-          class="dep-casa-img fade-up" 
-          src="images/experiencia/casa-habitacion.jpg" 
-          alt="Casa habitación">
-        <p class="dep-casa-text fade-up">
-          Construcción de casa habitación en la ciudad de Celaya, Guanajuato. Se realizó la cimentación, muros, losa, instalaciones hidrosanitarias y eléctricas. Se colocaron acabados de primera calidad en pisos, muros y plafones. Se entregó la casa con todos los servicios funcionando y lista para habitar.
-        </p>
-
-        <h2 class="dep-detalles fade-up">Detalles</h2>
-        <img 
-          class="dep-detalles-img fade-up" 
-          src="images/experiencia/detalles-casa.jpg" 
-          alt="Detalles de casa habitación">
-        <p class="dep-detalles-text fade-up">
-          Se realizaron trabajos de carpintería en closets y puertas. Se colocaron accesorios de baño y cocina. Cada detalle se realizó a la medida y gusto del cliente, cuidando la calidad y el diseño.
-        </p>
-
-        <h2 class="dep-acabados fade-up">Acabados</h2>
-        <img 
-          class="dep-acabados-img fade-up" 
-          src="images/experiencia/acabados-casa.jpg" 
-          alt="Acabados de casa habitación">
-        <p class="dep-acabados-text fade-up">
-          Se colocaron acabados de primera calidad en pisos, muros y plafones. El mobiliario fue elegido personalmente por el cliente para crear espacios totalmente acogedores, iluminados naturalmente y abiertos.
-        </p>
-      </section>
-
-      <!-- Proyecto: Grupo GA3 Agencias de Autos -->
-      <section class="experiencia-section fade-up">
-        <h1 class="Agencias-title fade-up">Grupo GA3 Agencias de Autos</h1>
-        <h2 class="agencias fade-up">Agencias de Autos</h2>
-        <img 
-          class="agencias-img fade-up" 
-          src="images/experiencia/agencias-autos.jpg" 
-          alt="Agencias de autos">
-        <p class="agencias-text fade-up">
-          En este proyecto nos enfocamos en la supervisión de mantenimientos y remodelaciones de diferentes agencias del mismo grupo.
-        </p>
-
-        <h2 class="proyectos fade-up">Proyectos</h2>
-        <img 
-          class="proyectos-img fade-up" 
-          src="images/experiencia/proyectos-agencias.jpg" 
-          alt="Proyectos de agencias de autos">
-        <ul class="proyectos-text fade-up">
-          <li>
-            <strong>Agencia Volkswagen Santa Clara:</strong>
-            Cambio de Imagen.
-          </li>
-          <li>
-            <strong>Agencia Nissan Chalco:</strong>
-            Cubierta y paso de gato.
-          </li>
-          <li>
-            <strong>Agencia Nissan Polanco:</strong>
-            Cambio de imagen.
-          </li>
-          <li>
-            <strong>Agencia Nissan San Cosme:</strong>
-            Remodelación de Taller mecánico y cambio de imagen.
-          </li>
-          <li>
-            <strong>Agencia Nissan Atizapan:</strong>
-            Remodelación de oficinas.
-          </li>
-        </ul>
-
-        <h2 class="renovacion fade-up">Renovación</h2>
-        <img 
-          class="renovacion-img fade-up" 
-          src="images/experiencia/renovacion-agencias.jpg" 
-          alt="Renovación de agencias de autos">
-        <p class="renovacion-text fade-up">
-          Estos fueron algunos de nuestros proyectos ejecutados con nuestro cliente en diversas agencias de la zona metropolitana, con un resultado satisfactorio en cada uno de ellos y tiempo récord de ejecución.
-        </p>
-      </section>
-
-      <!-- Proyecto: Residencia San Jerónimo -->
-      <section class="experiencia-section fade-up">
-        <h1 class="sanjeronimo-title fade-up">Residencia San Jerónimo</h1>
-        <h2 class="obranueva fade-up">Obra Nueva</h2>
-        <img 
-          class="obranueva-img fade-up" 
-          src="images/experiencia/obra-nueva.jpg" 
-          alt="Obra nueva">
-        <p class="obra-nueva-text fade-up">
-          Inmueble ubicado en la zona sur de la Ciudad de México, dentro de un fraccionamiento residencial. Este proyecto de casa habitación ostenta un área construida de más de 200 metros cuadrados, con cuatro niveles (incluyendo estacionamiento, planta baja, primer y segundo nivel).
-        </p>
-
-        <h2 class="Fachada fade-up">Fachada</h2>
-        <img 
-          class="fachada-img fade-up" 
-          src="images/experiencia/fachada-sanjeronimo.jpg" 
-          alt="Fachada de residencia San Jeronimo">
-        <p class="fachada-text fade-up">
-          Este inmueble es uno de 6 proyectos de similares dimensiones, con algunas variantes en los acabados de las fachadas.
-        </p>
-
-        <h2 class="curso fade-up">En curso</h2>
-        <img 
-          class="curso-img fade-up" 
-          src="images/experiencia/curso-sanjeronimo.jpg" 
-          alt="Proceso de construcción de residencia San Jeronimo">
-        <p class="curso-text fade-up">
-          Seguimos desarrollando la última parte de la obra, concretando los acabados. ¡Espera el resultado final!
-        </p>
-      </section>
-
+  <!-- Sección "Quiénes Somos" con animación -->
+  <section id="quienes-somos" class="about-section fade-up">
+    <div class="about-container fade-up">
+      <h2 class="section-title fade-up">Sobre Nosotros</h2>
+      <div class="about-content fade-up">
+        <div class="about-text fade-up">
+          <p class="about-description">
+            Zafiro Home Construcciones es una empresa especializada en edificación,
+            obra civil y mantenimiento industrial y habitacional.
+          </p>
+          <p class="about-description">
+            Nos dedicamos a la construcción de estructuras metálicas,
+            instalaciones eléctricas, hidráulicas y más.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-item fade-up">
+            <i class="fas fa-building"></i>
+            <span class="stat-number">+500</span>
+            <span class="stat-label">Proyectos Completados</span>
+          </div>
+          <div class="stat-item fade-up">
+            <i class="fas fa-users"></i>
+            <span class="stat-number">20+</span>
+            <span class="stat-label">Años de Experiencia</span>
+          </div>
+          <div class="stat-item fade-up">
+            <i class="fas fa-handshake"></i>
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Clientes Satisfechos</span>
+          </div>
+        </div>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <!-- Scripts Bootstrap y Animaciones -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js"></script>
-  <script src="scripts/animations.js"></script>
+  <!-- Sección de Servicios con animación -->
+  <section id="servicios" class="services-section fade-up">
+    <div class="services-container fade-up">
+      <h2 class="section-title fade-up">Nuestros Servicios</h2>
+      <div class="services-grid fade-up">
+        
+        <!-- Tarjeta 1 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-drafting-compass"></i>
+            </div>
+            <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
+            <img 
+              class="service-image" 
+              src="images/servicios-images/Captura de pantalla 2025-04-02 212621.png" 
+              alt="Cálculo de estructuras">
+          </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="service-title">Instalaciones Eléctricas e Hidrosanitarias</h3>
+            <img 
+              class="service-image" 
+              src="images/servicios-images/instalaciones_hidrahulicas.jpg" 
+              alt="Instalaciones">
+          </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-hard-hat"></i>
+            </div>
+            <h3 class="service-title">Albañilería y Mantenimiento Industrial</h3>
+            <img 
+              class="service-image" 
+              src="images/servicios-images/albañileria industrial.jpg" 
+              alt="Albañilería">
+          </div>
+        </div>
+
+        <!-- Tarjeta 4 -->
+        <div class="service-card fade-up">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-window-maximize"></i>
+            </div>
+            <h3 class="service-title">Canceles, Ventanas y Estructuras Metálicas</h3>
+            <img 
+              class="service-image" 
+              src="images/servicios-images/canceleria.jpg" 
+              alt="Canceles y ventanas">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Experiencia -->
+  <section id="experiencia" class="experience-section fade-up">
+    <div class="experience-container fade-up">
+      <h2 class="section-title fade-up">Experiencia</h2>
+
+      <!-- ============ PROYECTO CELAYA (Tarjeta) ============ -->
+      <div class="experience-card fade-up">
+        <h1 class="celaya-title">Celaya</h1>
+        <h2 class="celaya-remodelacion">Remodelación de fachada y Ampliación de oficinas</h2>
+        <!-- Carousel para Celaya -->
+        <div id="carouselCelaya" class="carousel slide mb-4" data-bs-ride="carousel">
+          <!-- Indicadores -->
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselCelaya" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselCelaya" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselCelaya" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          </div>
+          <!-- Slides -->
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="d-block w-100" src="images/experiencia/remodelacion-celaya.jpg" alt="Remodelación y ampliación de sucursal en Celaya">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="images/experiencia/fachada-celaya.jpg" alt="Fachada principal de la sucursal en Celaya">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="images/experiencia/oficinas-celaya.jpg" alt="Oficinas de la sucursal en Celaya">
+            </div>
+          </div>
+          <!-- Controles -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselCelaya" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselCelaya" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div> 
+      </div> <!-- Fin tarjeta Celaya -->
+
+      <!-- ============ PROYECTO DEPARTAMENTO UNIFAMILIAR (Tarjeta) ============ -->
+      <div class="experience-card fade-up">
+        <h1 class="dep-title">Departamento Unifamiliar</h1>
+        <h2 class="dep-casa">Casa Habitación</h2>
+        
+        <!-- Carousel para Departamento Unifamiliar -->
+        <div id="carouselDepto" class="carousel slide mb-4" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselDepto" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselDepto" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="d-block w-100" src="images/experiencia/detalles-casa.jpg" alt="Detalles de casa habitación">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="images/experiencia/acabados-casa.jpg" alt="Acabados de casa habitación">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselDepto" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselDepto" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+
+        <!-- Breve texto de la casa -->
+        <p class="dep-casa-text">
+          Construcción de casa habitación en la ciudad de Celaya, Guanajuato
+        </p>
+        <h2 class="dep-detalles">Detalles</h2>
+        <p class="dep-detalles-text">
+          Se realizaron trabajos de carpintería en closets y puertas
+        </p>
+        <h2 class="dep-acabados">Acabados</h2>
+        <p class="dep-acabados-text">
+          Se colocaron acabados de primera calidad en pisos, muros y plafones
+        </p>
+      </div>
+
+      <!-- ============ PROYECTO GRUPO GA3 AGENCIAS (Tarjeta) ============ -->
+      <div class="experience-card fade-up">
+        <h1 class="Agencias-title">Grupo GA3 Agencias de autos</h1>
+        <h2 class="agencias">Agencias de autos</h2>
+        <!-- Carousel para Agencias -->
+        <div id="carouselAgencias" class="carousel slide mb-4" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselAgencias" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselAgencias" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselAgencias" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="d-block w-100" src="images/experiencia/agencia2.jpg" alt="Agencias de autos">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="images/experiencia/agencia1.jpg" alt="Proyectos de agencias de autos">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselAgencias" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselAgencias" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+        
+        <p class="agencias-text">
+          En este proyecto nos enfocamos en la supervisión de mantenimientos
+        </p>
+        <h2 class="proyectos">Proyectos</h2>
+        <ul class="proyectos-text">
+          <li>Agencia Volkswagen Santa Clara: Cambio de Imagen</li>
+          <li>Agencia Nissan Chalco: Cubierta y paso de gato</li>
+          <li>Agencia Nissan Polanco: Cambio de imagen</li>
+          <li>Agencia Nissan San Cosme: Remodelación de Taller mecánico y cambio de imagen</li>
+          <li>Agencia Nissan Atizapan: Remodelación de oficinas</li>
+        </ul>
+        <h2 class="renovacion">Renovación</h2>
+        <p class="renovacion-text">
+          Estos fueron algunos de nuestros proyectos ejecutados
+        </p>
+      </div> <!-- Fin tarjeta Agencias -->
+
+      <!-- ============ PROYECTO RESIDENCIA SAN JERÓNIMO (Tarjeta) ============ -->
+      <div class="experience-card fade-up">
+        <h1 class="sanjeronimo-title">Residencia San Jerónimo</h1>
+        <h2 class="obranueva">Obra nueva</h2>
+
+        <!-- Carousel para San Jerónimo -->
+        <div id="carouselSanJeronimo" class="carousel slide mb-4" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          </div>
+
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="d-block w-100" src="images/experiencia/sanjeronimo.jpg" alt="Obra nueva">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="images/experiencia/sanjeronimo2.jpg" alt="Fachada de residencia San Jeronimo">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="images/experiencia/sanjeronimo3.jpg" alt="Proceso de construcción de residencia San Jeronimo">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+
+        <p class="obra-nueva-text">
+          Inmueble ubicado en la zona sur de la Ciudad de México
+        </p>
+        <h2 class="fachada">Fachada</h2>
+        <p class="fachada-text">
+          Este inmueble es uno de 6 proyectos de mismas dimensiones
+        </p>
+        <h2 class="curso">En curso</h2>
+        <p class="curso-text">
+          Seguimos desarrollando la última parte de la obra
+        </p>
+      </div> <!-- Fin tarjeta San Jerónimo -->
+
+    </div> <!-- Fin .experience-container -->
+  </section> <!-- Fin de la sección de Experiencia -->
+
+        <!-- Sección de Contacto -->
+        <div class="contact-info-section fade-up">
+          <div class="company-info-container fade-up">
+            <h2 class="fade-up">Contáctanos</h2>
+            <div class="contact-buttons">
+              <div class="contact-button fade-left">
+                <h3>¿Tienes dudas? Llámanos</h3>
+                <a href="tel:5537055255" class="btn btn-contact">
+                  <i class="fas fa-phone"></i>
+                  55 3705 5255
+                </a>
+              </div>
+              <div class="contact-button fade-up">
+                <h3>Escríbenos</h3>
+                <a href="mailto:oficina_zafiro@outlook.com" class="btn btn-contact">
+                  <i class="fas fa-envelope"></i>
+                  Enviar correo
+                </a>
+                <div class="email-copy-container" onclick="copyEmail()">
+                  <span class="email-text">oficina_zafiro@outlook.com</span>
+                  <span class="copy-tooltip">Haz clic para copiar</span>
+                </div>
+              </div>
+              <div class="contact-button fade-up">
+                <h3>¿Deseas más información?</h3>
+                <button 
+                  type="button" 
+                  class="btn btn-contact" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#contactModal">
+                  <i class="fas fa-info-circle"></i>
+                  Solicitar información
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer-primary fade-up" id="contacto">
+          <div class="footer-container fade-up">
+        
+            <!-- Contenido principal del footer: título, info y columnas de enlaces -->
+            <div class="footer-content fade-up">
+        
+              <!-- Columna izquierda: gran encabezado y correo -->
+              <div class="footer-info fade-up">
+                <h2 class="footer-heading">Dominando el Arte de la Construcción</h2>
+                <p class="footer-tagline">Elevando tus proyectos a un nivel excepcional</p>
+                <p class="footer-email">info@zafirohome.com</p>
+              </div>
+        
+              <!-- Varias columnas de enlaces (menús) -->
+              <div class="footer-links-grid fade-up">
+                
+                <!-- Primera columna -->
+                <div class="footer-links-column">
+                  <h3>Enlaces</h3>
+                  <ul>
+                    <li><a href="#home">Inicio</a></li>
+                    <li><a href="#quienes-somos">Quiénes Somos</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#proyectos">Proyectos</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                  </ul>
+                </div>
+        
+                <!-- Segunda columna -->
+                <div class="footer-links-column">
+                  <h3>Nuestra Empresa</h3>
+                  <ul>
+                    <li><a href="#mision">Misión</a></li>
+                    <li><a href="#vision">Visión</a></li>
+                    <li><a href="#carreras">Carreras</a></li>
+                    <li><a href="#comunidad">Comunidad</a></li>
+                  </ul>
+                </div>
+        
+                <!-- Tercera columna -->
+                <div class="footer-links-column">
+                  <h3>Soporte</h3>
+                  <ul>
+                    <li><a href="#ayuda">Ayuda</a></li>
+                    <li><a href="#centro-soporte">Centro de Soporte</a></li>
+                    <li><a href="#faq">Preguntas Frecuentes</a></li>
+                  </ul>
+                </div>
+        
+                <!-- Cuarta columna con redes sociales -->
+                <div class="footer-links-column">
+                  <h3>Síguenos</h3>
+                  <ul>
+                    <li><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a></li>
+                    <li><a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a></li>
+                    <li><a href="https://youtube.com/" target="_blank" rel="noopener">YouTube</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Fin de .footer-links-grid -->
+        
+            </div>
+            <!-- Fin de .footer-content -->
+        
+            <!-- Sección del mapa -->
+            <div class="map-section fade-up">
+              <h2>Ubicación</h2>
+              <div class="map-container fade-up">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3761.7759918083093!2d-99.13628582410274!3d19.465222581821145!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f9108faef633%3A0x3d43b60cf84d1cd8!2sAv.%20R%C3%ADo%20Consulado%201500%2C%20Vallejo%2C%20Gustavo%20A.%20Madero%2C%2007870%20Ciudad%20de%20M%C3%A9xico%2C%20CDMX!5e0!3m2!1ses!2smx!4v1742758470944!5m2!1ses!2smx"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+              </div>
+            </div>
+            <!-- Fin de la sección del mapa -->
+        
+          </div>
+        </footer>
+        
+
+  <!-- Modal de Login -->
+  <div 
+    class="modal fade" 
+    id="loginmodal" 
+    tabindex="-1" 
+    aria-labelledby="loginModalLabel" 
+    aria-hidden="true">
+    
+    <div class="modal-dialog modal-dialog-centered fade-up">
+      <div class="modal-content fade-up">
+        <div class="modal-header fade-up">
+          <h5 class="modal-title" id="loginModalLabel">Iniciar sesión</h5>
+          <button 
+            type="button" 
+            class="btn-close" 
+            data-bs-dismiss="modal" 
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body fade-up">
+          <!-- Error Box -->
+          <div id="error-message" class="alert alert-danger" style="display:none;"></div>
+          
+          <form class="contact-form" id="form-login">
+            <div class="mb-3">
+              <label for="Usuario" class="form-label">Usuario</label>
+              <input type="text" class="form-control" id="Usuario" required>
+            </div>
+            <div class="mb-3">
+              <label for="Contraseña" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="Contraseña" required>
+            </div>
+            <div>
+              <a class="registrar-link" href="./Formularios/nuevoUsuario.html">Registrarse</a>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle con Popper -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+  <!-- Scripts principales -->
+  <script src="scripts/script.js"></script>      
+  <script src="scripts/animations.js"></script>  
 </body>
 </html>
