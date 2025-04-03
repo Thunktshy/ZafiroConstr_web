@@ -1,0 +1,166 @@
+:root {
+    --color-text-light: #ffffff;
+    --color-primary: rgb(45, 71, 120);
+    --color-secondary: rgb(100, 140, 188);
+    --max-width-container: 1200px;
+    --spacing-standard: 1rem;
+    --border-radius: 4px;
+  }
+  
+  /* Fixed Header */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-primary);
+    z-index: 1000;
+  }
+  
+  .header-container {
+    max-width: var(--max-width-container);
+    margin: 0 auto;
+    padding: var(--spacing-standard);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .company-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-standard);
+  }
+  
+  .company-logo,
+  .company-name {
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  /* Static Navigation Bar */
+  .navigation-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* or use space-between if you want the hamburger on an edge */
+    gap: 20px; /* space between the nav links and the hamburger */
+    background-color: var(--color-primary);
+    padding: var(--spacing-standard);
+  }
+
+  ul {
+    padding: 10px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    /*color: black;*/
+    text-align: center;
+    transition: background 0.3s;
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: 20px; /* Adjust the spacing as needed */
+    /*background-color: var(--color-secondary);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+    text-decoration: none;
+  }
+
+  .link-text {
+    display: inline-block;       /* Allows setting width/height */
+    width: 150px;                /* Fixed width for all boxes */
+    height: 50px;                /* Fixed height for all boxes */
+    line-height: 50px;           /* Centers text vertically (if one line) */
+    text-align: center;          /* Centers text horizontally */
+    color: var(--color-text-light);
+    text-decoration: none;
+    background-color: var(--color-secondary);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;      /* Includes padding/border in the width/height */
+  }
+  
+
+  .nav-links li a:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+  }
+  
+  /* Hamburger */
+  .hamburger {
+    display: inline-block;
+    width: 150px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color: var(--color-secondary);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    color: var(--color-text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    margin-top: -15px;
+    margin-left: -5px;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: var(--color-primary);
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px;
+    z-index: 1200;
+  }
+  
+  .sidebar a {
+    display: block;
+    margin: 1rem;
+    padding: 0.75rem;
+    text-align: center;
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  
+  .sidebar a:hover {
+    background-color: var(--color-text-light);
+    color: var(--color-primary);
+  }
+  
+  .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--color-text-light);
+  }
+  
+  main {
+    margin-top: 150px; /* Adjust this value based on your header's height */
+  }
+
+.grid-container {
+    background-color: var(primary-color);
+    display: grid;
+    grid-template-columns: repeat(3, 2fr);
+    gap: 40px;
+}
+
+.category-card {
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-secondary);
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+}

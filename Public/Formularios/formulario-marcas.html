@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Marca</title>
+  <link rel="stylesheet" href="../css/products.css">
+</head>
+<body>
+  <header>
+    <nav class="navigation-primary">
+      <div class="navigation-container">
+        <div class="company-info">
+          <div>
+            <a class="company-logo fade-in" href="#"></a>
+          </div>
+          <div>
+            <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
+          </div>
+        </div>
+        <div class="navigation-menu" id="navbarNav">
+          <ul class="navigation-links-list">
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#quienes-somos">
+                <span class="link-text fade-in">Quiénes Somos</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#servicios">
+                <span class="link-text fade-in">Servicios</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#experiencia">
+                <span class="link-text fade-in">Experiencia</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#contacto" onclick="scrollToFooter(event)">
+                <span class="link-text fade-in">Contacto</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" data-bs-toggle="modal" data-bs-target="#loginmodal">
+                <span class="link-text fade-in">Iniciar sesión</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="formulario">
+    <div class="Form-container">
+      <h2 class="form-title">Agregar Marca</h2>
+      <form class="form" id="marcaForm">
+        <div class="form-field">
+          <label for="marcaNombre" class="form-label">Escribe el nombre de la marca:</label>
+          <input class="form-input" type="text" id="marcaNombre" placeholder="Ejemplo: Marca XYZ" required>
+        </div>
+        <button type="submit" id="submitMarcaForm" class="form-submit">Guardar Marca</button>
+      </form>
+    </div>
+  </main>
+  
+  <script type="module" src="../scripts/Formularios/FormularioMarca.js" defer></script>
+</body>
+</html>

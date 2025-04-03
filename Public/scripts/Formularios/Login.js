@@ -10,24 +10,31 @@ document.getElementById("form-login").addEventListener("submit", async (event) =
 
     try {
         const result = await tryLogin(user, password);
-        
-        // Handle successful login
-        console.log("Login :", result);
-        document.getElementById("form-login").reset(); // Reset the form
-
-        // Close the modal and redirection user to Almacen
-        if (result.success) {
+    
+        // Check if we received a valid result
+        if (result && result.success) {
+            console.log("Login :", result);
+            document.getElementById("form-login").reset(); // Reset the form
+    
+            // Close the modal and redirect user to Almacen
             const modal = bootstrap.Modal.getInstance(document.getElementById('loginmodal'));
             modal.hide();
             setTimeout(function() {
                 window.location.href = 'products.html';
-            }, 500); // Adjust the delay 
-            
-        } else {
+            }, 500); // Adjust the delay
+        } else if (result) {
             showError(result.message || "Inicio de sesión fallido. Verifique su usuario y contraseña.");
+        } else {
+            // If result is undefined, possibly due to no connection
+            showError("No hay conexión con la base de datos");
         }
     } catch (error) {
-        showError("Error while trying to log in: " + error.message);
+        // If the error message indicates a 404 error, show the database connection error message
+        if (error.message && error.message.includes("404")) {
+            showError("No hay conexión con la base de datos");
+        } else {
+            showError("Error while trying to log in: " + error.message);
+        }
     }
 });
 

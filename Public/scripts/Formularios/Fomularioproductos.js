@@ -12,6 +12,7 @@ import { submitProductForm } from '../Database/fillProductForm.js';
 async function loadCategories() {
     try {
         const categories = await getAllCategories();
+        console.log(categories);
         const categorySelect = document.getElementById("CategoriaId");
 
         if (Array.isArray(categories) && categories.length > 0) {
@@ -36,6 +37,7 @@ async function loadCategories() {
 async function loadBrands() {
     try {
         const brands = await getAllBrands();
+        console.log(brands)
         const brandSelect = document.getElementById("BrandId");
 
         if (Array.isArray(brands) && brands.length > 0) {
@@ -60,6 +62,7 @@ async function loadBrands() {
 async function loadShelves() {
     try {
         const shelves = await getAllShelves();
+        console.log(shelves)
         const shelfSelect = document.getElementById("ShelfId");
 
         if (Array.isArray(shelves) && shelves.length > 0) {
@@ -84,6 +87,7 @@ async function loadShelves() {
 async function loadUnits() {
     try {
         const units = await getAllUnits();
+        console.log(units)
         const unitSelect = document.getElementById("UnidadId");
 
         if (Array.isArray(units) && units.length > 0) {
@@ -108,6 +112,7 @@ async function loadUnits() {
 async function loadDimensions() {
     try {
         const dimensions = await getAllDimensions();
+        console.log(dimensions)
         const dimensionSelect = document.getElementById("DimensionId");
 
         if (Array.isArray(dimensions) && dimensions.length > 0) {
@@ -139,10 +144,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('productForm');
     const submitButton = document.getElementById('submitProductForm');
 
-    document.getElementById("productForm").addEventListener("submit", async (event) => {
+    // Toggle logic for "unidad de tamaño"
+    const toggleDimension = document.getElementById("toggleDimension");
+    const dimensionContainer = document.querySelector(".grid-container.dimension");
+    toggleDimension.addEventListener("change", () => {
+      if (toggleDimension.checked) {
+         dimensionContainer.style.display = "block";
+      } else {
+         dimensionContainer.style.display = "none";
+         // Set default values when toggle is off
+         document.getElementById("DimensionValue").value = "0";
+         document.getElementById("DimensionId").value = "1";
+      }
+    });
+
+    // Toggle logic for "unidad de peso"
+    const toggleWeight = document.getElementById("toggleWeight");
+    const weightContainer = document.querySelector(".grid-container.weight");
+    toggleWeight.addEventListener("change", () => {
+      if (toggleWeight.checked) {
+         weightContainer.style.display = "block";
+      } else {
+         weightContainer.style.display = "none";
+         // Set default values when toggle is off
+         document.getElementById("WeightValue").value = "0";
+         document.getElementById("UnidadId").value = "1";
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
         event.preventDefault(); // Evita la recarga de la página
 
-        // Obtener datos del formulario
+        // Obtener datos del formulario usando el estado de los toggles
         const productData = {
             Name: document.getElementById("productName").value.trim(),
             Description: document.getElementById("productDescription").value.trim(),
@@ -150,16 +183,22 @@ document.addEventListener("DOMContentLoaded", () => {
             Shelf_Id: document.getElementById("ShelfId").value,
             Price: document.getElementById("productPrice").value.trim(),
             Brand_Id: document.getElementById("BrandId").value,
-            Unit_Id: document.getElementById("UnidadId").value,
-            Unit_Value: document.getElementById("WeightValue").value.trim(),
-            Dimension_Value: document.getElementById("DimensionValue").value.trim(),
-            Dimension_Id: document.getElementById("DimensionId").value,
+            // Para la unidad de peso, si toggle está activado se toma el valor del input, de lo contrario se asigna el valor por defecto "1" y "0"
+            Unit_Id: toggleWeight.checked ? document.getElementById("UnidadId").value : "1",
+            Unit_Value: toggleWeight.checked ? document.getElementById("WeightValue").value.trim() : "0",
+            // Para la unidad de tamaño, si toggle está activado se toma el valor del input, de lo contrario se asigna el valor por defecto "1" y "0"
+            Dimension_Value: toggleDimension.checked ? document.getElementById("DimensionValue").value.trim() : "0",
+            Dimension_Id: toggleDimension.checked ? document.getElementById("DimensionId").value : "1",
             stock_Quantity: document.getElementById("productStock").value.trim(),
             ImagePath: "default.jpg" // Valor por defecto si no hay imagen
         };
 
-        // Verificación de campos vacíos
-        const isEmpty = Object.values(productData).some(value => value === null || value === '' || value === undefined);
+        console.log(productData);
+
+        // Verificación de campos vacíos (ajusta esta lógica si algunos campos son opcionales)
+        const isEmpty = Object.values(productData).some(
+            value => value === null || value === '' || value === undefined
+        );
         if (isEmpty) {
             alert("Por favor, complete todos los campos requeridos.");
             return;
@@ -175,21 +214,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const targetElement = document.getElementById("goHome");
-    if (targetElement) {
-        targetElement.addEventListener("click", function() {
-            console.log("Element clicked!");
-            window.location.href = "index.html";
-        });
-    } else {
-        console.error("Target element not found.");
-    }
-});
+
+//document.addEventListener("DOMContentLoaded", function() {
+    //const targetElement = document.getElementById("goHome");
+    //if (targetElement) {
+        //targetElement.addEventListener("click", function() {
+            //console.log("Element clicked!");
+            //window.location.href = "index.html";
+        //});
+    //} else {
+       // console.error("Target element not found.");
+    //}
+//});
 
 // JavaScript to handle button clicks
-document.getElementById('goHome').addEventListener('click', function() {
+//document.getElementById('goHome').addEventListener('click', function() {
 // Redirect to the home page
-window.location.href = 'index.html'; // Change 'home.html' to your actual home page URL
-});
+//window.location.href = 'index.html'; // Change 'home.html' to your actual home page URL
+//});
 

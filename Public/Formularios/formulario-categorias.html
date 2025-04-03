@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Categoría</title>
+  <link rel="stylesheet" href="../css/products.css">
+</head>
+<body>
+  <header>
+    <nav class="navigation-primary">
+      <div class="navigation-container">
+        <div class="company-info">
+          <div>
+            <a class="company-logo fade-in" href="#"></a>
+          </div>
+          <div>
+            <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
+          </div>
+        </div>
+        <div class="navigation-menu" id="navbarNav">
+          <ul class="navigation-links-list">
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#quienes-somos">
+                <span class="link-text fade-in">Quiénes Somos</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#servicios">
+                <span class="link-text fade-in">Servicios</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#experiencia">
+                <span class="link-text fade-in">Experiencia</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" href="#contacto" onclick="scrollToFooter(event)">
+                <span class="link-text fade-in">Contacto</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in">
+              <a class="navigation-link hover-effect" data-bs-toggle="modal" data-bs-target="#loginmodal">
+                <span class="link-text fade-in">Iniciar sesión</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="formulario">
+    <div class="Form-container">
+      <h2 class="form-title">Agregar Categoría</h2>
+      <form class="form" id="categoriaForm">
+        <div class="form-field">
+          <label for="categoriaNombre" class="form-label">Escribe el nombre de la categoría:</label>
+          <input class="form-input" type="text" id="categoriaNombre" placeholder="Ejemplo: Herramienta de mano" required>
+        </div>
+        <div class="form-field">
+          <label for="categoriaDescripcion" class="form-label">Escribe una descripción para la categoría:</label>
+          <textarea class="form-long-input" id="categoriaDescripcion" placeholder="Ejemplo: Herramienta para tareas manuales" rows="4" required></textarea>
+        </div>
+        <button type="submit" id="submitCategoriaForm" class="form-submit">Guardar Categoría</button>
+      </form>
+    </div>
+  </main>
+  
+  <script type="module" src="../scripts/Formularios/FormularioCategoria.js" defer></script>
+</body>
+</html>
