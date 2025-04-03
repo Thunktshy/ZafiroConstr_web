@@ -76,3 +76,10 @@ function scrollToServicios(event) {
     section.scrollIntoView({ behavior: 'smooth' });
   }
 }
+
+function toggleMenu() {
+  document.querySelector('.navigation-primary').classList.toggle('menu-open');
+}
+function closeMenu() {
+  document.querySelector('.navigation-primary').classList.remove('menu-open');
+}
