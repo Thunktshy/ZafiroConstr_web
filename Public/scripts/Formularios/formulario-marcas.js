@@ -1,16 +1,15 @@
-import { insertNewCategory } from '../Database/CategoriesManager.js';
+import { insertNewBrand } from '../Database/BrandsManager.js';
 
-document.getElementById("categoriaForm").addEventListener("submit", async (event) => {
+document.getElementById("marcaForm").addEventListener("submit", async (event) => {
   event.preventDefault();
 
   // Build the new category object. Note that the server expects "Name" and "Description".
-  const newCategory = {
-    Name: document.getElementById("categoriaNombre").value,
-    Description: document.getElementById("categoriaDescripcion").value,
+  const newBrand = {
+    Name: document.getElementById("marcaNombre").value,
   };
 
   try {
-    const result = await insertNewCategory(newCategory);
+    const result = await insertNewBrand(newBrand);
     console.log("Category inserted successfully:", result);
     // Optionally, you can update the UI or show a success message here.
   } catch (error) {
@@ -18,4 +17,3 @@ document.getElementById("categoriaForm").addEventListener("submit", async (event
     // Optionally, you can update the UI to notify the user of the error.
   }
 });
-
