@@ -46,6 +46,7 @@
                                     <th>Dimensiones</th>
                                     <th>Unidad de Medida</th>
                                     <th>Stock</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,6 +65,11 @@
                                 <td>${product.Dimension_Id}</td>
                                 <td>${product.Unit_Id}</td>
                                 <td>${product.Stock_Quantity}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary select-btn" data-id="${product.Id}">
+                                        Seleccionar
+                                    </button>
+                                </td>
                             </tr>
                         `;
                     });

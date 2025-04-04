@@ -528,3 +528,20 @@
   .contact-buttons .contact-button:nth-child(2) { transition-delay: 0.2s; }
   .contact-buttons .contact-button:nth-child(3) { transition-delay: 0.3s; }
   
+  #productsTable {
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  #productsTable th,
+  #productsTable td {
+    /* If there are 10 columns, each gets 10% of the table width */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+      /* For a table with 10 columns, each column will be 10% wide */
+    width: 10%;
+    white-space: normal;      /* Allow text to wrap */
+    word-break: break-word;   /* Break long words if necessary */
+  }
+  
