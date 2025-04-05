@@ -7,7 +7,7 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const mariadb = require('mariadb');
-
+const dbInstance = require('../ZafiroConstr_web/db/db.js');
 const app = express();
 
 // =============================
@@ -54,8 +54,6 @@ class DBConnector {
     }
 }
 
-const dbInstance = new DBConnector();
-
 // =============================
 // Middleware
 // =============================
@@ -82,13 +80,6 @@ function requireLogin(req, res, next) {
 }
 
 
-function isAuthenticated(req, res, next) {
-    if (req.session.userID) {
-        next();
-    } else {
-        res.status(401).json({ message: "No autorizado. Inicie sesión primero." });
-    }
-}
 
 
 // =============================
@@ -355,6 +346,17 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "No se pudo cerrar sesión." });
+        }
+        res.clearCookie('connect.sid'); // nombre por defecto de la cookie de sesión
+        res.json({ success: true, message: "Sesión cerrada." });
+    });
+});
+
+
 
 
 app.get('/session', (req, res) => {
@@ -379,6 +381,6 @@ function requireLogin(req, res, next) {
     res.redirect('/index.html'); // redirect if not logged in
 }
 
-app.get('/products.html', requireLogin, (req, res) => {
-    res.sendFile(path.join(__dirname, '/products.html'));
-});
+
+const authRoutes = require('./routes/auth');
+app.use('/auth', authRoutes);
