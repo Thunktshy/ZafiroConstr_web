@@ -1,0 +1,24 @@
+.alert {
+    display: none; /* Hidden by default */
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+  }
+  
+  .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
+  .alert.active {
+    display: block;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  .alert.fade-out {
+    opacity: 0;
+  }
+  

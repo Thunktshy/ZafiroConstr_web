@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrar Usuarios - Zafiro Home Construcciones</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- External Styles -->
+  <link rel="stylesheet" href="../css/admin.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+  <header class="site-header">
+    <div class="header-container">
+      <div class="company-info">
+        <a href="#" class="company-logo fade-in"></a>
+        <a href="#" class="company-name fade-in">Zafiro Home Construcciones</a>
+      </div>
+    </div>
+    <nav class="navigation-primary">
+      <ul class="navigation-links-list">
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#Usuarios">
+            <span class="link-text fade-in">USUARIOS</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#almacen">
+            <span class="link-text fade-in">ALMACÉN</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#productos">
+            <span class="link-text fade-in">PRODUCTOS</span>
+          </a>
+        </li>
+        <li class="navigation-item hamburger-item">
+          <span class="hamburger" onclick="openSidebar()">
+            <i class="fas fa-bars"></i>
+          </span>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div id="mySidebar" class="sidebar">
+    <span class="closebtn" onclick="closeSidebar()">&times;</span>
+    <a href="#quienes-somos" onclick="closeSidebar()">Quiénes Somos</a>
+    <a href="#servicios" onclick="closeSidebar()">Servicios</a>
+    <a href="#experiencia" onclick="closeSidebar()">Experiencia</a>
+    <a href="#contacto" onclick="closeSidebar()">Contacto</a>
+    <a href="#" data-bs-toggle="modal" data-bs-target="#loginmodal" onclick="closeSidebar()">Iniciar sesión</a>
+  </div>
+
+  <main>
+    <section class="container py-5">
+      <div class="admin-header text-center mb-5">
+        <h1>Administrar Usuarios</h1>
+      </div>
+      <div class="row g-4">
+        <!-- Card 1: Añadir nuevo administrador -->
+        <div class="col-md-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <h5 class="card-title">Añadir nuevo administrador</h5>
+              <button class="btn btn-primary mt-3">Añadir administrador</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Eliminar usuario -->
+        <div class="col-md-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <h5 class="card-title">Eliminar usuario</h5>
+              <button class="btn btn-danger mt-3">Eliminar usuario</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Administrar usuarios -->
+        <div class="col-md-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <h5 class="card-title">Administrar usuarios</h5>
+              <button class="btn btn-warning mt-3">Administrar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Reportes -->
+        <div class="col-md-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <h5 class="card-title">Reportes</h5>
+              <button class="btn btn-info mt-3">Generar reportes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-container text-center py-3 bg-dark text-white">
+      <p>© 2025 Zafiro Home Products.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- External Scripts -->
+  <script src="./scripts/script.js"></script>
+  <script src="./scripts/animations.js"></script>
+  <script type="module" src="./scripts/Formularios/formulariocontacto.js"></script>
+  <script type="module" src="./scripts/Formularios/Login.js"></script>
+  <script type="module" src="./scripts/errorHandler.js"></script>
+
+  <script>
+    function openSidebar() {
+      document.getElementById("mySidebar").style.width = "250px";
+    }
+    function closeSidebar() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
+  </script>
+</body>
+</html>

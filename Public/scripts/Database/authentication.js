@@ -1,20 +1,20 @@
 export async function tryLogin(user, password) {
     try {
-        const userID = await getUserId(user); // Await the getUser  Id function
-        const storedPassword = await getUserPassword(user); // Get the stored password using the username
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user, password })
+        });
 
-        // Here you should compare the provided password with the stored password
-        if (storedPassword === password) {
-            //console.log("Login successful for user ID:", userID); // Log success
-            return { success: true, userID }; // Return success and user ID
-        } else {
-            //console.error("Error during login:", error); // Log the error
-            return { success: false, message: "Inicio de sesión fallido. Verifique su usuario y contraseña." }; // Return failure with error message
-        }
+        return await response.json();
     } catch (error) {
-        console.error("Error during login:", error); // Log the error
+        console.error("Error in tryLogin:", error);
+        throw error;
     }
 }
+
 
 async function getUserId(user) {
     try {
