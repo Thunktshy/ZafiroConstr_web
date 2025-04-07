@@ -170,6 +170,9 @@
   font-size: 2.8rem;
   margin-bottom: 3rem;
   color: var(--color-primary);
+  display: inline-block; /* So the border width matches the content */
+  padding-bottom: 0.5rem; /* Adjust spacing between text and line */
+  border-bottom: 4px solid var(--color-primary); /* Replace blue with a variable if needed */
 }
 
 /* Contenedor de servicios */
@@ -1003,4 +1006,213 @@ main.formulario {
 
 .alert.fade-out {
   opacity: 0; /* Fade out effect */
+}
+
+
+/*Styles for experiencia*/
+
+/* Experience Section */
+.experience-section {
+  padding: 4rem 2rem;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.experience-container {
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.experience-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.experience-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  min-width: 500px;
+  max-width: 600px;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.experience-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.experience-summary {
+  display: flex;
+  padding: var(--spacing-standard);
+  flex-direction: column;
+  align-items: center; /* Opcional, para centrar horizontalmente */
+  gap: 1rem;         /* Espacio entre elementos (ajusta según convenga) */
+}
+
+
+.experience-title {
+  font-size: 1.8rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.experience-subtitle {
+  font-size: 1.2rem;
+  color: var(--color-secondary);
+  margin-bottom: 1rem;
+}
+
+.experience-summary img {
+  width: 400px;
+  height: 300px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.toggle-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: var(--color-secondary);
+}
+
+.experience-details {
+  padding: var(--spacing-standard);
+  background-color: #fff;
+  text-align: left;
+  border-top: 1px solid #eee;
+  display: none; /* Initially hidden; shown when focused */
+}
+
+.experience-details h2 {
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.experience-details p,
+.experience-details ul {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+.experience-details ul {
+  list-style: disc inside;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Focus Mode Styling */
+.focus-mode .experience-card {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.focus-mode .experience-card.focused-card {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+
+.carousel-item img {
+  max-width: 400px;
+  max-height: 500px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.carousel-item {
+  position: relative;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;  /* adjust as needed */
+  height: 30px; /* adjust as needed */
+  background: rgba(0, 0, 0, 0.5); /* optional for visibility */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-control-prev {
+  left: 10px;  /* adjust to position inside the image */
+}
+
+.carousel-control-next {
+  right: 10px; /* adjust to position inside the image */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;  /* adjust icon size */
+  height: 20px; /* adjust icon size */
+}
+
+.carousel-inner {
+  width: auto; /* or 100% if you prefer */
+  margin: 0 auto; 
+  position: relative;
+}
+
+.mb-4{
+  max-width: 300px;
+  margin: 0 auto 1.5rem auto !important;
+}
+
+.celaya-title {
+  color:  var(--color-primary);
+  padding-top: 20px;
+  padding-bottom: 30px;
+  font-size: 2.5rem;
+}
+
+.dep-title{
+  padding-top: 20px;
+  padding-bottom: 30px;
+  color:  var(--color-primary);
+  font-size: 2.5rem;
+}
+
+.Agencias-title{
+  color:  var(--color-primary);
+  font-size: 2.5rem;
+}
+
+.sanjeronimo-title{
+  color:  var(--color-primary);
+  font-size: 2.5rem;
+}
+
+
+.proyectos-text li{
+  color:  var(--color-text-light);
+}
+
+.proyectos-text li:hover {
+  color: var(--color-primary);
 }

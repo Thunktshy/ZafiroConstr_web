@@ -7,6 +7,8 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const mariadb = require('mariadb');
+const path = require('path');
+const bcrypt = require('bcrypt');
 const dbInstance = require('../ZafiroConstr_web/db/db.js');
 const app = express();
 
@@ -60,10 +62,12 @@ class DBConnector {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("public"));
+
+// Serve static files from "Public" folder (Note the case!)
+app.use(express.static("Public"));
 
 app.use(session({
-    secret: 'your-secret-key', // Change this in production
+    secret: process.env.SESSION_SECRET || 'your-secret-key', // Change this in production and use .env
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -71,15 +75,18 @@ app.use(session({
     }
 }));
 
+// Middleware to require login
 function requireLogin(req, res, next) {
-    if (req.session.userID) {
-        next();
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
+    if (req.session && req.session.userID) {
+        return next();
     }
+    // If the request accepts HTML, redirect to the login page.
+    if (req.headers.accept && req.headers.accept.indexOf('text/html') !== -1) {
+        return res.redirect('/login.html');
+    }
+    // Otherwise, respond with a JSON error.
+    return res.status(401).json({ error: "Unauthorized" });
 }
-
-
 
 
 // =============================
@@ -255,18 +262,13 @@ app.get("/users/getpassword", async (req, res) => {
 
 app.get("/users/getUsernames", async (req, res) => {
     try {
-        // Query to get Usuario_Id and Nombre (username) from the USUARIOS table.
         const users = await dbInstance.queryWithParams("SELECT Email, Nombre FROM USUARIOS", []);
-        // Optionally, if you need only the usernames, you could do:
-        // const usernameList = users.map(user => user.Nombre);
         res.json(users);
     } catch (error) {
         console.error("Error fetching usernames:", error);
         res.status(500).json({ error: "Error fetching usernames" });
     }
 });
-
-const bcrypt = require('bcrypt');
 
 app.post("/users/register", async (req, res) => {
     const { email, username, password } = req.body;
@@ -286,38 +288,7 @@ app.post("/users/register", async (req, res) => {
     }
 });
 
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-// =============================
-// Graceful Shutdown
-// =============================
-process.on('SIGINT', async () => {
-    console.log("\nServer is stopping...");
-    console.log("Clearing sessions and closing database pool...");
-
-    // If using a session store like Redis in the future:
-    // sessionStore.clear(() => {
-    //     console.log("All sessions cleared.");
-    // });
-
-    if (dbInstance?.dbconnector) {
-        await dbInstance.dbconnector.end();
-        console.log("Database pool closed.");
-    }
-
-    process.exit(0);
-});
-
-
-
-// =============================
-// Managing Login server side instead of Client Side
-// =============================
+// --- Login/Logout Routes ---
 app.post('/login', async (req, res) => {
     const { user, password } = req.body;
 
@@ -351,13 +322,10 @@ app.post('/logout', (req, res) => {
         if (err) {
             return res.status(500).json({ success: false, message: "No se pudo cerrar sesión." });
         }
-        res.clearCookie('connect.sid'); // nombre por defecto de la cookie de sesión
+        res.clearCookie('connect.sid');
         res.json({ success: true, message: "Sesión cerrada." });
     });
 });
-
-
-
 
 app.get('/session', (req, res) => {
     if (req.session.userID) {
@@ -367,20 +335,32 @@ app.get('/session', (req, res) => {
     }
 });
 
-// Example use:
-app.get('/admin', requireLogin, async (req, res) => {
-    // Secure data access
+// --- Admin Route ---
+app.get('/admin', requireLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Protected', 'admin.html'));
 });
 
-const path = require('path');
-
-function requireLogin(req, res, next) {
-    if (req.session && req.session.userID) {
-        return next();
-    }
-    res.redirect('/index.html'); // redirect if not logged in
-}
-
-
+// --- Auth Routes ---
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+// =============================
+// Graceful Shutdown
+// =============================
+process.on('SIGINT', async () => {
+    console.log("\nServer is stopping...");
+    console.log("Clearing sessions and closing database pool...");
+
+    if (dbInstance?.dbconnector) {
+        await dbInstance.dbconnector.end();
+        console.log("Database pool closed.");
+    }
+
+    process.exit(0);
+});
