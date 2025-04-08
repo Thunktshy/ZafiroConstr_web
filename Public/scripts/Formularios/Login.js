@@ -20,7 +20,7 @@ document.getElementById("form-login").addEventListener("submit", async (event) =
             const modal = bootstrap.Modal.getInstance(document.getElementById('loginmodal'));
             modal.hide();
             setTimeout(function() {
-                window.location.href = 'admin.html';
+                window.location.href = 'admin';
             }, 500); // Adjust the delay
         } else if (result) {
             showError(result.message || "Inicio de sesión fallido. Verifique su usuario y contraseña.");
@@ -38,8 +38,5 @@ document.getElementById("form-login").addEventListener("submit", async (event) =
     }
 });
 
-app.post("/admin.html", isAuthenticated, async (req, res) => {
-    // ...
-});
 
 
