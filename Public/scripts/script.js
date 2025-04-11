@@ -77,9 +77,70 @@ function scrollToServicios(event) {
   }
 }
 
+<<<<<<< HEAD
 function toggleMenu() {
   document.querySelector('.navigation-primary').classList.toggle('menu-open');
 }
 function closeMenu() {
   document.querySelector('.navigation-primary').classList.remove('menu-open');
+=======
+function toggleExperienceFocus(event, card) {
+  const experienceSection = document.querySelector('.experience-section');
+  const isFocused = card.classList.contains('focused-card');
+
+  // When already focused, only allow closing if the event target is the toggle button.
+  if (isFocused && !event.target.classList.contains('toggle-btn')) {
+    return;
+  }
+
+  if (!isFocused) {
+    // Hide all other cards
+    document.querySelectorAll('.experience-card').forEach(c => {
+      c.classList.remove('focused-card', 'active');
+      c.style.display = 'none';
+    });
+
+    // Enter focus mode on the clicked card
+    experienceSection.classList.add('focus-mode');
+    card.classList.add('focused-card', 'active');
+    card.style.display = 'block';
+
+    // Change the button text to a close icon
+    const toggleBtn = card.querySelector('.toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.innerHTML = '&times;';
+      toggleBtn.classList.add('close-focus');
+    }
+
+    // Reveal the details section
+    const details = card.querySelector('.experience-details');
+    if (details) {
+      details.style.display = 'block';
+    }
+  } else {
+    exitExperienceFocusMode();
+  }
+}
+
+function exitExperienceFocusMode() {
+  document.querySelectorAll('.experience-card').forEach(c => {
+    c.classList.remove('focused-card', 'active');
+    c.style.display = 'block';
+
+    // Restore the button text
+    const toggleBtn = c.querySelector('.toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.innerHTML = 'Ver Detalles';
+      toggleBtn.classList.remove('close-focus');
+    }
+
+    // Hide the details section
+    const details = c.querySelector('.experience-details');
+    if (details) {
+      details.style.display = 'none';
+    }
+  });
+
+  document.querySelector('.experience-section').classList.remove('focus-mode');
+>>>>>>> f232cd4c65db7a73f00d2c9fc450bd7721d2dda8
 }

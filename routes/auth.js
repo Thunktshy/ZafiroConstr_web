@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const db = require('../db/db.js'); // asumiendo que ahí está tu queryWithParams
+const db = require('../db/db.js'); // Aqui está  queryWithParams
 const router = express.Router();
 
 // Login

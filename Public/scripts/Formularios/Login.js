@@ -20,7 +20,11 @@ document.getElementById("form-login").addEventListener("submit", async (event) =
             const modal = bootstrap.Modal.getInstance(document.getElementById('loginmodal'));
             modal.hide();
             setTimeout(function() {
+<<<<<<< HEAD
                 window.location.href = 'admin';
+=======
+                window.location.href = '/admin';
+>>>>>>> f232cd4c65db7a73f00d2c9fc450bd7721d2dda8
             }, 500); // Adjust the delay
         } else if (result) {
             showError(result.message || "Inicio de sesión fallido. Verifique su usuario y contraseña.");
@@ -38,5 +42,8 @@ document.getElementById("form-login").addEventListener("submit", async (event) =
     }
 });
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> f232cd4c65db7a73f00d2c9fc450bd7721d2dda8
