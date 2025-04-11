@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zafiro Home Construcciones - Página Principal</title>
+  <title>Zafiro Home Construcciones - Agregar Marca</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- External Styles -->
   <link rel="stylesheet" href="/admin-resources/styles/admin.css">
+  <link rel="stylesheet" href="/admin-resources/styles/formularios.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-light">
-  <!-- Integrated Fixed Header -->
-  <header class="site-header">
+   <!-- Integrated Fixed Header -->
+   <header class="site-header">
     <div class="header-container">
       <!-- Company Info on Top -->
       <div class="company-info">
@@ -57,66 +58,36 @@
     <a href="/admin-resources/Consultas/ver-productos.html" onclick="closeSidebar()">Consultar Productos</a>
     <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
   </div>
-
-  <!-- Contenido Principal -->
-  <main>
-    <section class="container py-5">
-      <div class="admin-header">
-        <h1>MENÚ PRINCIPAL</h1>
-      </div>
-      <div class="grid-container">
-        
-        
-        <!-- USUARIOS -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">USUARIOS</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-users" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-usuarios.html'">ENTRAR</button>
-          </div>
+  
+  <main class="container py-5">
+    <div class="admin-header text-center mb-5">
+      <h1>Agregar Marca</h1>
+    </div>
+    <div class="Form-container">
+      <h2 class="form-title">Agregar Marca</h2>
+      <form class="form" id="marcaForm">
+        <div class="form-field mb-3">
+          <label for="marcaNombre" class="form-label">Escribe el nombre de la marca:</label>
+          <input class="form-input form-control" type="text" id="marcaNombre" placeholder="Ejemplo: Marca XYZ" required>
         </div>
-        <!-- ALMACEN -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">ALMACÉN</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-home" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-almacen.html'">ENTRAR</button>
-          </div>
-        </div>
-        <!-- PRODUCTOS -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">PRODUCTOS</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-users" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-productos.html'">ENTRAR</button>
-          </div>
-        </div>
-      </div>
-    </section>
+        <button type="submit" id="submitMarcaForm" class="form-submit btn btn-primary">Guardar Marca</button>
+      </form>
+    </div>
   </main>
   
-  
-
-  <!-- Footer -->
   <footer>
-    <div class="footer-container">
+    <div class="footer-container text-center py-3 bg-dark text-white">
       <p>© 2025 Zafiro Home Products.</p>
     </div>
   </footer>
-
-
-  <!-- Bootstrap Bundle with Popper -->
+  
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Your external scripts -->
-
-
-  <!-- JavaScript for Sidebar -->
+  <!-- External Scripts -->
+  <script src="./scripts/script.js"></script>
+  <script src="./scripts/animations.js"></script>
+  <script type="module" src="../scripts/Formularios/formulario-marcas.js" defer></script>
+  <!-- Sidebar and Logout Scripts -->
   <script>
     function openSidebar() {
       document.getElementById("mySidebar").style.width = "300px";
@@ -126,22 +97,19 @@
       document.getElementById("mySidebar").style.width = "0";
     }
     function logout() {
-      
       fetch('/logout', { method: 'POST' })
         .then(response => response.json())
         .then(result => {
           if (result.success) {
-            // Redirect the user after successful logout 
-            window.location.href = '/index.html';
+            window.location.href = '/index2test.html';
           } else {
-            Console.log('Error al cerrar sesión.');
+            console.log('Error al cerrar sesión.');
           }
         })
         .catch(error => {
           console.error('Error during logout:', error);
         });
     }
-
   </script>
 </body>
 </html>

@@ -7,33 +7,36 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- External Styles -->
-  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="/admin-resources/styles/admin.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-light">
-  <header class="site-header">
+   <!-- Integrated Fixed Header -->
+   <header class="site-header">
     <div class="header-container">
+      <!-- Company Info on Top -->
       <div class="company-info">
         <a href="#" class="company-logo fade-in"></a>
         <a href="#" class="company-name fade-in">Zafiro Home Construcciones</a>
       </div>
+      <!-- Navigation Wrapper Below Company Info -->
     </div>
     <nav class="navigation-primary">
       <ul class="navigation-links-list">
         <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#Usuarios">
-            <span class="link-text fade-in">USUARIOS</span>
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-productos.html">
+            <span class="link-text fade-in">PRODUCTOS</span>
           </a>
         </li>
         <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#almacen">
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-almacen.html">
             <span class="link-text fade-in">ALMACÉN</span>
           </a>
         </li>
         <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#productos">
-            <span class="link-text fade-in">PRODUCTOS</span>
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-usuarios.html">
+            <span class="link-text fade-in">USUARIOS</span>
           </a>
         </li>
         <li class="navigation-item hamburger-item">
@@ -43,15 +46,26 @@
         </li>
       </ul>
     </nav>
+    
+      
   </header>
 
-  <div id="mySidebar" class="sidebar">
+  <!-- Sidebar for Navigation (Right side) -->
+  <div id="mySidebar" class="sidebar" >
     <span class="closebtn" onclick="closeSidebar()">&times;</span>
-    <a href="#quienes-somos" onclick="closeSidebar()">Quiénes Somos</a>
-    <a href="#servicios" onclick="closeSidebar()">Servicios</a>
-    <a href="#experiencia" onclick="closeSidebar()">Experiencia</a>
-    <a href="#contacto" onclick="closeSidebar()">Contacto</a>
-    <a href="#" data-bs-toggle="modal" data-bs-target="#loginmodal" onclick="closeSidebar()">Iniciar sesión</a>
+    <a href="/admin" onclick="closeSidebar()">MENÚ PRINCIPAL</a>
+    <a href="/admin-resources/Consultas/ver-productos.html" onclick="closeSidebar()">Consultar Productos</a>
+    <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
+  </div>
+
+  <!-- Sidebar for Mobile Navigation (Right side) -->
+  <div id="mySidebar" class="sidebar" >
+    <span class="closebtn" onclick="closeSidebar()">&times;</span>
+    <a href="/admin" onclick="closeSidebar()">MENÚ PRINCIPAL</a>
+    <a href="./Formularios/almacen.html" onclick="closeSidebar()">ALMACÉN</a>
+    <a href="#experiencia" onclick="closeSidebar()">USUARIOS</a>
+    <a href="#experiencia" onclick="closeSidebar()">PRODUCTOS</a>
+    <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
   </div>
 
   <main>
@@ -124,6 +138,22 @@
     }
     function closeSidebar() {
       document.getElementById("mySidebar").style.width = "0";
+    }
+    function logout() {
+      
+      fetch('/logout', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            // Redirect the user after successful logout 
+            window.location.href = '/index.html';
+          } else {
+            Console.log('Error al cerrar sesión.');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
     }
   </script>
 </body>

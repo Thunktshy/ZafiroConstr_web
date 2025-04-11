@@ -1013,7 +1013,8 @@ main.formulario {
 
 /* Experience Section */
 .experience-section {
-  padding: 4rem 2rem;
+  padding: 1rem 2rem;
+  padding-bottom: 4rem;
   background-color: #f9f9f9;
   text-align: center;
 }
@@ -1035,8 +1036,8 @@ main.formulario {
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  min-width: 500px;
-  max-width: 600px;
+  min-width: 450px;
+  max-width: 500px;
   flex: 1 1 300px;
   display: flex;
   flex-direction: column;
@@ -1133,7 +1134,6 @@ main.formulario {
 }
 
 
-
 .carousel-item img {
   max-width: 400px;
   max-height: 500px;
@@ -1180,32 +1180,40 @@ main.formulario {
 }
 
 .mb-4{
-  max-width: 300px;
+  max-width: 400px;
   margin: 0 auto 1.5rem auto !important;
 }
 
 .celaya-title {
   color:  var(--color-primary);
-  padding-top: 20px;
+  padding-top: 30px;
   padding-bottom: 30px;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .dep-title{
-  padding-top: 20px;
-  padding-bottom: 30px;
+  padding-top: 30px;
+  padding-bottom: 5px;
   color:  var(--color-primary);
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .Agencias-title{
   color:  var(--color-primary);
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding-top: 30px;
+  padding-bottom: 5px;
 }
 
 .sanjeronimo-title{
   color:  var(--color-primary);
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding-top: 35px;
+  padding-bottom: 25px;
 }
 
 

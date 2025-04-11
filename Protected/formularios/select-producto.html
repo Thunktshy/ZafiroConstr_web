@@ -1,19 +1,27 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zafiro Home Construcciones - Página Principal</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- External Styles -->
   <link rel="stylesheet" href="/admin-resources/styles/admin.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/v/dt/dt-2.2.2/datatables.min.css" rel="stylesheet" integrity="sha384-2vMryTPZxTZDZ3GnMBDVQV8OtmoutdrfJxnDTg0bVam9mZhi7Zr3J1+lkVFRr71f" crossorigin="anonymous">
+  <title>Seleccionar Producto</title>
 </head>
+<style>
+.mt-4 {
+    margin-top: 14.5rem !important;
+}
+</style>
+
+
 <body class="bg-light">
-  <!-- Integrated Fixed Header -->
-  <header class="site-header">
+   <!-- Integrated Fixed Header -->
+   <header class="site-header">
     <div class="header-container">
       <!-- Company Info on Top -->
       <div class="company-info">
@@ -58,65 +66,32 @@
     <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
   </div>
 
-  <!-- Contenido Principal -->
   <main>
     <section class="container py-5">
-      <div class="admin-header">
-        <h1>MENÚ PRINCIPAL</h1>
+      <div class="admin-header text-center mb-5">
+        <h1>MODIFICAR PRODUCTOS</h1>
       </div>
-      <div class="grid-container">
-        
-        
-        <!-- USUARIOS -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">USUARIOS</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-users" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-usuarios.html'">ENTRAR</button>
-          </div>
-        </div>
-        <!-- ALMACEN -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">ALMACÉN</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-home" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-almacen.html'">ENTRAR</button>
-          </div>
-        </div>
-        <!-- PRODUCTOS -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">PRODUCTOS</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-users" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-productos.html'">ENTRAR</button>
-          </div>
-        </div>
+      <div>
+        <button type="button" id="loadProducts" class="btn btn-primary">Consultar todos los productos</button>
+        <button type="button" id="gotoProductForm" class="btn btn-secondary" onclick="window.location.href='/admin-resources/formularios/nuevo-producto.html'">Ingresar Nuevo Producto</button>
       </div>
+      <div id="productList"></div>
     </section>
   </main>
-  
-  
 
-  <!-- Footer -->
-  <footer>
+  <!-- jQuery and DataTables scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/v/dt/dt-2.2.2/datatables.min.js" integrity="sha384-2Ul6oqy3mEjM7dBJzKOck1Qb/mzlO+k/0BQv3D3C7u+Ri9+7OBINGa24AeOv5rgu" crossorigin="anonymous"></script>
+  <!-- External JavaScript file -->
+  <script type="module" src="/admin-resources/scripts/Consultas/getId-modificar-productos.js"></script>
+</body>
+<!-- Footer -->
+<footer>
     <div class="footer-container">
       <p>© 2025 Zafiro Home Products.</p>
     </div>
-  </footer>
-
-
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Your external scripts -->
-
-
-  <!-- JavaScript for Sidebar -->
+</footer>
+  <!-- Sidebar and Logout Scripts -->
   <script>
     function openSidebar() {
       document.getElementById("mySidebar").style.width = "300px";
@@ -126,22 +101,18 @@
       document.getElementById("mySidebar").style.width = "0";
     }
     function logout() {
-      
       fetch('/logout', { method: 'POST' })
         .then(response => response.json())
         .then(result => {
           if (result.success) {
-            // Redirect the user after successful logout 
-            window.location.href = '/index.html';
+            window.location.href = '/index2test.html';
           } else {
-            Console.log('Error al cerrar sesión.');
+            console.log('Error al cerrar sesión.');
           }
         })
         .catch(error => {
           console.error('Error during logout:', error);
         });
     }
-
   </script>
-</body>
 </html>

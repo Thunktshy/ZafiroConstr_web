@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario Productos</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- External Styles -->
+  <link rel="stylesheet" href="/admin-resources/styles/admin.css">
+  <link rel="stylesheet" href="/admin-resources/styles/formularios.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+   <!-- Integrated Fixed Header -->
+   <header class="site-header">
+    <div class="header-container">
+      <!-- Company Info on Top -->
+      <div class="company-info">
+        <a href="#" class="company-logo fade-in"></a>
+        <a href="#" class="company-name fade-in">Zafiro Home Construcciones</a>
+      </div>
+      <!-- Navigation Wrapper Below Company Info -->
+    </div>
+    <nav class="navigation-primary">
+      <ul class="navigation-links-list">
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-productos.html">
+            <span class="link-text fade-in">PRODUCTOS</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-almacen.html">
+            <span class="link-text fade-in">ALMACÉN</span>
+          </a>
+        </li>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-usuarios.html">
+            <span class="link-text fade-in">USUARIOS</span>
+          </a>
+        </li>
+        <li class="navigation-item hamburger-item">
+          <span class="hamburger" onclick="openSidebar()">
+            <i class="fas fa-bars"></i>
+          </span>
+        </li>
+      </ul>
+    </nav>
+    
+      
+  </header>
+
+  <!-- Sidebar for Navigation (Right side) -->
+  <div id="mySidebar" class="sidebar" >
+    <span class="closebtn" onclick="closeSidebar()">&times;</span>
+    <a href="/admin" onclick="closeSidebar()">MENÚ PRINCIPAL</a>
+    <a href="/admin-resources/Consultas/ver-productos.html" onclick="closeSidebar()">Consultar Productos</a>
+    <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
+  </div>
+  <!-- Main Content -->
+  <main class="formulario">
+    <div class="Form-container">
+      <h2 class="form-title">Agregar Producto</h2>
+      <form class="form" id="productForm">
+        <div class="form-field">
+          <label for="productName" class="form-label">Ingresa el nombre del Producto:</label>
+          <input class="form-input" type="text" id="productName" placeholder="Ejemplo: Desarmador" required>
+        </div>
+
+        <div class="form-field">
+          <label for="productDescription" class="form-label">Ingresa una Descripción del producto:</label>
+          <textarea class="form-long-input" id="productDescription" placeholder="Ejemplo: Desarmador" rows="4" required></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="BrandId" class="form-label">Selecciona la Marca:</label>
+          <select class="form-select" id="BrandId" required>
+            <option value="">Seleccione una Marca</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="CategoriaId" class="form-label">Selecciona la Categoría:</label>
+          <select class="form-select" id="CategoriaId" required>
+            <option value="">Seleccione una categoría</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="ShelfId" class="form-label">Selecciona la Estantería:</label>
+          <select class="form-select" id="ShelfId" required>
+            <option value="">Seleccione una estantería</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="productPrice" class="form-label">Escribe el precio del producto (MXN):</label>
+          <input class="form-input" type="text" id="productPrice" placeholder="0.00" required>
+        </div>
+
+        <!-- Toggle for Dimension (Tamaño) -->
+        <div class="toggle-container">
+          <label for="toggleDimension">Usa unidad de tamaño:</label>
+          <input type="checkbox" id="toggleDimension">
+        </div>
+
+        <!-- Grid container for Dimension Values (initially hidden) -->
+        <div class="form-grid-container dimension" style="display: none;">
+          <div class="grid-row">
+            <div class="form-group">
+              <label for="DimensionValue" class="form-label-group">Ingresa un valor:</label>
+              <input class="form-input-group" type="number" id="DimensionValue" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label for="DimensionId" class="form-label-group">Selecciona una unidad:</label>
+              <select class="form-select-group" id="DimensionId">
+                <option value="">Seleccione una unidad</option>
+                <!-- More options here -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle for Weight (Peso) -->
+        <div class="toggle-container">
+          <label for="toggleWeight">Usa unidad de peso:</label>
+          <input type="checkbox" id="toggleWeight">
+        </div>
+
+        <!-- Grid container for Weight Values (initially hidden) -->
+        <div class="form-grid-container weight" style="display: none;">
+          <div class="grid-row">
+            <div class="form-group">
+              <label for="WeightValue" class="form-label-group">Ingresa un valor:</label>
+              <input class="form-input-group" type="number" id="WeightValue" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label for="UnidadId" class="form-label-group">Selecciona una unidad:</label>
+              <select class="form-select-group" id="UnidadId">
+                <option value="">Seleccione una unidad</option>
+                <!-- More options here -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label for="productStock" class="form-label">Escribe la cantidad a ingresar en stock:</label>
+          <input class="form-input" type="number" id="productStock" placeholder="Ejemplo: 100" required>
+        </div>
+
+        <div class="form-group">
+          <label for="productImageFile" class="form-label">Agrega una imagen (Opcional):</label>
+          <input class="form-input" type="file" id="productImageFile" name="productImageFile">
+        </div>
+
+        <button type="submit" id="submitProductForm" class="form-submit">Guardar Producto</button>
+      </form>
+    </div>
+  </main>
+
+
+  <script type="module" src="/admin-resources/scripts/Formularios/fomulario-productos.js" defer></script>
+  <!-- Sidebar and Logout Scripts -->
+  <script>
+    function openSidebar() {
+      document.getElementById("mySidebar").style.width = "300px";
+    }
+    
+    function closeSidebar() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
+    function logout() {
+      fetch('/logout', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            window.location.href = '/index2test.html';
+          } else {
+            console.log('Error al cerrar sesión.');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
+    }
+  </script>
+</body>
+</html> 

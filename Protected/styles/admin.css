@@ -50,7 +50,18 @@
   gap: var(--spacing-standard);
 }
 
-.company-logo,
+
+/* Logo */
+.company-logo {
+  background-image: url('/admin-resources/img/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 160px;
+  height: 60px;
+  display: block;
+}
+
 .company-name {
   color: var(--color-text-light);
   text-decoration: none;
@@ -217,16 +228,6 @@ main {
   color: var(--color-secondary);
 }
 
-/* Logo como imagen de fondo */
-.company-logo {
-  background-image: url('/Public/images/logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 160px; /* Adjust width as needed */
-  height: 60px; /* Adjust height as needed */
-  display: block;
-}
 
 .admin-header {
   text-align: center;

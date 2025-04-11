@@ -1,19 +1,35 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zafiro Home Construcciones - Página Principal</title>
+  
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- External Styles -->
+  
+  <!-- Admin Styles -->
   <link rel="stylesheet" href="/admin-resources/styles/admin.css">
+  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/v/dt/dt-2.2.2/datatables.min.css" rel="stylesheet" integrity="sha384-2vMryTPZxTZDZ3GnMBDVQV8OtmoutdrfJxnDTg0bVam9mZhi7Zr3J1+lkVFRr71f" crossorigin="anonymous">
+  
+  <title>All Brands</title>
+
+  <style>
+    /* Optional: Replicate margin top from ver-productos.html if you want similar spacing */
+    .mt-4 {
+      margin-top: 14.5rem !important;
+    }
+  </style>
 </head>
+
 <body class="bg-light">
-  <!-- Integrated Fixed Header -->
-  <header class="site-header">
+
+   <!-- Integrated Fixed Header -->
+   <header class="site-header">
     <div class="header-container">
       <!-- Company Info on Top -->
       <div class="company-info">
@@ -58,90 +74,57 @@
     <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
   </div>
 
-  <!-- Contenido Principal -->
+  <!-- MAIN CONTENT -->
   <main>
     <section class="container py-5">
-      <div class="admin-header">
-        <h1>MENÚ PRINCIPAL</h1>
+      <div class="admin-header text-center mb-5">
+        <h1>CONSULTAR MARCAS</h1>
       </div>
-      <div class="grid-container">
-        
-        
-        <!-- USUARIOS -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">USUARIOS</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-users" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-usuarios.html'">ENTRAR</button>
-          </div>
-        </div>
-        <!-- ALMACEN -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">ALMACÉN</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-home" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-almacen.html'">ENTRAR</button>
-          </div>
-        </div>
-        <!-- PRODUCTOS -->
-        <div class="category-card">
-          <div class="category-header">
-            <h3 class="category-title">PRODUCTOS</h3>
-          </div>
-          <div class="category-body">
-            <i class="fa fa-users" aria-hidden="true"></i>
-            <button class="toggle-btn" onclick="location.href='/admin-resources/paneles-administracion/panel-productos.html'">ENTRAR</button>
-          </div>
-        </div>
+      <div>
+        <!-- Buttons for loading brands and for going to brand creation form -->
+        <button type="button" id="loadBrands" class="btn btn-primary">Consultar todas las marcas</button>
+        <button type="button" id="gotoBrandForm" class="btn btn-secondary">Ingresar nueva marca</button>
       </div>
+      <div id="brandsList" class="mt-4"></div>
     </section>
   </main>
-  
-  
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer>
     <div class="footer-container">
       <p>© 2025 Zafiro Home Products.</p>
     </div>
   </footer>
 
-
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Your external scripts -->
-
-
-  <!-- JavaScript for Sidebar -->
+  <!-- jQuery and DataTables scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/v/dt/dt-2.2.2/datatables.min.js" integrity="sha384-2Ul6oqy3mEjM7dBJzKOck1Qb/mzlO+k/0BQv3D3C7u+Ri9+7OBINGa24AeOv5rgu" crossorigin="anonymous"></script>
+  
+  <!-- JavaScript for brand management (see below) -->
+  <script type="module" src="/admin-resources/scripts/Consultas/ver-marcas.js"></script>
+  
+  <!-- Sidebar and Logout Scripts (same as ver-productos.html) -->
   <script>
     function openSidebar() {
       document.getElementById("mySidebar").style.width = "300px";
     }
-    
     function closeSidebar() {
       document.getElementById("mySidebar").style.width = "0";
     }
     function logout() {
-      
       fetch('/logout', { method: 'POST' })
         .then(response => response.json())
         .then(result => {
           if (result.success) {
-            // Redirect the user after successful logout 
-            window.location.href = '/index.html';
+            window.location.href = '/index2test.html';
           } else {
-            Console.log('Error al cerrar sesión.');
+            console.log('Error al cerrar sesión.');
           }
         })
         .catch(error => {
           console.error('Error during logout:', error);
         });
     }
-
   </script>
 </body>
 </html>

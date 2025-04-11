@@ -7,33 +7,36 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- External Styles -->
-  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="/admin-resources/styles/admin.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-light">
-  <header class="site-header">
+   <!-- Integrated Fixed Header -->
+   <header class="site-header">
     <div class="header-container">
+      <!-- Company Info on Top -->
       <div class="company-info">
         <a href="#" class="company-logo fade-in"></a>
         <a href="#" class="company-name fade-in">Zafiro Home Construcciones</a>
       </div>
+      <!-- Navigation Wrapper Below Company Info -->
     </div>
     <nav class="navigation-primary">
       <ul class="navigation-links-list">
         <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#Users">
-            <span class="link-text fade-in">USUARIOS</span>
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-productos.html">
+            <span class="link-text fade-in">PRODUCTOS</span>
           </a>
         </li>
         <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#almacen">
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-almacen.html">
             <span class="link-text fade-in">ALMACÉN</span>
           </a>
         </li>
         <li class="navigation-item slide-in">
-          <a class="navigation-link hover-effect" href="#productos">
-            <span class="link-text fade-in">PRODUCTOS</span>
+          <a class="navigation-link hover-effect" href="/admin-resources/paneles-administracion/panel-usuarios.html">
+            <span class="link-text fade-in">USUARIOS</span>
           </a>
         </li>
         <li class="navigation-item hamburger-item">
@@ -43,21 +46,22 @@
         </li>
       </ul>
     </nav>
+    
+      
   </header>
 
-  <div id="mySidebar" class="sidebar">
+  <!-- Sidebar for Navigation (Right side) -->
+  <div id="mySidebar" class="sidebar" >
     <span class="closebtn" onclick="closeSidebar()">&times;</span>
-    <a href="#quienes-somos" onclick="closeSidebar()">Quiénes Somos</a>
-    <a href="#servicios" onclick="closeSidebar()">Servicios</a>
-    <a href="#experiencia" onclick="closeSidebar()">Experiencia</a>
-    <a href="#contacto" onclick="closeSidebar()">Contacto</a>
-    <a href="#" data-bs-toggle="modal" data-bs-target="#loginmodal" onclick="closeSidebar()">Iniciar sesión</a>
+    <a href="/admin" onclick="closeSidebar()">MENÚ PRINCIPAL</a>
+    <a href="/admin-resources/Consultas/ver-productos.html" onclick="closeSidebar()">Consultar Productos</a>
+    <a href="../Public/index.html" onclick="logout(); closeSidebar()">Cerrar sesión</a>
   </div>
 
   <main>
     <section class="container py-5">
       <div class="admin-header text-center mb-5">
-        <h1>ALMACÉN</h1>
+        <h1>PRODUCTOS</h1>
       </div>
       <div class="row g-4">
         <!-- Añadir Productos -->
@@ -65,7 +69,10 @@
           <div class="card h-100 text-center">
             <div class="card-body">
               <h5 class="card-title">Añadir Productos</h5>
-              <button class="btn btn-primary mt-3">Añadir nuevo producto</button>
+              <button class="btn btn-primary mt-3" onclick="window.location.href='/admin-resources/formularios/nuevo-producto.html'">
+                Añadir nuevo producto
+              </button>
+              
             </div>
           </div>
         </div>
@@ -75,7 +82,7 @@
           <div class="card h-100 text-center">
             <div class="card-body">
               <h5 class="card-title">Consultar Productos</h5>
-              <button class="btn btn-primary mt-3">Consultar almacén</button>
+              <button class="btn btn-primary mt-3" onclick="window.location.href='/admin-resources/Consultas/ver-productos.html'">Consultar almacén</button>
             </div>
           </div>
         </div>
@@ -85,43 +92,8 @@
           <div class="card h-100 text-center">
             <div class="card-body">
               <h5 class="card-title">Modificar Productos</h5>
-              <button class="btn btn-warning mt-3">Modificar productos</button>
+              <button class="btn btn-warning mt-3" onclick="window.location.href='/admin-resources/formularios/select-producto.html'">Modificar productos</button>
               <button class="btn btn-danger mt-3 ms-2">Eliminar producto</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Administrar Categorías -->
-        <div class="col-md-4">
-          <div class="card h-100 text-center">
-            <div class="card-body">
-              <h5 class="card-title">Administrar Categorías</h5>
-              <button class="btn btn-success me-2">Añadir</button>
-              <button class="btn btn-warning">Modificar</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Administrar Repisas -->
-        <div class="col-md-4">
-          <div class="card h-100 text-center">
-            <div class="card-body">
-              <h5 class="card-title">Administrar Repisas</h5>
-              <button class="btn btn-success me-2">Añadir</button>
-              <button class="btn btn-warning">Modificar</button>
-              <button class="btn btn-danger ms-2">Eliminar</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Administrar Marcas -->
-        <div class="col-md-4">
-          <div class="card h-100 text-center">
-            <div class="card-body">
-              <h5 class="card-title">Administrar Marcas</h5>
-              <button class="btn btn-success me-2">Añadir</button>
-              <button class="btn btn-warning">Modificar</button>
-              <button class="btn btn-danger ms-2">Eliminar</button>
             </div>
           </div>
         </div>
@@ -151,6 +123,22 @@
 
     function closeSidebar() {
       document.getElementById("mySidebar").style.width = "0";
+    }
+    function logout() {
+      
+      fetch('/logout', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            // Redirect the user after successful logout 
+            window.location.href = '/index.html';
+          } else {
+            Console.log('Error al cerrar sesión.');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
     }
   </script>
 </body>

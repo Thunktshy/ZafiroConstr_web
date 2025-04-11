@@ -135,6 +135,49 @@ app.post("/submit-Product-form", async (req, res) => {
     }
 });
 
+// In your server route (example)
+app.post("/update-product-form", async (req, res) => {
+    const {
+      productId, Name, Description, Category_Id, Shelf_Id, Price, 
+      Dimension_Id, Dimension_Value, Unit_Id, Unit_Value, stock_Quantity, ImagePath
+    } = req.body;
+    try {
+        // Example UPDATE query using a parameterized query:
+        await dbInstance.queryWithParams(
+            `UPDATE Products 
+             SET Name = ?, Description = ?, Category_Id = ?, Shelf_Id = ?, Price = ?,
+                 Dimension_Id = ?, Dimension_Value = ?, Unit_Id = ?, Unit_Value = ?, stock_Quantity = ?, ImagePath = ?
+             WHERE Id = ?`,
+            [
+              Name, Description, Category_Id, Shelf_Id, Price,
+              Dimension_Id, Dimension_Value, Unit_Id, Unit_Value,
+              stock_Quantity || 0, ImagePath || "default.jpg", productId
+            ]
+        );
+        res.json({ success: true, message: "Producto actualizado correctamente." });
+    } catch (error) {
+        console.error("Error al actualizar el producto:", error);
+        res.status(500).json({ success: false, error: "Error al actualizar el producto." });
+    }
+});
+
+app.get("/productwithId", async (req, res) => {
+    try {
+      const { id } = req.query; //  get 'id' from query params
+      const product = await dbInstance.queryWithParams("SELECT * FROM Products WHERE Id = ?", [id]);
+      
+      if (product.length > 0) {
+        res.json(product[0]);
+      } else {
+        res.status(404).json({ message: "Product not found" });
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      res.status(500).json({ error: "Error fetching product" });
+    }
+  });
+  
+  
 // --- Category Routes ---
 app.get("/getAllCategories", async (req, res) => {
     try {
@@ -324,6 +367,7 @@ app.post('/logout', (req, res) => {
         }
         res.clearCookie('connect.sid');
         res.json({ success: true, message: "Sesión cerrada." });
+        console.log("Sesion Cerrada: "+req.session)
     });
 });
 
@@ -349,6 +393,18 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// 1) Protect the entire `Protected` folder
+app.use(
+    '/admin-resources',
+    requireLogin,
+    express.static(path.join(__dirname, 'Protected'))
+  );
+  
+  // 2) Admin route
+  app.get('/admin', requireLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Protected', 'admin.html'));
+  });
 
 // =============================
 // Graceful Shutdown
