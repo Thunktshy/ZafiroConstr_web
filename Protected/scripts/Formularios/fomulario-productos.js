@@ -147,29 +147,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // Toggle logic for "unidad de tamaño"
     const toggleDimension = document.getElementById("toggleDimension");
     const dimensionContainer = document.querySelector(".form-grid-container.dimension");
+
     toggleDimension.addEventListener("change", () => {
-      if (toggleDimension.checked) {
-         dimensionContainer.style.display = "block";
-      } else {
-         dimensionContainer.style.display = "none";
-         // Set default values when toggle is off
-         document.getElementById("DimensionValue").value = "0";
-         document.getElementById("DimensionId").value = "1";
-      }
+    if (toggleDimension.checked) {
+        dimensionContainer.classList.remove("hidden");
+    } else {
+        dimensionContainer.classList.add("hidden");
+        // Set default values when toggle is off
+        document.getElementById("DimensionValue").value = "0";
+        document.getElementById("DimensionId").value = "1";
+    }
     });
 
     // Toggle logic for "unidad de peso"
     const toggleWeight = document.getElementById("toggleWeight");
     const weightContainer = document.querySelector(".form-grid-container.weight");
+
     toggleWeight.addEventListener("change", () => {
-      if (toggleWeight.checked) {
-         weightContainer.style.display = "block";
-      } else {
-         weightContainer.style.display = "none";
-         // Set default values when toggle is off
-         document.getElementById("WeightValue").value = "0";
-         document.getElementById("UnidadId").value = "1";
-      }
+    if (toggleWeight.checked) {
+        weightContainer.classList.remove("hidden");
+    } else {
+        weightContainer.classList.add("hidden");
+        // Reset default values when toggle is off
+        document.getElementById("WeightValue").value = "0";
+        document.getElementById("UnidadId").value = "1";
+    }
     });
 
     form.addEventListener("submit", async (event) => {

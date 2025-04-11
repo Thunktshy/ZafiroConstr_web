@@ -19,7 +19,7 @@
     <div class="header-container">
       <!-- Company Info on Top -->
       <div class="company-info">
-        <a href="#" class="company-logo fade-in"></a>
+        <a href="#" class="company-logo fade-in" aria-label="Company Logo"></a>
         <a href="#" class="company-name fade-in">Zafiro Home Construcciones</a>
       </div>
       <!-- Navigation Wrapper Below Company Info -->
@@ -107,7 +107,7 @@
         </div>
 
         <!-- Grid container for Dimension Values (initially hidden) -->
-        <div class="form-grid-container dimension" style="display: none;">
+        <div class="form-grid-container dimension">
           <div class="grid-row">
             <div class="form-group">
               <label for="DimensionValue" class="form-label-group">Ingresa un valor:</label>
@@ -130,7 +130,7 @@
         </div>
 
         <!-- Grid container for Weight Values (initially hidden) -->
-        <div class="form-grid-container weight" style="display: none;">
+        <div class="form-grid-container weight">
           <div class="grid-row">
             <div class="form-group">
               <label for="WeightValue" class="form-label-group">Ingresa un valor:</label>
@@ -178,7 +178,7 @@
         .then(response => response.json())
         .then(result => {
           if (result.success) {
-            window.location.href = '/index2test.html';
+            window.location.href = '/index.html';
           } else {
             console.log('Error al cerrar sesión.');
           }

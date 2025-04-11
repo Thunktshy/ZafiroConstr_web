@@ -324,3 +324,8 @@ main.formulario {
 .alert.fade-out {
   opacity: 0;
 }
+
+/* Hide container input */
+.hidden {
+  display: none;
+}
