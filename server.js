@@ -82,11 +82,7 @@ function requireLogin(req, res, next) {
     }
     // If the request accepts HTML, redirect to the login page.
     if (req.headers.accept && req.headers.accept.indexOf('text/html') !== -1) {
-<<<<<<< HEAD
         return res.redirect('/index.html');
-=======
-        return res.redirect('/login.html');
->>>>>>> f232cd4c65db7a73f00d2c9fc450bd7721d2dda8
     }
     // Otherwise, respond with a JSON error.
     return res.status(401).json({ error: "Unauthorized" });
@@ -398,7 +394,6 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-<<<<<<< HEAD
 // 1) Protect the entire `Protected` folder
 app.use(
     '/admin-resources',
@@ -411,8 +406,6 @@ app.use(
     res.sendFile(path.join(__dirname, 'Protected', 'admin.html'));
   });
 
-=======
->>>>>>> f232cd4c65db7a73f00d2c9fc450bd7721d2dda8
 // =============================
 // Graceful Shutdown
 // =============================
