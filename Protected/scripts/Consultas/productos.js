@@ -133,7 +133,7 @@ function renderProducts(products) {
     const shelfName = shelfMap[product.Shelf_Id] || "N/A";
     const categoryName = categoryMap[product.Category_Id] || "N/A";
     const brandName = brandMap[product.Brand_Id] || "N/A";
-    const unitText = unitMap[product.Unit_Id] ? `${product.Unit_value} ${unitMap[product.Unit_Id]}` : "";
+    const unitText = unitMap[product.Unit_Id] ? `${product.Unit_Value} ${unitMap[product.Unit_Id]}` : "";
     const dimensionText = dimensionMap[product.Dimension_Id] ? `${product.Dimension_Value} ${dimensionMap[product.Dimension_Id]}` : "";
 
     html += `
