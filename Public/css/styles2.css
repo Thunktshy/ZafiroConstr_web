@@ -48,7 +48,7 @@
 
 /* Logo como imagen de fondo */
 .company-logo {
-  background-image: url('/Public/images/logo.png');
+  background-image: url('../images/logo.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -1223,4 +1223,37 @@ main.formulario {
 
 .proyectos-text li:hover {
   color: var(--color-primary);
+}
+
+/* ============================================
+   Ajustes de desplazamiento para secciones en la navegación
+   La propiedad scroll-margin-top se utiliza para agregar un espacio
+   extra en la parte superior de los elementos cuando se hace scroll hacia ellos.
+   Esto es especialmente útil cuando se utiliza una cabecera fija (fixed header)
+   que de otra manera cubriría parte del contenido.
+   ============================================ */
+
+/* Sección "Sobre Nosotros" (About Section) */
+/* Ajusta el margen superior al desplazarse para evitar que la cabecera fija cubra el contenido */
+.about-section {
+  scroll-margin-top: 80px;  /* 80px: Valor ajustado a la altura del header en esta sección */
+}
+
+/* Sección "Servicios" (Services Section) */
+/* Se requiere un margen mayor ya que la estructura de esta sección requieren un espacio adicional */
+.services-section {
+  scroll-margin-top: 130px; 
+}
+
+/* Sección "Experiencia" (Experience Section) */
+/* Ajustamos un margen superior aún mayor para secciones donde se desee destacar o separar visualmente el contenido */
+.experience-section {
+  scroll-margin-top: 150px; 
+}
+
+/* Sección "Contacto" (Footer) */
+/* Específico para el footer, garantizando que al hacer scroll hacia el final de la página,
+   el contenido de contacto no quede oculto tras la cabecera fija */
+#contacto {
+  scroll-margin-top: 80px;  /* 80px: Alineado con la altura del header para mantener la coherencia */
 }

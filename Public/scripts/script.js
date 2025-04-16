@@ -77,13 +77,6 @@ function scrollToServicios(event) {
   }
 }
 
-<<<<<<< HEAD
-function toggleMenu() {
-  document.querySelector('.navigation-primary').classList.toggle('menu-open');
-}
-function closeMenu() {
-  document.querySelector('.navigation-primary').classList.remove('menu-open');
-=======
 function toggleExperienceFocus(event, card) {
   const experienceSection = document.querySelector('.experience-section');
   const isFocused = card.classList.contains('focused-card');
@@ -142,5 +135,4 @@ function exitExperienceFocusMode() {
   });
 
   document.querySelector('.experience-section').classList.remove('focus-mode');
->>>>>>> f232cd4c65db7a73f00d2c9fc450bd7721d2dda8
 }

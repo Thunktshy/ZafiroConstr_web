@@ -75,10 +75,10 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-  padding: var(--spacing-standard);
 }
 
-ul {
+/* Scoped nav styles only */
+.navigation-primary ul {
   padding: 10px;
   border-radius: var(--border-radius);
   text-align: center;
@@ -231,7 +231,7 @@ main {
 
 .admin-header {
   text-align: center;
-  margin-top: 50px;
+  margin-top: 20px;
   margin-bottom: 30px;
 }
 

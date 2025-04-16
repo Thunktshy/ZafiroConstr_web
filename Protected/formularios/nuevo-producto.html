@@ -63,7 +63,7 @@
   <main class="formulario">
     <div class="Form-container">
       <h2 class="form-title">Agregar Producto</h2>
-      <form class="form" id="productForm">
+      <form class="form" id="productForm" action="/upload" method="post" enctype="multipart/form-data">
         <div class="form-field">
           <label for="productName" class="form-label">Ingresa el nombre del Producto:</label>
           <input class="form-input" type="text" id="productName" placeholder="Ejemplo: Desarmador" required>

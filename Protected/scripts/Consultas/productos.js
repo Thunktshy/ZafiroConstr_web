@@ -127,33 +127,64 @@ function filterProducts() {
 function renderProducts(products) {
   const { categoryMap, brandMap, shelfMap, unitMap, dimensionMap } = lookupMaps;
   const productListDiv = document.getElementById("productList");
+
+  // Group products by the first letter of the product name
+  const grouped = {};
+  products.forEach(product => {
+    const firstLetter = product.Name[0].toUpperCase();
+    if (!grouped[firstLetter]) {
+      grouped[firstLetter] = [];
+    }
+    grouped[firstLetter].push(product);
+  });
+
+  const sortedLetters = Object.keys(grouped).sort();
   let html = "";
 
-  products.forEach(product => {
-    const shelfName = shelfMap[product.Shelf_Id] || "N/A";
-    const categoryName = categoryMap[product.Category_Id] || "N/A";
-    const brandName = brandMap[product.Brand_Id] || "N/A";
-    const unitText = unitMap[product.Unit_Id] ? `${product.Unit_Value} ${unitMap[product.Unit_Id]}` : "";
-    const dimensionText = dimensionMap[product.Dimension_Id] ? `${product.Dimension_Value} ${dimensionMap[product.Dimension_Id]}` : "";
-
+  sortedLetters.forEach(letter => {
     html += `
-      <div class="col-md-4">
-        <div class="card product-card">
-          <img src="/admin-resources/img/products/product${product.Id}.jpg" class="card-img-top" alt="${product.Name}">
-          <div class="card-body">
-            <h5 class="card-title text-center">${product.Name}</h5>
-            <p class="card-text">
-              Stock: ${product.Stock_Quantity} <br>
-              Repisa: ${shelfName}
-            </p>
-            <p class="card-text">
-              Precio: $${product.Price}
-            </p>
+      <div class="alphabet-group">
+        <div class="alphabet-letter">${letter}</div>
+        <div class="products-grid">
+    `;
+  
+    grouped[letter].forEach(product => {
+      const shelfName = shelfMap[product.Shelf_Id] || "N/A";
+      const categoryName = categoryMap[product.Category_Id] || "N/A";
+      const brandName = brandMap[product.Brand_Id] || "N/A";
+      const unitText = unitMap[product.Unit_Id] ? `${product.Unit_Value} ${unitMap[product.Unit_Id]}` : "";
+      const dimensionText = dimensionMap[product.Dimension_Id] ? `${product.Dimension_Value} ${dimensionMap[product.Dimension_Id]}` : "";
+      
+      // Compute image URL by replacing backslashes with forward slashes.
+      const imageURL = `/admin-resources/${product.ImagePath.replace(/\\/g, '/')}`;
+      
+      // Remove any global DOM manipulation (if any)
+      // document.getElementById('yourImageElement').src = imageURL; // Remove this line.
+  
+      html += `
+        <div class="card-container">
+          <div class="product-card">
+            <h5 class="product-card-title text-center">${product.Name}</h5>
+            <p class="card-text">Código: ${product.Code}</p>
+            <div class="product-display">
+              <div class="product-preview">
+                <img src="${imageURL}" class="card-img-top" alt="${product.Name}">
+              </div>
+              <div class="product-info">
+                <p class="card-text">
+                  Stock: ${product.Stock_Quantity} <br>
+                  Repisa: ${shelfName} <br>
+                  Unidad: ${unitText} <br>
+                  Tamaño: ${dimensionText}
+                </p>
+                <p class="card-text">Precio: $${product.Price}</p>
+              </div>
+            </div>
             <button type="button" class="btn btn-primary btn-detail" data-id="${product.Id}">
               Ver Detalles
             </button>
-            <div class="product-details mt-2" style="display:none;">
-              <ul>
+            <div class="product-details" style="display: none;"> 
+              <ul class="details-list">
                 <li><strong>Categoría:</strong> ${categoryName}</li>
                 <li><strong>Marca:</strong> ${brandName}</li>
                 <li><strong>Unidad:</strong> ${unitText}</li>
@@ -161,20 +192,28 @@ function renderProducts(products) {
                 <li><strong>Descripción:</strong> ${product.Description || "Sin descripción"}</li>
               </ul>
             </div>
-          </div>
+          </div> 
         </div>
-      </div>
+      `;
+    });
+  
+    html += `
+        </div> <!-- .products-grid -->
+      </div> <!-- .alphabet-group -->
     `;
   });
 
   productListDiv.innerHTML = html;
 
-  // Attach click event listeners to "Ver Detalles" buttons to toggle visibility of details
-  document.querySelectorAll(".btn-detail").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const card = btn.closest('.card');
-      const detailsDiv = card.querySelector('.product-details');
-      detailsDiv.style.display = (detailsDiv.style.display === "none" || detailsDiv.style.display === "") ? "block" : "none";
+  // Attach event listeners to all "Ver Detalles" buttons
+  const detailButtons = productListDiv.querySelectorAll('.btn-detail');
+  detailButtons.forEach(button => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const productCard = button.closest('.card-container');
+      const details = productCard.querySelector('.product-details');
+      details.style.display = (details.style.display === "none" || !details.style.display) ? "block" : "none";
     });
   });
 }
+

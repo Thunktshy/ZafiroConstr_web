@@ -1,9 +1,9 @@
 export async function submitProductForm(productData) {
     try {
+        // No headers here; the browser will set multipart/form-data automatically.
         const response = await fetch('/submit-Product-form', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData),
+            body: productData  // productData is now a FormData instance
         });
 
         const result = await response.json();
@@ -12,9 +12,9 @@ export async function submitProductForm(productData) {
             throw new Error(result.error || `HTTP error! Status: ${response.status}`);
         }
 
-        return result; // Retornar mensaje de éxito
+        return result; // Return a success message
     } catch (error) {
         console.error("Error submitting product form:", error);
-        throw error; // Lanzar el error para ser manejado en el frontend
+        throw error; // Throw the error so it can be handled in the frontend
     }
 }

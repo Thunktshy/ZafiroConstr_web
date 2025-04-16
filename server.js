@@ -11,6 +11,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const dbInstance = require('../ZafiroConstr_web/db/db.js');
 const app = express();
+const multer = require('multer');
 
 // =============================
 // Database Configuration
@@ -23,6 +24,30 @@ const config = {
     connectionLimit: 5,
     acquireTimeout: 300
 };
+
+// Configure Multer storage to save product images in Protected/img/products
+const productImageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      // Make sure the destination folder exists on your file system.
+      cb(null, path.join(__dirname, 'Protected', 'img', 'products'));
+    },
+    filename: function (req, file, cb) {
+      // Create a unique name by appending the current timestamp to the original name.
+      cb(null, Date.now() + '-' + file.originalname);
+    }
+  });
+  
+  const uploadProductImage = multer({
+    storage: productImageStorage,
+    limits: { fileSize: 2 * 1024 * 1024 }, // optional limit (e.g., 2MB)
+    fileFilter(req, file, cb) {
+      // Accept only image files with allowed extensions.
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Please upload a valid image file'));
+      }
+      cb(null, true);
+    }
+});
 
 class DBConnector {
     constructor() {
@@ -104,18 +129,31 @@ app.get("/products", async (req, res) => {
     }
 });
 
-app.post("/submit-Product-form", async (req, res) => {
+app.post("/submit-Product-form", uploadProductImage.single('productImageFile'), async (req, res) => {
     let Code;
+    // Extract text fields from the request body.
     const {
         Name, Description, Category_Id, Shelf_Id, Price, Dimension_Id,
-        Dimension_Value, Unit_Id, Unit_Value, stock_Quantity, ImagePath
+        Dimension_Value, Unit_Id, Unit_Value, stock_Quantity
+        // Note: Do not extract ImagePath from req.body here since it will be overridden.
     } = req.body;
 
+    // Use the file provided by multer if one was uploaded.
+    // Otherwise, use the default image value.
+    let ImagePath = "default.jpg";
+    if (req.file) {
+        // This assumes you want to store the relative path (e.g., "img/products/<filename>")
+        // Adjust the value according to how you intend to use it (e.g., later to build a URL).
+        ImagePath = path.join('img', 'products', req.file.filename);
+    }
+
     try {
+        // Get the last product Code from the database to auto-increment.
         const result = await dbInstance.queryWithParams("SELECT MAX(Code) AS lastCode FROM Products", []);
         const lastCode = result[0]?.lastCode || 0;
         Code = lastCode + 1;
 
+        // Insert the product record into the database.
         await dbInstance.queryWithParams(
             `INSERT INTO products (
                 Code, Name, Description, Category_Id, Shelf_Id, Price,
@@ -124,7 +162,7 @@ app.post("/submit-Product-form", async (req, res) => {
             [
                 Code, Name, Description, Category_Id, Shelf_Id, Price,
                 Dimension_Id, Dimension_Value, Unit_Id, Unit_Value,
-                stock_Quantity || 0, ImagePath || "default.jpg"
+                stock_Quantity || 0, ImagePath
             ]
         );
 
@@ -134,6 +172,7 @@ app.post("/submit-Product-form", async (req, res) => {
         res.status(500).json({ success: false, error: "Error processing the form." });
     }
 });
+
 
 // In your server route (example)
 app.post("/update-product-form", async (req, res) => {

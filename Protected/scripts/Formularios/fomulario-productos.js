@@ -175,45 +175,59 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     form.addEventListener("submit", async (event) => {
-        event.preventDefault(); // Evita la recarga de la página
-
-        // Obtener datos del formulario usando el estado de los toggles
+        event.preventDefault(); // Prevent page reload
+      
+        // Get product data from the form (using your existing logic)
         const productData = {
-            Name: document.getElementById("productName").value.trim(),
-            Description: document.getElementById("productDescription").value.trim(),
-            Category_Id: document.getElementById("CategoriaId").value,
-            Shelf_Id: document.getElementById("ShelfId").value,
-            Price: document.getElementById("productPrice").value.trim(),
-            Brand_Id: document.getElementById("BrandId").value,
-            // Para la unidad de peso, si toggle está activado se toma el valor del input, de lo contrario se asigna el valor por defecto "1" y "0"
-            Unit_Id: toggleWeight.checked ? document.getElementById("UnidadId").value : "1",
-            Unit_Value: toggleWeight.checked ? document.getElementById("WeightValue").value.trim() : "0",
-            // Para la unidad de tamaño, si toggle está activado se toma el valor del input, de lo contrario se asigna el valor por defecto "1" y "0"
-            Dimension_Value: toggleDimension.checked ? document.getElementById("DimensionValue").value.trim() : "0",
-            Dimension_Id: toggleDimension.checked ? document.getElementById("DimensionId").value : "1",
-            stock_Quantity: document.getElementById("productStock").value.trim(),
-            ImagePath: "default.jpg" // Valor por defecto si no hay imagen
+          Name: document.getElementById("productName").value.trim(),
+          Description: document.getElementById("productDescription").value.trim(),
+          Category_Id: document.getElementById("CategoriaId").value,
+          Shelf_Id: document.getElementById("ShelfId").value,
+          Price: document.getElementById("productPrice").value.trim(),
+          Brand_Id: document.getElementById("BrandId").value,
+          Unit_Id: toggleWeight.checked ? document.getElementById("UnidadId").value : "1",
+          Unit_Value: toggleWeight.checked ? document.getElementById("WeightValue").value.trim() : "0",
+          Dimension_Value: toggleDimension.checked ? document.getElementById("DimensionValue").value.trim() : "0",
+          Dimension_Id: toggleDimension.checked ? document.getElementById("DimensionId").value : "1",
+          stock_Quantity: document.getElementById("productStock").value.trim(),
+          ImagePath: "default.jpg" // Default value if no image is provided
         };
-
-        console.log(productData);
-
-        // Verificación de campos vacíos (ajusta esta lógica si algunos campos son opcionales)
-        const isEmpty = Object.values(productData).some(
-            value => value === null || value === '' || value === undefined
+      
+        // Create a FormData instance to encapsulate the form fields and the image file.
+        const formData = new FormData();
+      
+        // Append all key-value pairs from productData to FormData.
+        for (const key in productData) {
+          formData.append(key, productData[key]);
+        }
+      
+        // Get the file from the file input (if any)
+        const fileInput = document.getElementById("productImageFile");
+        const file = fileInput.files[0];
+        if (file) {
+          // Append the file with the same field name that your server (Multer) expects.
+          formData.append("productImageFile", file);
+        }
+      
+        // Optional: verify none of the required fields are empty.
+        const isEmpty = Array.from(formData.values()).some(
+          value => value === null || value === "" || value === undefined
         );
         if (isEmpty) {
-            alert("Por favor, complete todos los campos requeridos.");
-            return;
+          alert("Por favor, complete todos los campos requeridos.");
+          return;
         }
-
+      
         try {
-            const result = await submitProductForm(productData);
-            alert("Producto enviado con éxito: " + result.message);
-            document.getElementById("productForm").reset(); 
+          // Pass the FormData object to your submit function.
+          const result = await submitProductForm(formData);
+          alert("Producto enviado con éxito: " + result.message);
+          document.getElementById("productForm").reset();
         } catch (error) {
-            alert("Error al enviar el producto: " + error.message);
+          alert("Error al enviar el producto: " + error.message);
         }
-    });
+      });
+      
 });
 
 
