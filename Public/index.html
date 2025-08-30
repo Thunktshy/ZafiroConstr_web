@@ -3,95 +3,309 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FLOPSAN - Página Principal</title>
-  <link rel="stylesheet" href="/Public/css/styles.css">
+  <title>Zafiro Home Construcciones - Página Principal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-light">
 
-  <!-- Encabezado con navbar y banner -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">FLOPSAN</div>
-      <ul class="nav-links">
-        <li><a href="#quienes-somos">Quiénes Somos</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#experiencia">Experiencia</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
+  <!-- Navbar -->
+  <section>
+    <nav class="navigation-primary">
+      <div class="navigation-container d-flex justify-content-between align-items-center">
+        <div class="company-info">
+          <div>
+            <a class="company-logo fade-in" href="#"></a>
+          </div>
+          <div>
+            <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
+          </div>
+        </div>
+        <!-- Standard navigation links for larger screens -->
+        <div class="navigation-menu d-none d-lg-flex" id="navbarNav">
+          <ul class="navigation-links-list list-unstyled d-flex mb-0">
+            <li class="navigation-item slide-in me-3">
+              <a class="navigation-link hover-effect" href="#quienes-somos">
+                <span class="link-text fade-in">Quiénes Somos</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in me-3">
+              <a class="navigation-link hover-effect" href="#servicios">
+                <span class="link-text fade-in">Servicios</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in me-3">
+              <a class="navigation-link hover-effect" href="#experiencia">
+                <span class="link-text fade-in">Experiencia</span>
+              </a>
+            </li>
+            <li class="navigation-item slide-in me-3">
+              <a class="navigation-link hover-effect" href="#contacto" onclick="scrollToFooter(event)">
+                <span class="link-text fade-in">Contacto</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- Hamburger Icon for offcanvas menu (visible on all screens or adjust with responsive classes) -->
+        <div class="hamburger-menu">
+          <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
     </nav>
+  </section>
 
-    <div class="banner">
-      <h1>Diseño y Edificación, Alta y Baja Tensión</h1>
-      <p>Estructuras Metálicas · Cancelería · Carpintería · Plomería</p>
-      <a href="#servicios" class="btn-banner">Conoce nuestros servicios</a>
+  <!-- Offcanvas Right Menu -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menú</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-  </header>
+    <div class="offcanvas-body">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="#quienes-somos" data-bs-dismiss="offcanvas">Quiénes Somos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#servicios" data-bs-dismiss="offcanvas">Servicios</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#experiencia" data-bs-dismiss="offcanvas">Experiencia</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contacto" data-bs-dismiss="offcanvas">Contacto</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="modal" data-bs-target="#loginmodal" data-bs-dismiss="offcanvas" href="#">Iniciar sesión</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section>
+    <header class="hero-section">
+      <div class="hero-content-container">
+        <div class="hero-text-container">
+          <h1 class="hero-title fade-up">Diseño y Edificación<br> Alta y Baja Tensión</h1>
+          <p class="hero-description fade-up">Estructuras Metálicas · Cancelería · Carpintería · Plomería</p>
+        </div>
+        <a href="#servicios" class="button-primary-cta fade-up">Conoce nuestros servicios</a>
+      </div>
+    </header>
+  </section>
+
+  <!-- Después del hero-section y antes de la sección de servicios -->
+  <section id="quienes-somos" class="about-section">
+    <div class="about-container">
+      <h2 class="section-title fade-up">Sobre Nosotros</h2>
+      <div class="about-content">
+        <div class="about-text fade-up">
+          <p class="about-description">
+            Zafiro Home Construcciones es una empresa especializada en edificación, obra civil y mantenimiento industrial y habitacional.
+          </p>
+          <p class="about-description">
+            Nos dedicamos a la construcción de estructuras metálicas, instalaciones eléctricas, hidráulicas y más.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-item fade-up">
+            <i class="fas fa-building"></i>
+            <span class="stat-number">+500</span>
+            <span class="stat-label">Proyectos Completados</span>
+          </div>
+          <div class="stat-item fade-up">
+            <i class="fas fa-users"></i>
+            <span class="stat-number">20+</span>
+            <span class="stat-label">Años de Experiencia</span>
+          </div>
+          <div class="stat-item fade-up">
+            <i class="fas fa-handshake"></i>
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Clientes Satisfechos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Contenido principal -->
   <main>
-
-    <!-- Sección "Quiénes Somos" -->
-    <section id="quienes-somos" class="seccion">
-      <h2>Quiénes Somos</h2>
-      <p>
-        FLOPSAN es una empresa especializada en edificación, obra civil y mantenimiento industrial y habitacional.
-        Nos dedicamos a la construcción de estructuras metálicas, instalaciones eléctricas, hidráulicas y más.
-      </p>
+    <!-- Sección Servicios -->
+    <section id="servicios" class="services-section">
+      <div class="services-container">
+        <h2 class="section-title">Nuestros Servicios</h2>
+        <div class="services-grid">
+          <!-- Tarjeta 1 -->
+          <div class="service-card fade-up">
+            <div class="service-header">
+              <div class="service-icon">
+                <i class="fas fa-drafting-compass"></i>
+              </div>
+              <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
+              <img class="service-image" src="./images/servicios-images/calculo.jpeg" alt="Cálculo de estructuras">
+            </div>
+          </div>
+          <!-- Tarjeta 2 -->
+          <div class="service-card fade-up">
+            <div class="service-header">
+              <div class="service-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <h3 class="service-title">Instalaciones Eléctricas e Hidrosanitarias</h3>
+              <img class="service-image" src="./images/servicios-images/instalaciones_hidrahulicas.jpg" alt="Instalaciones">
+            </div>
+          </div>
+          <!-- Tarjeta 3 -->
+          <div class="service-card fade-up">
+            <div class="service-header">
+              <div class="service-icon">
+                <i class="fas fa-hard-hat"></i>
+              </div>
+              <h3 class="service-title">Albañilería y Mantenimiento Industrial</h3>
+              <img class="service-image" src="./images/servicios-images/albañileria industrial.jpg" alt="Albañilería">
+            </div>
+          </div>
+          <!-- Tarjeta 4 -->
+          <div class="service-card fade-up">
+            <div class="service-header">
+              <div class="service-icon">
+                <i class="fas fa-window-maximize"></i>
+              </div>
+              <h3 class="service-title">Canceles, Ventanas y Estructuras Metálicas</h3>
+              <img class="service-image" src="./images/servicios-images/canceleria.jpg" alt="Canceles y ventanas">
+            </div>
+          </div>
+        </div> <!-- /.services-grid -->
+      </div> <!-- /.services-container -->
     </section>
-
-    <!-- Sección "Servicios" -->
-    <section id="servicios" class="seccion">
-      <h2>Nuestros Servicios</h2>
-      <ul>
-        <li>Diseño y cálculo de estructuras</li>
-        <li>Instalaciones eléctricas e hidrosanitarias</li>
-        <li>Albañilería y mantenimiento industrial</li>
-        <li>Canceles, ventanas y estructuras metálicas</li>
-      </ul>
-    </section>
-
-    <!-- Sección "Experiencia" -->
-    <section id="experiencia" class="seccion">
-      <h2>Experiencia</h2>
-      <p>Más de 20 años de experiencia en el sector construcción, con clientes como Bonafont, Joyco, ICA, y Grupo GA3.</p>
-    </section>
-
   </main>
 
-  <!-- Pie de página con formularios y contacto -->
-  <footer>
-    <section id="contacto" class="footer-contacto">
-      <h2>Contáctanos</h2>
-
-      <!-- Formulario de Contacto -->
-      <form id="form-contacto">
-        <h3>Contacto General</h3>
-        <div class="form-group">
-          <label for="nombre">Nombre:</label>
-          <input type="text" id="nombre" name="nombre" required>
+  <!-- Footer -->
+  <footer class="footer-primary" id="contacto">
+    <div class="footer-container">
+      <div class="footer-content">
+        <!-- Sección de información de contacto -->
+        <div class="contact-info-section fade-up">
+          <div class="company-info-container">
+            <h2 class="fade-up">Contáctanos</h2>
+            <div class="contact-buttons">
+              <!-- Botón de llamada -->
+              <div class="contact-button fade-left">
+                <h3>¿Tienes dudas? Llámanos</h3>
+                <a href="tel:5537055255" class="btn btn-contact">
+                  <i class="fas fa-phone"></i>
+                  55 3705 5255
+                </a>
+              </div>
+              <!-- Botón de correo con opción de copia -->
+              <div class="contact-button">
+                <h3>Escríbenos</h3>
+                <a href="mailto:oficina_zafiro@outlook.com" class="btn btn-contact">
+                  <i class="fas fa-envelope"></i>
+                  Enviar correo
+                </a>
+                <div class="email-copy-container" onclick="copyEmail()">
+                  <span class="email-text">oficina_zafiro@outlook.com</span>
+                  <span class="copy-tooltip">Haz clic para copiar</span>
+                </div>
+              </div>
+              <!-- Botón para abrir modal -->
+              <div class="contact-button">
+                <h3>¿Deseas más información?</h3>
+                <button type="button" class="btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
+                  <i class="fas fa-info-circle"></i>
+                  Solicitar información
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="correo">Correo Electrónico:</label>
-          <input type="email" id="correo" name="correo" required>
+        <!-- Sección del mapa -->
+        <div class="map-section">
+          <h2>Ubicación</h2>
+          <div class="map-container">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3761.7759918083093!2d-99.13628582410274!3d19.465222581821145!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f9108faef633%3A0x3d43b60cf84d1cd8!2sAv.%20R%C3%ADo%20Consulado%201500%2C%20Vallejo%2C%20Gustavo%20A.%20Madero%2C%2007870%20Ciudad%20de%20M%C3%A9xico%2C%20CDMX!5e0!3m2!1ses!2smx!4v1742758470944!5m2!1ses!2smx"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="mensaje">Mensaje:</label>
-          <textarea id="mensaje" name="mensaje" rows="4"></textarea>
-        </div>
-        <button type="submit">Enviar</button>
-      </form>
-
-
-
-      <div class="datos-empresa">
-        <h3>Información de la Empresa</h3>
-        <p><strong>Dirección:</strong> Calz. Ermita Iztapalapa No. 1591, CDMX</p>
-        <p><strong>Teléfono:</strong> 7162 7745</p>
-        <p><strong>Correo:</strong> <a href="mailto:oficina_flopsandf@outlook.com">oficina_flopsandf@outlook.com</a></p>
       </div>
-    </section>
+    </div>
   </footer>
 
-  <script src="/Public/scripts/script.js"></script>
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./scripts/script.js"></script>
+  <script src="./scripts/animations.js"></script>
+  <script type="module" src="./scripts/Formularios/formulariocontacto.js"></script>
+  <script type="module" src="./scripts/Formularios/Login.js"></script>
+  <script type="module" src="./scripts/errorHandler.js"></script>
+
+  <!-- Modals -->
+  <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="contactModalLabel">Solicitar Información</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="contact-form" id="form-contacto">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" required>
+            </div>
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" id="correo" required>
+            </div>
+            <div class="mb-3">
+              <label for="mensaje" class="form-label">Mensaje</label>
+              <textarea class="form-control" id="mensaje" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Iniciar sesión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Error Box -->
+          <div id="error-message" class="alert alert-danger"></div>
+          <form class="contact-form" id="form-login">
+            <div class="mb-3">
+              <label for="Usuario" class="form-label">Usuario</label>
+              <input type="text" class="form-control" id="Usuario" required>
+            </div>
+            <div class="mb-3">
+              <label for="Contraseña" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="Contraseña" required>
+            </div>
+            <div>
+              <a class="registrar-link" href="./Formularios/nuevoUsuario.html">Registrarse</a>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
