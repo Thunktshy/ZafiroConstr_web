@@ -12,93 +12,61 @@
 </head>
 <body class="bg-light">
 
-  <!-- Navbar -->
-  <section>
-    <nav class="navigation-primary">
-      <div class="navigation-container d-flex justify-content-between align-items-center">
-        <div class="company-info">
-          <div>
-            <a class="company-logo fade-in" href="#"></a>
-          </div>
-          <div>
-            <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
-          </div>
-        </div>
-        <!-- Standard navigation links for larger screens -->
-        <div class="navigation-menu d-none d-lg-flex" id="navbarNav">
-          <ul class="navigation-links-list list-unstyled d-flex mb-0">
-            <li class="navigation-item slide-in me-3">
-              <a class="navigation-link hover-effect" href="#quienes-somos">
-                <span class="link-text fade-in">Quiénes Somos</span>
-              </a>
-            </li>
-            <li class="navigation-item slide-in me-3">
-              <a class="navigation-link hover-effect" href="#servicios">
-                <span class="link-text fade-in">Servicios</span>
-              </a>
-            </li>
-            <li class="navigation-item slide-in me-3">
-              <a class="navigation-link hover-effect" href="#experiencia">
-                <span class="link-text fade-in">Experiencia</span>
-              </a>
-            </li>
-            <li class="navigation-item slide-in me-3">
-              <a class="navigation-link hover-effect" href="#contacto" onclick="scrollToFooter(event)">
-                <span class="link-text fade-in">Contacto</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <!-- Hamburger Icon for offcanvas menu (visible on all screens or adjust with responsive classes) -->
-        <div class="hamburger-menu">
-          <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-label="Menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
+<!-- Navbar -->
+<section>
+<nav class="navigation-primary">
+  <div class="navigation-container">
+    <div class="company-info">
+      <div><a class="company-logo fade-in" href="#"></a></div>
+      <div>
+        <a class="company-name fade-in" href="#">Zafiro Home Construcciones</a>
       </div>
-    </nav>
-  </section>
-
-  <!-- Offcanvas Right Menu -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menú</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link" href="#quienes-somos" data-bs-dismiss="offcanvas">Quiénes Somos</a>
+    <div class="navigation-menu" id="navbarNav">
+      <ul class="navigation-links-list">
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#quienes-somos">
+            <span class="link-text fade-in">Quiénes Somos</span>
+          </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#servicios" data-bs-dismiss="offcanvas">Servicios</a>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#servicios">
+            <span class="link-text fade-in">Servicios</span>
+          </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#experiencia" data-bs-dismiss="offcanvas">Experiencia</a>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#experiencia">
+            <span class="link-text fade-in">Experiencia</span>
+          </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#contacto" data-bs-dismiss="offcanvas">Contacto</a>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" href="#contacto" onclick="scrollToFooter(event)">
+            <span class="link-text fade-in">Contacto</span>
+          </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="modal" data-bs-target="#loginmodal" data-bs-dismiss="offcanvas" href="#">Iniciar sesión</a>
+        <li class="navigation-item slide-in">
+          <a class="navigation-link hover-effect" data-bs-toggle="modal" data-bs-target="#loginmodal">
+            <span class="link-text fade-in">Iniciar sesión</span>
+          </a>
         </li>
+        
       </ul>
     </div>
   </div>
-
+</nav>
+</section>
+<section>
   <!-- Hero Section -->
-  <section>
-    <header class="hero-section">
-      <div class="hero-content-container">
-        <div class="hero-text-container">
-          <h1 class="hero-title fade-up">Diseño y Edificación<br> Alta y Baja Tensión</h1>
-          <p class="hero-description fade-up">Estructuras Metálicas · Cancelería · Carpintería · Plomería</p>
-        </div>
-        <a href="#servicios" class="button-primary-cta fade-up">Conoce nuestros servicios</a>
+  <header class="hero-section">
+    <div class="hero-content-container">
+      <div class="hero-text-container">
+        <h1 class="hero-title fade-up">Diseño y Edificación<br> Alta y Baja Tensión</h1>
+        <p class="hero-description fade-up">Estructuras Metálicas · Cancelería · Carpintería · Plomería</p>
       </div>
-    </header>
-  </section>
-
+      <a href="#servicios" class="button-primary-cta fade-up">Conoce nuestros servicios</a>
+    </div>
+  </header>
+</section>
   <!-- Después del hero-section y antes de la sección de servicios -->
   <section id="quienes-somos" class="about-section">
     <div class="about-container">
@@ -135,58 +103,270 @@
 
   <!-- Contenido principal -->
   <main>
-    <!-- Sección Servicios -->
-    <section id="servicios" class="services-section">
-      <div class="services-container">
-        <h2 class="section-title">Nuestros Servicios</h2>
-        <div class="services-grid">
-          <!-- Tarjeta 1 -->
-          <div class="service-card fade-up">
-            <div class="service-header">
-              <div class="service-icon">
-                <i class="fas fa-drafting-compass"></i>
-              </div>
-              <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
-              <img class="service-image" src="./images/servicios-images/calculo.jpeg" alt="Cálculo de estructuras">
-            </div>
+ <!-- Sección Servicios -->
+ <section id="servicios" class="services-section">
+  <div class="services-container">
+    <h2   class="section-title">Nuestros Servicios</h2>
+    <div class="services-grid">
+      
+      <!-- Tarjeta 1 -->
+      <div class="service-card fade-up">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="fas fa-drafting-compass"></i>
           </div>
-          <!-- Tarjeta 2 -->
-          <div class="service-card fade-up">
-            <div class="service-header">
-              <div class="service-icon">
-                <i class="fas fa-bolt"></i>
-              </div>
-              <h3 class="service-title">Instalaciones Eléctricas e Hidrosanitarias</h3>
-              <img class="service-image" src="./images/servicios-images/instalaciones_hidrahulicas.jpg" alt="Instalaciones">
-            </div>
+          <h3 class="service-title">Diseño y Cálculo de Estructuras</h3>
+          <img class="service-image" 
+               src="./images/servicios-images/calculo.jpeg" 
+               alt="Cálculo de estructuras">
+        </div>
+      </div>
+
+      <!-- Tarjeta 2 -->
+      <div class="service-card fade-up">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="fas fa-bolt"></i>
           </div>
-          <!-- Tarjeta 3 -->
-          <div class="service-card fade-up">
-            <div class="service-header">
-              <div class="service-icon">
-                <i class="fas fa-hard-hat"></i>
-              </div>
-              <h3 class="service-title">Albañilería y Mantenimiento Industrial</h3>
-              <img class="service-image" src="./images/servicios-images/albañileria industrial.jpg" alt="Albañilería">
-            </div>
+          <h3 class="service-title">Instalaciones Eléctricas e Hidrosanitarias</h3>
+          <img class="service-image" 
+               src="./images/servicios-images/instalaciones_hidrahulicas.jpg" 
+               alt="Instalaciones">
+        </div>
+      </div>
+
+      <!-- Tarjeta 3 -->
+      <div class="service-card fade-up">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="fas fa-hard-hat"></i>
           </div>
-          <!-- Tarjeta 4 -->
-          <div class="service-card fade-up">
-            <div class="service-header">
-              <div class="service-icon">
-                <i class="fas fa-window-maximize"></i>
-              </div>
-              <h3 class="service-title">Canceles, Ventanas y Estructuras Metálicas</h3>
-              <img class="service-image" src="./images/servicios-images/canceleria.jpg" alt="Canceles y ventanas">
-            </div>
+          <h3 class="service-title">Albañilería y Mantenimiento Industrial</h3>
+          <img class="service-image" 
+               src="./images/servicios-images/albañileria industrial.jpg" 
+               alt="Albañilería">
+        </div>
+      </div>
+
+      <!-- Tarjeta 4 -->
+      <div class="service-card fade-up">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="fas fa-window-maximize"></i>
           </div>
-        </div> <!-- /.services-grid -->
-      </div> <!-- /.services-container -->
-    </section>
-  </main>
+          <h3 class="service-title">Canceles, Ventanas y Estructuras Metálicas</h3>
+          <img class="service-image" 
+               src="./images/servicios-images/canceleria.jpg" 
+               alt="Canceles y ventanas">
+        </div>
+      </div>
+
+    </div> <!-- /.services-grid -->
+  </div> <!-- /.services-container -->
+</section>  
+<!-- Sección de Experiencia -->
+<section id="experiencia" class="experience-section fade-up">
+  <div class="experience-container fade-up">
+    <h2 class="section-title fade-up">Nuestra Experiencia</h2>
+    <div class="experience-grid" id="experienceGrid">
+      
+      <!-- ============ PROYECTO CELAYA (Tarjeta) ============ -->
+      <div class="experience-card fade-up" onclick="toggleExperienceFocus(event, this)">
+        <div class="experience-summary">
+          <h1 class="celaya-title">Remodelación</h1>
+
+          <img src="images/experiencia/remodelacion-celaya.jpg" alt="Remodelación y ampliación de sucursal en Celaya">
+          <button class="toggle-btn" onclick="event.stopPropagation(); toggleExperienceFocus(event, this.closest('.experience-card'));">
+            Ver Detalles
+          </button>
+        </div>
+        <div class="experience-details" style="display: none;">
+          <h1 class="celaya-title">Celaya</h1>
+          <h2 class="celaya-remodelacion">Remodelación de fachada y Ampliación de oficinas</h2>
+          <!-- Carousel para Celaya -->
+          <div id="carouselCelaya" class="carousel slide mb-4" data-bs-ride="carousel">
+            <!-- Indicadores -->
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselCelaya" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselCelaya" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselCelaya" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <!-- Slides -->
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img class="d-block w-100" src="images/experiencia/remodelacion-celaya.jpg" alt="Remodelación y ampliación de sucursal en Celaya">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="images/experiencia/fachada-celaya.jpg" alt="Fachada principal de la sucursal en Celaya">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="images/experiencia/oficinas-celaya.jpg" alt="Oficinas de la sucursal en Celaya">
+              </div>
+            </div>
+            <!-- Controles -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselCelaya" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselCelaya" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          </div>
+          <p>Proyecto de remodelación y ampliación en la sucursal de Celaya.</p>
+        </div>
+      </div>
+      
+      <!-- ============ PROYECTO DEPARTAMENTO UNIFAMILIAR (Tarjeta) ============ -->
+      <div class="experience-card fade-up" onclick="toggleExperienceFocus(event, this)">
+        <div class="experience-summary">
+          <h1 class="dep-title">Diseño de Interiores y Ambientes Residenciales</h1>
+          <img src="images/experiencia/detalles-casa.jpg" alt="Detalles de casa habitación">
+          <button class="toggle-btn" onclick="event.stopPropagation(); toggleExperienceFocus(event, this.closest('.experience-card'));">
+            Ver Detalles
+          </button>
+        </div>
+        <div class="experience-details" style="display: none;">
+          <h1 class="dep-title">Departamento Unifamiliar</h1>
+          <h2 class="dep-casa">Casa Habitación</h2>
+          <!-- Carousel para Departamento Unifamiliar -->
+          <div id="carouselDepto" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselDepto" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselDepto" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img class="d-block w-100" src="images/experiencia/detalles-casa.jpg" alt="Detalles de casa habitación">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="images/experiencia/acabados-casa.jpg" alt="Acabados de casa habitación">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDepto" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDepto" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          </div>
+          <p class="dep-casa-text">Construcción de casa habitación en la ciudad de Celaya, Guanajuato.</p>
+          <h2 class="dep-detalles">Detalles</h2>
+          <p class="dep-detalles-text">Se realizaron trabajos de carpintería en closets y puertas.</p>
+          <h2 class="dep-acabados">Acabados</h2>
+          <p class="dep-acabados-text">Se colocaron acabados de primera calidad en pisos, muros y plafones.</p>
+        </div>
+      </div>
+      
+      <!-- ============ PROYECTO GRUPO GA3 AGENCIAS (Tarjeta) ============ -->
+      <div class="experience-card fade-up" onclick="toggleExperienceFocus(event, this)">
+        <div class="experience-summary">
+          <h1 class="Agencias-title">Diseño Exterior y Renovación de Imagen Comercial</h1>
+          <img src="images/experiencia/agencia2.jpg" alt="Agencias de autos">
+          <button class="toggle-btn" onclick="event.stopPropagation(); toggleExperienceFocus(event, this.closest('.experience-card'));">
+            Ver Detalles
+          </button>
+        </div>
+        <div class="experience-details" style="display: none;">
+          <h1 class="Agencias-title">Grupo GA3 Agencias de autos</h1>
+          <h2 class="agencias">Agencias de autos</h2>
+          <!-- Carousel para Agencias -->
+          <div id="carouselAgencias" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselAgencias" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselAgencias" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselAgencias" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img class="d-block w-100" src="images/experiencia/agencia2.jpg" alt="Agencias de autos">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="images/experiencia/agencia1.jpg" alt="Proyectos de agencias de autos">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselAgencias" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselAgencias" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          </div>
+          <p class="agencias-text">En este proyecto nos enfocamos en la supervisión de mantenimientos.</p>
+          <h2 class="proyectos">Proyectos</h2>
+          <ul class="proyectos-text">
+            <li>Agencia Volkswagen Santa Clara: Cambio de Imagen</li>
+            <li>Agencia Nissan Chalco: Cubierta y paso de gato</li>
+            <li>Agencia Nissan Polanco: Cambio de imagen</li>
+            <li>Agencia Nissan San Cosme: Remodelación de Taller mecánico y cambio de imagen</li>
+            <li>Agencia Nissan Atizapan: Remodelación de oficinas</li>
+          </ul>
+          <h2 class="renovacion">Renovación</h2>
+          <p class="renovacion-text">Estos fueron algunos de nuestros proyectos ejecutados.</p>
+        </div>
+      </div>
+      
+      <!-- ============ PROYECTO RESIDENCIA SAN JERÓNIMO (Tarjeta) ============ -->
+      <div class="experience-card fade-up" onclick="toggleExperienceFocus(event, this)">
+        <div class="experience-summary">
+          <h1 class="sanjeronimo-title">Construcción Residencial</h1>
+          <img src="images/experiencia/sanjeronimo.jpg" alt="Obra nueva en Residencia San Jerónimo">
+          <button class="toggle-btn" onclick="event.stopPropagation(); toggleExperienceFocus(event, this.closest('.experience-card'));">
+            Ver Detalles
+          </button>
+        </div>
+        <div class="experience-details" style="display: none;">
+          <h1 class="sanjeronimo-title">Residencia San Jerónimo</h1>
+          <h2 class="obranueva">Obra nueva</h2>
+          <!-- Carousel para Residencia San Jerónimo -->
+          <div id="carouselSanJeronimo" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img class="d-block w-100" src="images/experiencia/sanjeronimo.jpg" alt="Obra nueva">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="images/experiencia/sanjeronimo2.jpg" alt="Fachada de residencia San Jerónimo">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="images/experiencia/sanjeronimo3.jpg" alt="Proceso de construcción de residencia San Jerónimo">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselSanJeronimo" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          </div>
+          <p class="obra-nueva-text">Inmueble ubicado en la zona sur de la Ciudad de México.</p>
+          <h2 class="fachada">Fachada</h2>
+          <p class="fachada-text">Este inmueble es uno de 6 proyectos de mismas dimensiones.</p>
+          <h2 class="curso">En curso</h2>
+          <p class="curso-text">Seguimos desarrollando la última parte de la obra.</p>
+        </div>
+      </div>
+      
+    </div> <!-- Fin .experience-grid -->
+  </div> <!-- Fin .experience-container -->
+</section> <!-- Fin de la sección de Experiencia -->
+
+
+</main>
 
   <!-- Footer -->
   <footer class="footer-primary" id="contacto">
+
     <div class="footer-container">
       <div class="footer-content">
         <!-- Sección de información de contacto -->
@@ -202,6 +382,7 @@
                   55 3705 5255
                 </a>
               </div>
+
               <!-- Botón de correo con opción de copia -->
               <div class="contact-button">
                 <h3>Escríbenos</h3>
@@ -214,6 +395,7 @@
                   <span class="copy-tooltip">Haz clic para copiar</span>
                 </div>
               </div>
+
               <!-- Botón para abrir modal -->
               <div class="contact-button">
                 <h3>¿Deseas más información?</h3>
@@ -225,7 +407,8 @@
             </div>
           </div>
         </div>
-        <!-- Sección del mapa -->
+
+        <!-- Sección del mapa (ahora fuera de contact-info-section) -->
         <div class="map-section">
           <h2>Ubicación</h2>
           <div class="map-container">
@@ -243,13 +426,13 @@
 
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./scripts/script.js"></script>
+  <script src="./scripts/script2test.js"></script>
   <script src="./scripts/animations.js"></script>
   <script type="module" src="./scripts/Formularios/formulariocontacto.js"></script>
   <script type="module" src="./scripts/Formularios/Login.js"></script>
   <script type="module" src="./scripts/errorHandler.js"></script>
 
-  <!-- Modals -->
+  <!-- Agregar el modal justo antes del cierre del body -->
   <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -277,35 +460,34 @@
       </div>
     </div>
   </div>
-
   <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="loginModalLabel">Iniciar sesión</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Iniciar sesión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Error Box -->
+                <div id="error-message" class="alert alert-danger"></div>
+                
+                <form class="contact-form" id="form-login">
+                    <div class="mb-3">
+                        <label for="Usuario" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="Usuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Contraseña" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="Contraseña" required>
+                    </div>
+                    <div>
+                        <a class="registrar-link" href="./Formularios/nuevoUsuario.html">Registrarse</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Enviar</button>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-          <!-- Error Box -->
-          <div id="error-message" class="alert alert-danger"></div>
-          <form class="contact-form" id="form-login">
-            <div class="mb-3">
-              <label for="Usuario" class="form-label">Usuario</label>
-              <input type="text" class="form-control" id="Usuario" required>
-            </div>
-            <div class="mb-3">
-              <label for="Contraseña" class="form-label">Contraseña</label>
-              <input type="password" class="form-control" id="Contraseña" required>
-            </div>
-            <div>
-              <a class="registrar-link" href="./Formularios/nuevoUsuario.html">Registrarse</a>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Enviar</button>
-          </form>
-        </div>
-      </div>
     </div>
-  </div>
-
+</div>
 </body>
 </html>
