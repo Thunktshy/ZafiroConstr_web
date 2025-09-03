@@ -13,7 +13,7 @@ CREATE TABLE logs (
   fecha   DATETIME      NOT NULL DEFAULT GETDATE(),
   origen  NVARCHAR(100) NOT NULL,
   mensaje NVARCHAR(MAX) NOT NULL,
-  usuario NVARCHAR(128) NOT NULL DEFAULT SUSER_Snombre()
+  usuario NVARCHAR(128) NOT NULL DEFAULT SUSER_SNAME()
 );
 GO
 
@@ -34,7 +34,6 @@ CREATE TABLE sizes (
   nombre       NVARCHAR(50) NOT NULL
 );
 GO
-
 
 /* ============================
    CATEGORIAS
@@ -352,7 +351,7 @@ BEGIN
   SET NOCOUNT ON; SET XACT_ABORT ON;
   BEGIN TRY
     BEGIN TRAN;
-    IF EXISTS (SELECT 1 FROM productos WHERE categoria_id=@categoria_id)
+    IF EXISTS (SELECT 1 FROM productos WHERE categoria_principal_id=@categoria_id)
       THROW 51005,'No se puede eliminar: hay productos en esta categoría.',1;
     DELETE FROM categorias WHERE categoria_id=@categoria_id;
     COMMIT;
@@ -595,9 +594,6 @@ BEGIN
 END;
 GO
 
-/* =========================================================
-   PROCEDIMIENTOS: PRODUCTOS (CRUD + consultas)
-   ========================================================= */
 /* =========================================================
    PROCEDIMIENTOS: PRODUCTOS (CRUD + consultas) - UPDATED
    ========================================================= */
@@ -1347,8 +1343,6 @@ BEGIN
 END;
 GO
 
--- *** THIS IS THE CRITICAL PROCEDURE THAT WAS UPDATED ***
--- Changed join from p.categoria_id to p.categoria_principal_id
 CREATE OR ALTER PROCEDURE get_stock_by_categoria_id
   @categoria_id INT
 AS
@@ -1358,9 +1352,9 @@ BEGIN
          c.categoria_id, c.nombre AS categoria_nombre,
          COALESCE(SUM(cd.stock),0) AS stock_total
   FROM productos p
-  JOIN categorias c ON c.categoria_id = p.categoria_principal_id -- JOIN FIXED HERE
+  JOIN categorias c ON c.categoria_id = p.categoria_principal_id 
   LEFT JOIN cajas_detalles cd ON cd.producto_id=p.producto_id
-  WHERE p.estado=1 AND p.categoria_principal_id=@categoria_id -- FILTER FIXED HERE
+  WHERE p.estado=1 AND p.categoria_principal_id=@categoria_id 
   GROUP BY p.producto_id, p.nombre, c.categoria_id, c.nombre
   ORDER BY p.nombre;
 END;
@@ -1551,9 +1545,7 @@ GO
 -- ================================
 
 -- Insert a unit
-DROP PROCEDURE IF EXISTS units_insert;
-GO
-CREATE PROCEDURE units_insert
+CREATE OR ALTER PROCEDURE units_insert
   @nombre NVARCHAR(50)
 AS
 BEGIN
@@ -1565,9 +1557,7 @@ END;
 GO
 
 -- Update a unit by ID
-DROP PROCEDURE IF EXISTS units_update;
-GO
-CREATE PROCEDURE units_update
+CREATE OR ALTER PROCEDURE units_update
   @unit_id INT,
   @nombre    NVARCHAR(50)
 AS
@@ -1580,9 +1570,7 @@ END;
 GO
 
 -- Delete a unit by ID
-DROP PROCEDURE IF EXISTS units_delete;
-GO
-CREATE PROCEDURE units_delete
+CREATE OR ALTER PROCEDURE units_delete
   @unit_id INT
 AS
 BEGIN
@@ -1593,9 +1581,7 @@ END;
 GO
 
 -- Select all units
-DROP PROCEDURE IF EXISTS units_get_all;
-GO
-CREATE PROCEDURE units_get_all
+CREATE OR ALTER PROCEDURE units_get_all
 AS
 BEGIN
   SET NOCOUNT ON;
@@ -1610,9 +1596,7 @@ GO
 -- ================================
 
 -- Insert a size
-DROP PROCEDURE IF EXISTS sizes_insert;
-GO
-CREATE PROCEDURE sizes_insert
+CREATE OR ALTER PROCEDURE sizes_insert
   @nombre NVARCHAR(50)
 AS
 BEGIN
@@ -1624,9 +1608,7 @@ END;
 GO
 
 -- Update a size by ID
-DROP PROCEDURE IF EXISTS sizes_update;
-GO
-CREATE PROCEDURE sizes_update
+CREATE OR ALTER PROCEDURE sizes_update
   @size_id INT,
   @nombre    NVARCHAR(50)
 AS
@@ -1639,9 +1621,7 @@ END;
 GO
 
 -- Delete a size by ID
-DROP PROCEDURE IF EXISTS sizes_delete;
-GO
-CREATE PROCEDURE sizes_delete
+CREATE OR ALTER PROCEDURE sizes_delete
   @size_id INT
 AS
 BEGIN
@@ -1652,9 +1632,7 @@ END;
 GO
 
 -- Select all sizes
-DROP PROCEDURE IF EXISTS sizes_get_all;
-GO
-CREATE PROCEDURE sizes_get_all
+CREATE OR ALTER PROCEDURE sizes_get_all
 AS
 BEGIN
   SET NOCOUNT ON;
@@ -1665,131 +1643,11 @@ GO
 
 
 -- ================================
--- CATEGORÍAS SECUNDARIAS
--- ================================
-
--- Insert a secondary category
-DROP PROCEDURE IF EXISTS categorias_secundarias_insert;
-GO
-CREATE PROCEDURE categorias_secundarias_insert
-  @nombre NVARCHAR(50)
-AS
-BEGIN
-  SET NOCOUNT ON;
-  INSERT INTO categorias_secundarias (nombre)
-  VALUES (@nombre);
-  SELECT SCOPE_IDENTITY() AS categoria_secundaria_id;
-END;
-GO
-
--- Update a secondary category by ID
-DROP PROCEDURE IF EXISTS categorias_secundarias_update;
-GO
-CREATE PROCEDURE categorias_secundarias_update
-  @categoria_secundaria_id INT,
-  @nombre                   NVARCHAR(50)
-AS
-BEGIN
-  SET NOCOUNT ON;
-  UPDATE categorias_secundarias
-    SET nombre = @nombre
-  WHERE categoria_secundaria_id = @categoria_secundaria_id;
-END;
-GO
-
--- Delete a secondary category by ID
-DROP PROCEDURE IF EXISTS categorias_secundarias_delete;
-GO
-CREATE PROCEDURE categorias_secundarias_delete
-  @categoria_secundaria_id INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-  DELETE FROM categorias_secundarias
-  WHERE categoria_secundaria_id = @categoria_secundaria_id;
-END;
-GO
-
--- Select all secondary categories
-DROP PROCEDURE IF EXISTS categorias_secundarias_get_all;
-GO
-CREATE PROCEDURE categorias_secundarias_get_all
-AS
-BEGIN
-  SET NOCOUNT ON;
-  SELECT categoria_secundaria_id, nombre
-  FROM categorias_secundarias;
-END;
-GO
-
-
--- ================================
--- SUBCATEGORÍAS
--- ================================
-
--- Insert a subcategory
-DROP PROCEDURE IF EXISTS subcategorias_insert;
-GO
-CREATE PROCEDURE subcategorias_insert
-  @nombre NVARCHAR(50)
-AS
-BEGIN
-  SET NOCOUNT ON;
-  INSERT INTO subcategorias (nombre)
-  VALUES (@nombre);
-  SELECT SCOPE_IDENTITY() AS subcategoria_id;
-END;
-GO
-
--- Update a subcategory by ID
-DROP PROCEDURE IF EXISTS subcategorias_update;
-GO
-CREATE PROCEDURE subcategorias_update
-  @subcategoria_id INT,
-  @nombre            NVARCHAR(50)
-AS
-BEGIN
-  SET NOCOUNT ON;
-  UPDATE subcategorias
-    SET nombre = @nombre
-  WHERE subcategoria_id = @subcategoria_id;
-END;
-GO
-
--- Delete a subcategory by ID
-DROP PROCEDURE IF EXISTS subcategorias_delete;
-GO
-CREATE PROCEDURE subcategorias_delete
-  @subcategoria_id INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-  DELETE FROM subcategorias
-  WHERE subcategoria_id = @subcategoria_id;
-END;
-GO
-
--- Select all subcategories
-DROP PROCEDURE IF EXISTS subcategorias_get_all;
-GO
-CREATE PROCEDURE subcategorias_get_all
-AS
-BEGIN
-  SET NOCOUNT ON;
-  SELECT subcategoria_id, nombre
-  FROM subcategorias;
-END;
-GO
-
-
--- ================================
 -- BRANDS
 -- ================================
 
 -- Insert a brand
-DROP PROCEDURE IF EXISTS brands_insert;
-GO
-CREATE PROCEDURE brands_insert
+CREATE OR ALTER PROCEDURE brands_insert
   @nombre NVARCHAR(50)
 AS
 BEGIN
@@ -1801,9 +1659,7 @@ END;
 GO
 
 -- Update a brand by ID
-DROP PROCEDURE IF EXISTS brands_update;
-GO
-CREATE PROCEDURE brands_update
+CREATE OR ALTER PROCEDURE brands_update
   @brand_id INT,
   @nombre     NVARCHAR(50)
 AS
@@ -1816,9 +1672,7 @@ END;
 GO
 
 -- Delete a brand by ID
-DROP PROCEDURE IF EXISTS brands_delete;
-GO
-CREATE PROCEDURE brands_delete
+CREATE OR ALTER PROCEDURE brands_delete
   @brand_id INT
 AS
 BEGIN
@@ -1829,9 +1683,7 @@ END;
 GO
 
 -- Select all brands
-DROP PROCEDURE IF EXISTS brands_get_all;
-GO
-CREATE PROCEDURE brands_get_all
+CREATE OR ALTER PROCEDURE brands_get_all
 AS
 BEGIN
   SET NOCOUNT ON;
@@ -1842,9 +1694,7 @@ GO
 
 
 -- By category principal
-DROP PROCEDURE IF EXISTS productos_get_by_categoria_principal;
-GO
-CREATE PROCEDURE productos_get_by_categoria_principal
+CREATE OR ALTER PROCEDURE productos_get_by_categoria_principal
   @categoria_principal_id INT
 AS
 BEGIN
@@ -1854,9 +1704,7 @@ END;
 GO
 
 -- By secondary category
-DROP PROCEDURE IF EXISTS productos_get_by_categoria_secundaria;
-GO
-CREATE PROCEDURE productos_get_by_categoria_secundaria
+CREATE OR ALTER PROCEDURE productos_get_by_categoria_secundaria
   @categoria_secundaria_id INT
 AS
 BEGIN
@@ -1866,9 +1714,7 @@ END;
 GO
 
 -- By subcategory
-DROP PROCEDURE IF EXISTS productos_get_by_subcategoria;
-GO
-CREATE PROCEDURE productos_get_by_subcategoria
+CREATE OR ALTER PROCEDURE productos_get_by_subcategoria
   @subcategoria_id INT
 AS
 BEGIN
@@ -1878,9 +1724,7 @@ END;
 GO
 
 -- By unit
-DROP PROCEDURE IF EXISTS productos_get_by_unit;
-GO
-CREATE PROCEDURE productos_get_by_unit
+CREATE OR ALTER PROCEDURE productos_get_by_unit
   @unit_id INT
 AS
 BEGIN
@@ -1890,9 +1734,7 @@ END;
 GO
 
 -- By size
-DROP PROCEDURE IF EXISTS productos_get_by_size;
-GO
-CREATE PROCEDURE productos_get_by_size
+CREATE OR ALTER PROCEDURE productos_get_by_size
   @size_id INT
 AS
 BEGIN
@@ -1902,13 +1744,174 @@ END;
 GO
 
 -- By brand
-DROP PROCEDURE IF EXISTS productos_get_by_brand;
-GO
-CREATE PROCEDURE productos_get_by_brand
+CREATE OR ALTER PROCEDURE productos_get_by_brand
   @brand_id INT
 AS
 BEGIN
   SELECT * FROM productos
   WHERE brand_id = @brand_id;
+END;
+GO
+
+/* ============================
+   UNITS / SIZES / BRANDS: get_by_id
+   ============================ */
+
+-- units_get_by_id
+CREATE OR ALTER PROCEDURE units_get_by_id
+  @unit_id INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT unit_id, nombre
+  FROM units
+  WHERE unit_id = @unit_id;
+END;
+GO
+
+-- sizes_get_by_id
+CREATE OR ALTER PROCEDURE sizes_get_by_id
+  @size_id INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT size_id, nombre
+  FROM sizes
+  WHERE size_id = @size_id;
+END;
+GO
+
+-- brands_get_by_id
+CREATE OR ALTER PROCEDURE brands_get_by_id
+  @brand_id INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT brand_id, nombre
+  FROM brands
+  WHERE brand_id = @brand_id;
+END;
+GO
+
+
+/* ============================
+   USUARIOS: get_all + delete
+   ============================ */
+
+-- usuarios_get_all
+CREATE OR ALTER PROCEDURE usuarios_get_all
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT usuario_id, nombre, email, fecha_registro, estado, tipo
+  FROM usuarios
+  ORDER BY nombre;
+END;
+GO
+
+-- usuarios_delete (hard delete con validación básica)
+CREATE OR ALTER PROCEDURE usuarios_delete
+  @usuario_id INT
+AS
+BEGIN
+  SET NOCOUNT ON; SET XACT_ABORT ON;
+  BEGIN TRY
+    BEGIN TRAN;
+
+    DELETE FROM usuarios
+    WHERE usuario_id = @usuario_id;
+
+    IF @@ROWCOUNT = 0
+      THROW 56014, 'Usuario no encontrado.', 1;
+
+    COMMIT;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0 ROLLBACK;
+    INSERT INTO logs(origen, mensaje)
+    VALUES(N'usuarios_delete', ERROR_MESSAGE());
+    THROW;
+  END CATCH
+END;
+GO
+
+
+/* ============================
+   CAJAS_DETALLES: get_all
+   ============================ */
+
+CREATE OR ALTER PROCEDURE cajas_detalles_get_all
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT d.detalle_id, d.caja_id, c.etiqueta, d.producto_id, d.stock
+  FROM cajas_detalles d
+  JOIN cajas c ON c.caja_id = d.caja_id
+  ORDER BY
+    LEN(c.letra), c.letra,
+    CASE c.cara  WHEN 1 THEN 1 ELSE 2 END,
+    CASE c.nivel WHEN 1 THEN 1 ELSE 2 END,
+    d.producto_id;
+END;
+GO
+
+
+/* ============================
+   PRODUCTOS: delete (cautious hard delete)
+   - Reglas:
+     1) Debe existir el producto.
+     2) Si hay stock > 0 en cualquier caja => bloquear.
+     3) Si el producto sigue activo (estado=1), exigir soft delete previo
+        (productos_soft_delete) a menos que @force = 1.
+     4) Elimina filas de cajas_detalles (si existieran con stock=0),
+        luego elimina el producto.
+   ============================ */
+
+CREATE OR ALTER PROCEDURE productos_delete
+  @producto_id INT,
+  @force BIT = 0  -- poner 1 para omitir el requisito de estado=0
+AS
+BEGIN
+  SET NOCOUNT ON; SET XACT_ABORT ON;
+  BEGIN TRY
+    BEGIN TRAN;
+
+    IF NOT EXISTS (SELECT 1 FROM productos WHERE producto_id = @producto_id)
+      THROW 52020, 'Producto no encontrado.', 1;
+
+    DECLARE @estado BIT;
+    SELECT @estado = estado FROM productos WHERE producto_id = @producto_id;
+
+    IF (@estado = 1 AND @force = 0)
+      THROW 52043, 'El producto está activo. Use productos_soft_delete primero o pase @force = 1.', 1;
+
+    IF EXISTS (
+      SELECT 1
+      FROM cajas_detalles
+      WHERE producto_id = @producto_id
+        AND stock > 0
+    )
+      THROW 52041, 'No se puede eliminar: hay stock > 0 en alguna caja.', 1;
+
+    -- Limpia detalles (si existiesen con stock=0)
+    DELETE FROM cajas_detalles
+    WHERE producto_id = @producto_id;
+
+    -- Eliminar producto
+    DELETE FROM productos
+    WHERE producto_id = @producto_id;
+
+    COMMIT;
+
+    -- Respuesta mínima de confirmación
+    SELECT @producto_id AS producto_id, N'Eliminado' AS estado_operacion;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0 ROLLBACK;
+    INSERT INTO logs(origen, mensaje)
+    VALUES(N'productos_delete',
+           CONCAT('N°',ERROR_NUMBER(),' L',ERROR_LINE(),' [',ISNULL(ERROR_PROCEDURE(),'-'),'] ',ERROR_MESSAGE()));
+    THROW;
+  END CATCH
 END;
 GO

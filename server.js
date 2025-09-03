@@ -49,9 +49,6 @@ app.use(session({
   cookie: { maxAge: 60 * 60 * 1000 } // 1h
 }));
 
-
-const path = require('path');
-
 const PUBLIC_DIR = path.resolve(process.cwd(), 'Public');
 
 // Servir archivos estáticos (css/, scripts/, imágenes, etc.)
@@ -95,15 +92,48 @@ app.use('/user-resources', requireUser, userStatic);
 
 /**
  * ENDPOINTS DE NEGOCIO
- * Modelo a seguir:
- * - Consultas: requieren requireAuth (verificado dentro de cada router con PROTECTION)
- * - Insert/Update/Delete: requieren requireAdmin
  */
-app.use('/cajas',       CajasRouter);
-app.use('/categorias',  CategoriasRouter);
-app.use('/productos',   ProductosRouter);
-app.use('/stock',       StockRouter);
+
+const cajasRouter = require('./Server/Routes/cajasRouter.js');
+app.use('/cajas', cajasRouter);
+
+// Rutas para Categorías Secundarias
+const categoriasSecundariasRouter = require('./Server/Routes/categorias_secundariasRouter.js');
+app.use('/categorias-secundarias', categoriasSecundariasRouter);
+
+// Rutas para Subcategorías
+const subcategoriasRouter = require('./Server/Routes/subcategoriasRouter.js');
+app.use('/subcategorias', subcategoriasRouter);
 //app.use('/usuarios',    UsuariosRouter); // reemplaza a /clientes
+
+// Rutas para Brands
+const brandsRouter = require('./Server/Routes/brandsRouter.js');
+app.use('/brands', brandsRouter);
+
+// Rutas para Sizes
+const sizesRouter = require('./Server/Routes/sizesRouter.js');
+app.use('/sizes', sizesRouter);
+
+// Rutas para Units
+const unitsRouter = require('./Server/Routes/unitsRouter.js');
+app.use('/units', unitsRouter);
+
+// Productos
+const productosRouter = require('./Server/Routes/productosRouter.js');
+app.use('/productos', productosRouter);
+
+// Stock (operaciones)
+const stockRouter = require('./Server/Routes/stockRouter.js');
+app.use('/stock', stockRouter);
+
+// Reportes de Stock
+const reportesStockRouter = require('./Server/Routes/reportes_stockRouter.js');
+app.use('/reportes-stock', reportesStockRouter);
+
+// Rutas para Usuarios
+const usuariosRouter = require('./Server/Routes/usuariosRouter.js');
+app.use('/usuarios', usuariosRouter);
+
 
 /**
  * HEALTHCHECK (útil para orquestadores/monitoreo)

@@ -1,194 +1,230 @@
-'use strict';
-
-/**
- * IMPORTS
- */
+// Server/routes/usuariosRouter.js
+// Stored Procedures usados (parámetros y retorno esperado):
+//
+// - usuarios_insert(@nombre NVARCHAR(100), @contrasena NVARCHAR(255), @email NVARCHAR(150), @tipo NVARCHAR(10)=NULL)
+//     -> RETURNS: [ { usuario_id, nombre, email, estado, tipo } ]
+//
+// - usuarios_update(@usuario_id INT, @nombre NVARCHAR(100), @email NVARCHAR(150), @tipo NVARCHAR(10)=NULL)
+//     -> RETURNS: [ { usuario_id, nombre, email, estado, tipo } ]
+//
+// - usuarios_delete(@usuario_id INT)
+//     -> RETURNS: none
+//
+// - usuarios_get_all()
+//     -> RETURNS: [ { usuario_id, nombre, email, fecha_registro, estado, tipo }, ... ]
+//
+// - usuario_por_id(@usuario_id INT)
+//     -> RETURNS: [ { usuario_id, nombre, contrasena, email, fecha_registro, estado, tipo } ] (0/1)
+//
+// - usuario_por_email(@email NVARCHAR(150))
+//     -> RETURNS: [ { usuario_id, nombre, email, fecha_registro, estado, tipo } ] (0/1)
+//
+// - buscar_id_para_login(@email NVARCHAR(150))   **(público)**
+//     -> RETURNS: TOP(1) [ { id (NVARCHAR), contrasena, nombre, email, tipo } ]  (solo estado=1)
+//
+// Protecciones (sugeridas):
+//   - insert/update → requireAuth
+//   - delete/get_all/set_tipo/set_admin → requireAdmin
+//   - por_id / por_email → requireAuth
+//   - login_lookup → público (sin auth/admin)
 const express = require('express');
-const bcrypt = require('bcrypt');
-const { db, sql } = require('../../db/dbconnector.js');                 // pool MSSQL + tipos
-const ValidationService = require('../Validators/validatorService.js'); // validateData(payload, rules)
-const { requireAdmin, requireAuth, requireUser } = require('../Routes/authRouter.js'); // middlewares
+const { db, sql } = require('../../db/dbconnector.js');
+const ValidationService = require('../Validators/validatorService.js');
+const { requireAuth, requireAdmin } = require('./authRouter.js'); // ajusta a authRouter.js si aplica
+const {
+  InsertRules,
+  UpdateRules,
+  DeleteRules,
+  PorIdRules,
+  PorEmailRules,
+  SetTipoRules,
+  SetAdminRules,
+  LoginLookupRules
+} = require('../Validators/Rulesets/usuarios.js');
 
-const UsuariosRouter = express.Router();
+const Router = express.Router();
 
-/**
- * PROTECCIÓN POR ENDPOINT
- * - Consultas -> requireAuth
- * - Mutaciones -> requireAdmin
- */
-const PROTECTION = {
-  GET_BY_ID:   'auth',   // GET /por_id/:usuario_id
-  GET_BY_MAIL: 'admin',  // GET /por_email/:email   (evita fugas)
-  INSERT:      'admin',  // POST /insert
-  UPDATE:      'admin',  // POST /update
-  SET_TIPO:    'admin',  // POST /set_tipo
-  SET_ADMIN:   'admin',  // POST /set_admin
-};
+function BuildParams(entries) {
+  const p = {};
+  for (const e of entries) p[e.name] = { type: e.type, value: e.value };
+  return p;
+}
 
-// Traductor de nivel a middleware
-function guard(level){
-  switch(level){
-    case 'admin': return requireAdmin;
-    case 'auth':  return requireAuth;
-    case 'user':  return requireUser;
-    case 'none':
-    default:      return (_req,_res,next)=>next();
+/* ============================== INSERT (auth) ============================== */
+Router.post('/insert', requireAuth, async (req, res) => {
+  try {
+    const B = req.body;
+    const { isValid, errors } = await ValidationService.validateData(B, InsertRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (insert)', errors });
+
+    const params = BuildParams([
+      { name:'nombre',      type: sql.NVarChar(100), value: B.nombre },
+      { name:'contrasena',  type: sql.NVarChar(255), value: B.contrasena },
+      { name:'email',       type: sql.NVarChar(150), value: B.email },
+      { name:'tipo',        type: sql.NVarChar(10),  value: B.tipo ?? null }
+    ]);
+
+    const data = await db.executeProc('usuarios_insert', params);
+    return res.status(201).json({ success:true, message:'Usuario creado', data });
+  } catch (err) {
+    console.error('usuarios_insert error:', err);
+    return res.status(500).json({ success:false, message:'Error al crear el usuario' });
   }
-}
-
-// ---------- Helpers ----------
-function BuildParams(entries){ const p={}; for(const e of entries){ p[e.name]={type:e.type,value:e.value}; } return p; }
-
-/** Mapa de errores SQL -> HTTP (560xx de tus SP de usuarios) */
-function mapSqlError(err){
-  const e = err && (typeof err.number === 'number' ? err : err.originalError);
-  if(!e || typeof e.number !== 'number') return null;
-  const map = {
-    56001:{code:400,message:'Formato de email inválido.'},
-    56002:{code:409,message:'El nombre de usuario ya existe.'},
-    56003:{code:409,message:'El email ya está registrado.'},
-    56004:{code:404,message:'usuario_id no existe.'},
-    56005:{code:409,message:'El nombre ya está en uso por otro usuario.'},
-    56006:{code:409,message:'El email ya está en uso por otro usuario.'},
-    56012:{code:400,message:'Tipo inválido. Use "Usuario" o "Admin".'},
-    56013:{code:404,message:'usuario_id no existe.'},
-  };
-  return map[e.number] || null;
-}
-
-/** Respuestas uniformes */
-function sendOk(res, data, message){
-  return res.status(200).json({ success:true, message: message ?? (Array.isArray(data)?(data.length?'OK':'Sin resultados'):'OK'), data });
-}
-function sendCreated(res, data, message){
-  return res.status(201).json({ success:true, message: message ?? 'Creado', data });
-}
-function sendError(res, err, fallback='Error de servidor'){
-  const m = mapSqlError(err);
-  if(m) return res.status(m.code).json({ success:false, message:m.message, data:null });
-  return res.status(500).json({ success:false, message:fallback, data:null });
-}
-
-// ---------- Validaciones rápidas (usando tu ValidationService) ----------
-const InsertRules = {
-  nombre:      { required:true,  type:'string', minLength:1, maxLength:100 },
-  contrasena:  { required:true,  type:'string', minLength:6, maxLength:255 },
-  email:       { required:true,  type:'string', minLength:3, maxLength:150 },
-  tipo:        { required:false, type:'string', minLength:5, maxLength:10 }, // 'Usuario' | 'Admin'
-};
-const UpdateRules = {
-  usuario_id:  { required:true,  type:'number', min:1 },
-  nombre:      { required:true,  type:'string', minLength:1, maxLength:100 },
-  email:       { required:true,  type:'string', minLength:3, maxLength:150 },
-  tipo:        { required:false, type:'string', minLength:5, maxLength:10 },
-};
-const SetTipoRules = {
-  usuario_id:  { required:true,  type:'number', min:1 },
-  tipo:        { required:true,  type:'string',  enum:['Usuario','Admin'] }
-};
-const ByIdRules = { usuario_id:{ required:true, type:'number', min:1 } };
-
-// ---------- Rutas ----------
-
-// GET /usuarios/por_id/:usuario_id (omite hash de contraseña en respuesta)
-UsuariosRouter.get('/por_id/:usuario_id', guard(PROTECTION.GET_BY_ID), async (req,res)=>{
-  try{
-    const Body = { usuario_id: Number(req.params.usuario_id) };
-    const { isValid } = await ValidationService.validateData(Body, ByIdRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (por_id)', data:null });
-
-    const data = await db.executeProc('usuario_por_id', { usuario_id:{ type: sql.Int, value: Body.usuario_id }});
-    if(!data.length) return res.status(404).json({ success:false, message:'Usuario no encontrado', data:[] });
-
-    const row = { ...data[0] };
-    if ('contrasena' in row) delete row.contrasena; // higiene
-    return sendOk(res, row, 'Usuario obtenido');
-  }catch(err){ return sendError(res, err, 'Error al obtener usuario'); }
 });
 
-// GET /usuarios/por_email/:email   (solo admin)
-UsuariosRouter.get('/por_email/:email', guard(PROTECTION.GET_BY_MAIL), async (req,res)=>{
-  try{
-    const email = decodeURIComponent(String(req.params.email||'')).trim();
-    const { isValid } = await ValidationService.validateData({ email }, { email:{ required:true, type:'string', minLength:3, maxLength:150 }});
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (por_email)', data:null });
+/* ============================== UPDATE (auth) ============================== */
+Router.post('/update', requireAuth, async (req, res) => {
+  try {
+    const B = req.body;
+    const { isValid, errors } = await ValidationService.validateData(B, UpdateRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (update)', errors });
 
-    const data = await db.executeProc('usuario_por_email', { email:{ type: sql.NVarChar(150), value: email }});
-    if(!data.length) return res.status(404).json({ success:false, message:'Usuario no encontrado', data:[] });
-    return sendOk(res, data[0], 'Usuario obtenido');
-  }catch(err){ return sendError(res, err, 'Error al obtener usuario por email'); }
-});
-
-// POST /usuarios/insert  (hash de contraseña antes de guardar)
-UsuariosRouter.post('/insert', guard(PROTECTION.INSERT), async (req,res)=>{
-  try{
-    const Body = req.body;
-    const { isValid } = await ValidationService.validateData(Body, InsertRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (insert)', data:null });
-
-    const hash = await bcrypt.hash(Body.contrasena, Number(process.env.BCRYPT_ROUNDS||10));
-
-    const Params = BuildParams([
-      { name:'nombre',     type: sql.NVarChar(100), value: Body.nombre },
-      { name:'contrasena', type: sql.NVarChar(255), value: hash },
-      { name:'email',      type: sql.NVarChar(150), value: Body.email },
-      { name:'tipo',       type: sql.NVarChar(10),  value: Body.tipo ?? null }
+    const params = BuildParams([
+      { name:'usuario_id', type: sql.Int,            value: Number(B.usuario_id) },
+      { name:'nombre',     type: sql.NVarChar(100),  value: B.nombre },
+      { name:'email',      type: sql.NVarChar(150),  value: B.email },
+      { name:'tipo',       type: sql.NVarChar(10),   value: B.tipo ?? null }
     ]);
 
-    const data = await db.executeProc('usuarios_insert', Params);
-    return sendCreated(res, data[0] ?? null, 'Usuario creado');
-  }catch(err){ return sendError(res, err, 'Error al crear usuario'); }
+    const data = await db.executeProc('usuarios_update', params);
+    return res.status(200).json({ success:true, message:'Usuario actualizado', data });
+  } catch (err) {
+    console.error('usuarios_update error:', err);
+    return res.status(500).json({ success:false, message:'Error al actualizar el usuario' });
+  }
 });
 
-// POST /usuarios/update
-UsuariosRouter.post('/update', guard(PROTECTION.UPDATE), async (req,res)=>{
-  try{
-    const Body = req.body;
-    const { isValid } = await ValidationService.validateData(Body, UpdateRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (update)', data:null });
+/* =============================== DELETE (admin) =========================== */
+Router.post('/delete', requireAdmin, async (req, res) => {
+  try {
+    const B = req.body;
+    const { isValid, errors } = await ValidationService.validateData(B, DeleteRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (delete)', errors });
 
-    const Params = BuildParams([
-      { name:'usuario_id', type: sql.Int,           value: Body.usuario_id },
-      { name:'nombre',     type: sql.NVarChar(100), value: Body.nombre },
-      { name:'email',      type: sql.NVarChar(150), value: Body.email },
-      { name:'tipo',       type: sql.NVarChar(10),  value: Body.tipo ?? null }
-    ]);
+    await db.executeProc('usuarios_delete', {
+      usuario_id: { type: sql.Int, value: Number(B.usuario_id) }
+    });
 
-    const data = await db.executeProc('usuarios_update', Params);
-    if(!data.length) return res.status(404).json({ success:false, message:'Usuario no encontrado', data:[] });
-    return sendOk(res, data[0], 'Usuario actualizado');
-  }catch(err){ return sendError(res, err, 'Error al actualizar usuario'); }
+    return res.status(200).json({ success:true, message:'Usuario eliminado' });
+  } catch (err) {
+    console.error('usuarios_delete error:', err);
+    return res.status(500).json({ success:false, message:'Error al eliminar el usuario' });
+  }
 });
 
-// POST /usuarios/set_tipo
-UsuariosRouter.post('/set_tipo', guard(PROTECTION.SET_TIPO), async (req,res)=>{
-  try{
-    const Body = req.body;
-    const { isValid } = await ValidationService.validateData(Body, SetTipoRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (set_tipo)', data:null });
-
-    const Params = BuildParams([
-      { name:'usuario_id', type: sql.Int,          value: Body.usuario_id },
-      { name:'tipo',       type: sql.NVarChar(10), value: Body.tipo }
-    ]);
-
-    const data = await db.executeProc('usuarios_set_tipo', Params);
-    if(!data.length) return res.status(404).json({ success:false, message:'Usuario no encontrado', data:[] });
-    return sendOk(res, data[0], 'Rol actualizado');
-  }catch(err){ return sendError(res, err, 'Error al actualizar rol'); }
+/* =============================== GET ALL (admin) ========================== */
+Router.get('/get_all', requireAdmin, async (_req, res) => {
+  try {
+    const data = await db.executeProc('usuarios_get_all', {});
+    return res.status(200).json({ success:true, message:'Listado de usuarios', data });
+  } catch (err) {
+    console.error('usuarios_get_all error:', err);
+    return res.status(500).json({ success:false, message:'Error al obtener usuarios' });
+  }
 });
 
-// POST /usuarios/set_admin
-UsuariosRouter.post('/set_admin', guard(PROTECTION.SET_ADMIN), async (req,res)=>{
-  try{
-    const Body = req.body; // { usuario_id }
-    const { isValid } = await ValidationService.validateData(Body, { usuario_id:{ required:true, type:'number', min:1 }});
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (set_admin)', data:null });
+/* =============================== GET por_id (auth) ======================== */
+Router.get('/por_id/:usuario_id', requireAuth, async (req, res) => {
+  try {
+    const B = { usuario_id: Number(req.params.usuario_id) };
+    const { isValid, errors } = await ValidationService.validateData(B, PorIdRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (por_id)', errors });
 
-    const data = await db.executeProc('usuarios_set_admin', { usuario_id:{ type: sql.Int, value: Body.usuario_id }});
-    if(!data.length) return res.status(404).json({ success:false, message:'Usuario no encontrado', data:[] });
-    return sendOk(res, data[0], 'Usuario promovido a Admin');
-  }catch(err){ return sendError(res, err, 'Error al promover a Admin'); }
+    const data = await db.executeProc('usuario_por_id', {
+      usuario_id: { type: sql.Int, value: B.usuario_id }
+    });
+
+    if (!data?.length) return res.status(404).json({ success:false, message:'Usuario no encontrado' });
+
+    // Por seguridad, no devolvemos contrasena si viene en el result set
+    const { contrasena, ...safe } = data[0];
+    return res.status(200).json({ success:true, message:'Usuario obtenido', data: safe });
+  } catch (err) {
+    console.error('usuario_por_id error:', err);
+    return res.status(500).json({ success:false, message:'Error al obtener el usuario' });
+  }
 });
 
-module.exports = UsuariosRouter;
+/* ============================== GET por_email (auth) ====================== */
+Router.get('/por_email/:email', requireAuth, async (req, res) => {
+  try {
+    const B = { email: String(req.params.email) };
+    const { isValid, errors } = await ValidationService.validateData(B, PorEmailRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (por_email)', errors });
+
+    const data = await db.executeProc('usuario_por_email', {
+      email: { type: sql.NVarChar(150), value: B.email }
+    });
+
+    if (!data?.length) return res.status(404).json({ success:false, message:'Usuario no encontrado' });
+    return res.status(200).json({ success:true, message:'Usuario obtenido por email', data: data[0] });
+  } catch (err) {
+    console.error('usuario_por_email error:', err);
+    return res.status(500).json({ success:false, message:'Error al obtener el usuario por email' });
+  }
+});
+
+/* ======================= GET login_lookup (público) ======================= */
+// SP: buscar_id_para_login(@email NVARCHAR(150))
+// RETURNS: TOP(1) { id (NVARCHAR), contrasena, nombre, email, tipo } (solo estado=1)
+Router.get('/login_lookup/:email', async (req, res) => {
+  try {
+    const B = { email: String(req.params.email) };
+    const { isValid, errors } = await ValidationService.validateData(B, LoginLookupRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (login_lookup)', errors });
+
+    const data = await db.executeProc('buscar_id_para_login', {
+      email: { type: sql.NVarChar(150), value: B.email }
+    });
+
+    if (!data?.length) return res.status(404).json({ success:false, message:'Usuario no encontrado o inactivo' });
+
+    // Seguridad: evitar exponer 'contrasena' públicamente
+    const { contrasena, ...safe } = data[0];
+    return res.status(200).json({ success:true, message:'Lookup de login', data: safe });
+
+    // Si deseas devolver 'contrasena' (p.ej., hash) elimina el filtrado anterior.
+  } catch (err) {
+    console.error('buscar_id_para_login error:', err);
+    return res.status(500).json({ success:false, message:'Error en login lookup' });
+  }
+});
+
+/* ================================ SET TIPO (admin) ======================== */
+Router.post('/set_tipo', requireAdmin, async (req, res) => {
+  try {
+    const B = req.body;
+    const { isValid, errors } = await ValidationService.validateData(B, SetTipoRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (set_tipo)', errors });
+
+    const data = await db.executeProc('usuarios_set_tipo', {
+      usuario_id: { type: sql.Int, value: Number(B.usuario_id) },
+      tipo:       { type: sql.NVarChar(10), value: B.tipo }
+    });
+
+    return res.status(200).json({ success:true, message:'Tipo de usuario actualizado', data });
+  } catch (err) {
+    console.error('usuarios_set_tipo error:', err);
+    return res.status(500).json({ success:false, message:'Error al actualizar tipo de usuario' });
+  }
+});
+
+/* ================================ SET ADMIN (admin) ======================= */
+Router.post('/set_admin', requireAdmin, async (req, res) => {
+  try {
+    const B = req.body;
+    const { isValid, errors } = await ValidationService.validateData(B, SetAdminRules);
+    if (!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (set_admin)', errors });
+
+    const data = await db.executeProc('usuarios_set_admin', {
+      usuario_id: { type: sql.Int, value: Number(B.usuario_id) }
+    });
+
+    return res.status(200).json({ success:true, message:'Usuario marcado como admin', data });
+  } catch (err) {
+    console.error('usuarios_set_admin error:', err);
+    return res.status(500).json({ success:false, message:'Error al marcar admin' });
+  }
+});
+
+module.exports = Router;

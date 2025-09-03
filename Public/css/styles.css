@@ -7,7 +7,14 @@
   --spacing-standard: 1rem;
 }
 
-
+.company-info{
+  background-color: var(--color-primary);
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-standard) 2rem;
+  justify-content: center;
+}
 
 /* Barra de navegación principal */
 .navigation-primary {
@@ -18,6 +25,7 @@
   padding: var(--spacing-standard) 2rem;
   z-index: 1000;
   transition: background-color .3s ease;
+  justify-content: center;
 }
 
 /* Contenedor para alinear logo y enlaces */
@@ -25,7 +33,7 @@
   max-width: 1200px; /* Increased max-width for better layout */
   margin: 0 auto;
   display: flex;
-  justify-content: space-between; /* Space between company info and navigation menu */
+  justify-content: center; /* Space between company info and navigation menu */
   align-items: center;
 }
 

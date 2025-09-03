@@ -9,33 +9,29 @@ const { db, sql } = require('../../db/dbconnector.js');
 const router = express.Router();
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'connect.sid';
 
+// Updated paths:
 const ADMIN_HOME = '/admin-resources/pages/admin.html';
-const USER_HOME  = '/User-resources/pages/miCuenta.html';
+const USER_HOME  = '/user-resources/pages/miCuenta.html';
 
 // ---------------------------
-// Helpers
+// Helpers 
 // ---------------------------
-
-// Guardar la sesión antes de responder
 function saveSession(req) {
   return new Promise((resolve, reject) =>
     req.session.save(err => (err ? reject(err) : resolve()))
   );
 }
-
-// Evitar fijación de sesión: regenerar ID de sesión al loguear
 function regenerateSession(req) {
   return new Promise((resolve, reject) =>
     req.session.regenerate(err => (err ? reject(err) : resolve()))
   );
 }
-
 function isHtmlRequest(req) {
   return (req.headers.accept || '').includes('text/html');
 }
 
 // ---------------------------
-// POST /login  (recibe email y password)
+// POST /login
 // ---------------------------
 router.post('/login', [
   body('email').trim().isEmail().withMessage('Email inválido').isLength({ max: 150 }),
@@ -53,12 +49,10 @@ router.post('/login', [
   const { email, password } = req.body;
 
   try {
-    // Llama al SP que busca por email
     const rows = await db.executeProc('buscar_id_para_login', {
       email: { type: sql.NVarChar(150), value: email }
     });
 
-    // No encontrado o inactivo
     if (!rows?.length) {
       return res.status(401).json({ success: false, message: 'Credenciales inválidas.' });
     }
@@ -68,31 +62,28 @@ router.post('/login', [
       return res.status(401).json({ success: false, message: 'Credenciales inválidas.' });
     }
 
-    // Comparar contraseña con bcrypt
     const ok = await bcrypt.compare(password, contrasena);
     if (!ok) {
       return res.status(401).json({ success: false, message: 'Credenciales inválidas.' });
     }
 
-    // Normalizar tipo y calcular flags
     const normTipo = String(tipo).trim().toLowerCase(); // "usuario" | "admin"
     const isUser  = normTipo === 'usuario';
     const isAdmin = normTipo === 'admin';
 
-    // Regenerar sesión para evitar fijación y luego establecer datos
     await regenerateSession(req);
 
     req.session.userID   = id;
-    req.session.userType = tipo;                // guardar el valor tal cual viene de DB
+    req.session.userType = tipo;
     req.session.username = nombre || null;
     req.session.isAdmin  = isAdmin;
-    req.session.isUser   = isUser || (!isAdmin && !isUser); // fallback: tratar como Usuario
+    req.session.isUser   = isUser || (!isAdmin && !isUser);
     req.session.isAuth   = req.session.isUser || req.session.isAdmin;
 
     await saveSession(req);
 
-    // Si es navegación HTML, redirigir según rol; si es API, responder JSON
     if (isHtmlRequest(req)) {
+      // redirect based on role
       return res.redirect(303, req.session.isAdmin ? ADMIN_HOME : USER_HOME);
     }
 

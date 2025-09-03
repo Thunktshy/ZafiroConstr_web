@@ -1,176 +1,181 @@
-// Server/Routes/cajasRouter.js
-'use strict';
+// Server/routes/cajasRouter.js
+// Rutas para Cajas — basadas en stored procedures existentes:
+//   - cajas_insert(@letra VARCHAR(2), @cara TINYINT, @nivel TINYINT)
+//       -> RETURNS: [ { caja_id, letra, cara, nivel, etiqueta } ]
+//   - cajas_update(@caja_id INT, @letra VARCHAR(2), @cara TINYINT, @nivel TINYINT)
+//       -> RETURNS: [ { caja_id, letra, cara, nivel, etiqueta } ]
+//   - cajas_delete(@caja_id INT)
+//       -> RETURNS: none
+//   - cajas_get_all()
+//       -> RETURNS: [ { caja_id, letra, cara, nivel, etiqueta }, ... ]
+//   - cajas_get_list()
+//       -> RETURNS: [ { caja_id, etiqueta }, ... ]
+//   - cajas_get_by_id(@caja_id INT)
+//       -> RETURNS: [ { caja_id, letra, cara, nivel, etiqueta } ]  (0 o 1 fila)
 
-/**
- * IMPORTS
- */
 const express = require('express');
-const { db, sql } = require('../../db/dbconnector.js');          // <- pool + tipos SQL
-const ValidationService = require('../Validators/validatorService.js'); // <- validateData(payload, rules)
-const { requireAdmin, requireAuth, requireUser } = require('../Routes/authRouter.js'); // <- middlewares de auth
-const { InsertRules, UpdateRules, DeleteRules, ByIdRules } = require('../Validators/Rulesets/cajas.js'); // <- reglas
+const { db, sql } = require('../../db/dbconnector.js'); // DB pool + types  :contentReference[oaicite:7]{index=7}
+const ValidationService = require('../Validators/validatorService.js');         // validateData   :contentReference[oaicite:8]{index=8}
+const { InsertRules, UpdateRules, DeleteRules, PorIdRules } = require('../Validators/Rulesets/cajas.js');
+
+const { requireAuth, requireAdmin } = require('./authRouter.js'); // middlewares  :contentReference[oaicite:9]{index=9}
 
 const CajasRouter = express.Router();
 
-/**
- * CONFIG DE PROTECCIÓN EXPLÍCITA POR RUTA 
- * Valores posibles: 'admin' | 'auth' | 'user' | 'none'
- */
-const PROTECTION = {
-  LIST_ALL:   'auth', // GET /all
-  LIST:       'auth', // GET /list
-  GET_BY_ID:  'auth', // GET /por_id/:caja_id
-  INSERT:     'admin',// POST /insert
-  UPDATE:     'admin',// POST /update
-  DELETE:     'admin' // POST /delete
-};
+// Helper para construir params { name, type, value } -> { name: {type, value} }
+function BuildParams(entries) {
+  const params = {};
+  for (const e of entries) params[e.name] = { type: e.type, value: e.value };
+  return params;
+}
 
-// Helper para traducir el nivel a middleware real
-function guard(level) {
-  switch (level) {
-    case 'admin': return requireAdmin;
-    case 'auth':  return requireAuth;
-    case 'user':  return requireUser;
-    case 'none':
-    default:      return (_req, _res, next) => next();
+/* ============================================================================
+   POST /cajas/insert  (Auth requerido)
+   SP: cajas_insert(@letra VARCHAR(2), @cara TINYINT, @nivel TINYINT)
+   RETURNS: [ { caja_id, letra, cara, nivel, etiqueta } ]
+============================================================================ */
+CajasRouter.post('/insert', requireAuth, async (req, res) => {
+  try {
+    const body = req.body;
+    const { isValid, errors } = await ValidationService.validateData(body, InsertRules);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Datos inválidos (insert)', errors });
+    }
+
+    const params = BuildParams([
+      { name: 'letra', type: sql.VarChar(2), value: body.letra },
+      { name: 'cara',  type: sql.TinyInt,   value: Number(body.cara) },
+      { name: 'nivel', type: sql.TinyInt,   value: Number(body.nivel) }
+    ]);
+
+    const data = await db.executeProc('cajas_insert', params);
+    return res.status(201).json({
+      success: true,
+      message: 'Caja creada',
+      data
+    });
+  } catch (err) {
+    console.error('cajas_insert error:', err);
+    return res.status(500).json({ success: false, message: 'Error al crear la caja' });
   }
-}
+});
 
-// ---------- Helpers comunes ----------
-function BuildParams(entries){ const p={}; for(const e of entries){ p[e.name]={type:e.type,value:e.value}; } return p; }
+/* ============================================================================
+   POST /cajas/update  (Auth requerido)
+   SP: cajas_update(@caja_id INT, @letra VARCHAR(2), @cara TINYINT, @nivel TINYINT)
+   RETURNS: [ { caja_id, letra, cara, nivel, etiqueta } ]
+============================================================================ */
+CajasRouter.post('/update', requireAuth, async (req, res) => {
+  try {
+    const body = req.body;
+    const { isValid, errors } = await ValidationService.validateData(body, UpdateRules);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Datos inválidos (update)', errors });
+    }
 
-/** Mapa de errores SQL -> HTTP (basado en THROW de los SP) */
-function mapSqlError(err){
-  const e = err && (typeof err.number === 'number' ? err : err.originalError);
-  if (!e || typeof e.number !== 'number') return null;
-  const map = {
-    // CAJAS (520xx)
-    52001:{code:400,message:'Letra debe tener 1 o 2 caracteres.'},
-    52002:{code:400,message:'Cara inválida.'},
-    52003:{code:400,message:'Nivel inválido.'},
-    52004:{code:409,message:'Ya existe una caja con la misma letra, cara y nivel.'},
-    52009:{code:409,message:'Otra caja ya usa esa combinación de letra, cara y nivel.'},
-    52010:{code:404,message:'La caja no existe.'},
-    52011:{code:409,message:'No se puede eliminar: la caja tiene referencias o stock.'},
-  };
-  return map[e.number] || null;
-}
+    const params = BuildParams([
+      { name: 'caja_id', type: sql.Int,       value: Number(body.caja_id) },
+      { name: 'letra',   type: sql.VarChar(2), value: body.letra },
+      { name: 'cara',    type: sql.TinyInt,    value: Number(body.cara) },
+      { name: 'nivel',   type: sql.TinyInt,    value: Number(body.nivel) }
+    ]);
 
-/** Respuestas uniformes */
-function sendOk(res, data, message){
-  return res.status(200).json({
-    success: true,
-    message: message ?? (Array.isArray(data) ? (data.length ? 'OK' : 'Sin resultados') : 'OK'),
-    data
-  });
-}
-function sendCreated(res, data, message){
-  return res.status(201).json({ success:true, message: message ?? 'Creado', data });
-}
-function sendError(res, err, fallback='Error de servidor'){
-  const m = mapSqlError(err);
-  if (m) return res.status(m.code).json({ success:false, message:m.message, data:null });
-  return res.status(500).json({ success:false, message:fallback, data:null });
-}
-
-/**
- * Coherencia 404 en resultados vacíos:
- * Para endpoints de LISTADO, devolvemos 404 cuando no hay filas.
- * Mantiene el payload consistente con success=false y data=[]
- */
-function sendListOr404(res, data, okMessage='Listado', emptyMessage='Sin resultados'){
-  if (!Array.isArray(data) || data.length === 0) {
-    return res.status(404).json({ success:false, message: emptyMessage, data: [] });
+    const data = await db.executeProc('cajas_update', params);
+    return res.status(200).json({
+      success: true,
+      message: 'Caja actualizada',
+      data
+    });
+  } catch (err) {
+    console.error('cajas_update error:', err);
+    return res.status(500).json({ success: false, message: 'Error al actualizar la caja' });
   }
-  return res.status(200).json({ success:true, message: okMessage, data });
-}
+});
 
-// ---------- Rutas ----------
+/* ============================================================================
+   POST /cajas/delete  (Solo Admin)
+   SP: cajas_delete(@caja_id INT)
+   RETURNS: none
+============================================================================ */
+CajasRouter.post('/delete', requireAdmin, async (req, res) => {
+  try {
+    const body = req.body;
+    const { isValid, errors } = await ValidationService.validateData(body, DeleteRules);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Datos inválidos (delete)', errors });
+    }
 
-// GET /cajas/all  (Consultas -> requireAuth)
-// datos requeridos --> datos devueltos
-// (sin body)       --> Array<{ caja_id, letra, cara, nivel, etiqueta, ... }>
-CajasRouter.get('/all', guard(PROTECTION.LIST_ALL), async (_req, res) => {
-  try{
+    const params = BuildParams([{ name: 'caja_id', type: sql.Int, value: Number(body.caja_id) }]);
+    await db.executeProc('cajas_delete', params);
+
+    return res.status(200).json({ success: true, message: 'Caja eliminada' });
+  } catch (err) {
+    console.error('cajas_delete error:', err);
+    return res.status(500).json({ success: false, message: 'Error al eliminar la caja' });
+  }
+});
+
+/* ============================================================================
+   GET /cajas/get_all
+   SP: cajas_get_all()
+   RETURNS: [ { caja_id, letra, cara, nivel, etiqueta }, ... ]
+============================================================================ */
+CajasRouter.get('/get_all', async (_req, res) => {
+  try {
     const data = await db.executeProc('cajas_get_all', {});
-    return sendListOr404(res, data, 'Cajas listadas', 'No hay cajas');
-  }catch(err){ return sendError(res, err, 'Error al listar cajas'); }
+    return res.status(200).json({
+      success: true,
+      message: data.length ? 'Cajas listadas' : 'Sin cajas registradas',
+      data
+    });
+  } catch (err) {
+    console.error('cajas_get_all error:', err);
+    return res.status(500).json({ success: false, message: 'Error al listar cajas', data: [] });
+  }
 });
 
-// GET /cajas/list  (Consultas -> requireAuth)
-// (sin body) --> Array<{ caja_id, etiqueta }>
-CajasRouter.get('/list', guard(PROTECTION.LIST), async (_req, res) => {
-  try{
+/* ============================================================================
+   GET /cajas/get_list
+   SP: cajas_get_list()
+   RETURNS: [ { caja_id, etiqueta }, ... ]
+============================================================================ */
+CajasRouter.get('/get_list', async (_req, res) => {
+  try {
     const data = await db.executeProc('cajas_get_list', {});
-    return sendListOr404(res, data, 'Cajas listadas', 'No hay cajas');
-  }catch(err){ return sendError(res, err, 'Error al listar cajas'); }
+    return res.status(200).json({
+      success: true,
+      message: data.length ? 'Listado de etiquetas de cajas' : 'Sin cajas registradas',
+      data
+    });
+  } catch (err) {
+    console.error('cajas_get_list error:', err);
+    return res.status(500).json({ success: false, message: 'Error al listar etiquetas de cajas', data: [] });
+  }
 });
 
-// GET /cajas/por_id/:caja_id  (Consultas -> requireAuth)
-// params: caja_id:number --> { caja_id, letra, cara, nivel, etiqueta, ... }
-CajasRouter.get('/por_id/:caja_id', guard(PROTECTION.GET_BY_ID), async (req, res) => {
-  try{
-    const Body = { caja_id: Number(req.params.caja_id) };
-    const { isValid } = await ValidationService.validateData(Body, ByIdRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (por_id)', data:null });
+/* ============================================================================
+   GET /cajas/por_id/:caja_id
+   SP: cajas_get_by_id(@caja_id INT)
+   RETURNS: [ { caja_id, letra, cara, nivel, etiqueta } ] (0 o 1)
+============================================================================ */
+CajasRouter.get('/por_id/:caja_id', async (req, res) => {
+  try {
+    const body = { caja_id: Number(req.params.caja_id) };
+    const { isValid, errors } = await ValidationService.validateData(body, PorIdRules);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Datos inválidos (por_id)', errors });
+    }
 
-    const data = await db.executeProc('cajas_get_by_id', { caja_id:{ type: sql.Int, value: Body.caja_id }});
-    if(!data.length) return res.status(404).json({ success:false, message:'Caja no encontrada', data:[] });
-    return sendOk(res, data[0], 'Caja obtenida');
-  }catch(err){ return sendError(res, err, 'Error al obtener caja'); }
-});
+    const data = await db.executeProc('cajas_get_by_id', {
+      caja_id: { type: sql.Int, value: body.caja_id }
+    });
 
-// POST /cajas/insert  (Insert -> ADMIN)
-// body: { letra, cara, nivel } --> { caja_id, letra, cara, nivel, etiqueta, ... }
-CajasRouter.post('/insert', guard(PROTECTION.INSERT), async (req, res) => {
-  try{
-    const Body = req.body;
-    const { isValid } = await ValidationService.validateData(Body, InsertRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (insert)', data:null });
-
-    const Params = BuildParams([
-      { name:'letra', type: sql.NVarChar(2), value: Body.letra },
-      { name:'cara',  type: sql.Int,         value: Body.cara  },
-      { name:'nivel', type: sql.Int,         value: Body.nivel }
-    ]);
-    const data = await db.executeProc('cajas_insert', Params);
-    // El SP normalmente devuelve la fila creada; si viniera vacío (raro), aún respondemos 201 con null.
-    return sendCreated(res, data[0] ?? null, 'Caja creada');
-  }catch(err){ return sendError(res, err, 'Error al crear caja'); }
-});
-
-// POST /cajas/update  (Update -> ADMIN)
-// body: { caja_id, letra, cara, nivel } --> { caja_id, ... } | 404 si no hay filas
-CajasRouter.post('/update', guard(PROTECTION.UPDATE), async (req,res)=>{
-  try{
-    const Body = req.body;
-    const { isValid } = await ValidationService.validateData(Body, UpdateRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (update)', data:null });
-
-    const Params = BuildParams([
-      { name:'caja_id', type: sql.Int,         value: Body.caja_id },
-      { name:'letra',   type: sql.NVarChar(2), value: Body.letra },
-      { name:'cara',    type: sql.Int,         value: Body.cara },
-      { name:'nivel',   type: sql.Int,         value: Body.nivel }
-    ]);
-    const data = await db.executeProc('cajas_update', Params);
-    // Coherencia 404 si UPDATE no devuelve filas y el SP no hizo THROW (p.ej., 52010)
-    if(!data.length) return res.status(404).json({ success:false, message:'Caja no encontrada', data:[] });
-    return sendOk(res, data[0], 'Caja actualizada');
-  }catch(err){ return sendError(res, err, 'Error al actualizar caja'); }
-});
-
-// POST /cajas/delete  (Delete -> ADMIN)
-// body: { caja_id } --> sin data | errores mapeados por THROW
-CajasRouter.post('/delete', guard(PROTECTION.DELETE), async (req,res)=>{
-  try{
-    const Body = req.body;
-    const { isValid } = await ValidationService.validateData(Body, DeleteRules);
-    if(!isValid) return res.status(400).json({ success:false, message:'Datos inválidos (delete)', data:null });
-
-    await db.executeProc('cajas_delete', { caja_id:{ type: sql.Int, value: Body.caja_id }});
-    return sendOk(res, [], 'Caja eliminada');
-  }catch(err){ return sendError(res, err, 'Error al eliminar caja'); }
+    if (!data.length) return res.status(404).json({ success: false, message: 'Caja no encontrada' });
+    return res.status(200).json({ success: true, message: 'Caja obtenida', data: data[0] });
+  } catch (err) {
+    console.error('cajas_get_by_id error:', err);
+    return res.status(500).json({ success: false, message: 'Error al obtener la caja' });
+  }
 });
 
 module.exports = CajasRouter;
