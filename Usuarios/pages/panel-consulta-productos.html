@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consulta de Productos & Stock</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="/user-resources/css/admin.css" />
+  <style>
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
+             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
+             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    .toast i { opacity: .9; } .toast-success { background: #e7f6ec; color: #145a32; }
+    .toast-error { background: #fdecea; color: #7a2e2e; } .toast-info { background: #eef2ff; color: #1f3a8a; }
+    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .filters-grid { display:grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap: 12px; align-items:flex-end; }
+    @media (max-width: 1100px) { .filters-grid { grid-template-columns: repeat(3, minmax(140px, 1fr)); } }
+    @media (max-width: 700px)  { .filters-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); } }
+    .muted { color: #6b7280; } .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; background:#eef2ff; }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Consulta de Productos & Stock</div>
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2"><span>Zafiro Home</span></a>
+      <a class="btn" href="/user-resources/pages/admin.html">Regresar al panel general</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Consulta de productos</h1>
+      <p class="admin-subtitle">Buscar, filtrar, crear y administrar stock por producto y por caja.</p>
+    </section>
+
+    <section class="card p-3 mb-4 shadow-sm">
+      <h2 class="mb-3">Filtros</h2>
+      <div class="filters-grid">
+        <div><label class="form-label" for="filtroCatP">Categoría principal</label><select id="filtroCatP" class="form-control"></select></div>
+        <div><label class="form-label" for="filtroCatS">Categoría secundaria</label><select id="filtroCatS" class="form-control"></select></div>
+        <div><label class="form-label" for="filtroSubc">Subcategoría</label><select id="filtroSubc" class="form-control"></select></div>
+        <div><label class="form-label" for="filtroCaja">Caja</label><select id="filtroCaja" class="form-control"></select></div>
+        <div>
+          <label class="form-label" for="buscarId">Producto por ID</label>
+          <div class="input-group"><input id="buscarId" type="number" min="1" class="form-control" placeholder="ID…" /><button class="btn btn-ghost" id="btnBuscarId"><i class="fa-solid fa-magnifying-glass"></i></button></div>
+        </div>
+        <div>
+          <label class="form-label" for="buscarNombre">Producto por nombre</label>
+          <div class="input-group"><input id="buscarNombre" type="text" class="form-control" placeholder="Texto…" /><button class="btn btn-ghost" id="btnBuscarNombre"><i class="fa-solid fa-magnifying-glass"></i></button></div>
+        </div>
+      </div>
+      <div class="mt-3" style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="btnVerTodo" class="btn btn-outline-info"><i class="fa-solid fa-rotate me-1"></i> Ver todo</button>
+        <button id="btnFiltrar" class="btn btn-primary"><i class="fa-solid fa-filter me-1"></i> Aplicar filtros</button>
+        <span class="muted">Acciones</span>
+        <button id="btnNuevoProducto" class="btn btn-success"><i class="fa-solid fa-plus me-1"></i> Nuevo producto</button>
+        <button id="btnNuevaCaja" class="btn btn-outline-success"><i class="fa-solid fa-box me-1"></i> Nueva caja</button>
+      </div>
+    </section>
+
+    <section class="card p-3 mb-5 shadow-sm">
+      <div class="card-head"><h2 class="mb-3">Productos</h2></div>
+      <div class="table-responsive">
+        <table id="tablaProductos" class="display table table-hover w-100">
+          <thead><tr>
+            <th>ID</th><th>Nombre</th><th>Precio</th><th>Marca</th><th>Cat. P</th><th>Cat. S</th><th>Subcat</th>
+            <th>Unidad</th><th>Unidad valor</th><th>Size</th><th>Size valor</th><th>Acciones</th>
+          </tr></thead>
+          <tbody><tr><td colspan="12" class="text-muted">Los productos se cargarán aquí…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card p-3 mb-5 shadow-sm">
+      <div class="card-head"><h2 class="mb-3">Vista por caja</h2></div>
+      <div class="table-responsive">
+        <table id="tablaPorCaja" class="display table table-hover w-100">
+          <thead><tr><th>Caja</th><th>Producto</th><th>Stock</th></tr></thead>
+          <tbody><tr><td colspan="3" class="text-muted">Selecciona una caja en filtros para ver sus productos.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card p-3 mb-5 shadow-sm">
+      <div class="card-head"><h2 class="mb-3">Resumen de stock por caja (general)</h2></div>
+      <div class="table-responsive">
+        <table id="tablaResumenCajas" class="display table table-hover w-100">
+          <thead><tr><th>Caja</th><th>Detalle</th><th>Producto</th><th>Stock</th></tr></thead>
+          <tbody><tr><td colspan="4" class="text-muted">Se mostrará el resumen por caja.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>© 2025 Zafiro Home. Todos los derechos reservados.</p></footer>
+
+  <div class="modal" id="modalProducto" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalProductoTitle">Nuevo producto</h3>
+        <button class="btn-close" id="closeProductoModalBtn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="productoForm" novalidate>
+          <input type="hidden" id="producto_id" />
+          <div class="mb-3"><label class="form-label" for="pNombre">Nombre</label><input id="pNombre" class="form-control" maxlength="100" required /></div>
+          <div class="mb-3"><label class="form-label" for="pDesc">Descripción</label><textarea id="pDesc" class="form-control" maxlength="255" rows="2"></textarea></div>
+          <div class="mb-3"><label class="form-label" for="pPrecio">Precio</label><input id="pPrecio" type="number" step="0.01" min="0" class="form-control" required /></div>
+          <div class="filters-grid" style="grid-template-columns: repeat(3, minmax(140px,1fr));">
+            <div><label class="form-label" for="pCatP">Categoría principal</label><select id="pCatP" class="form-control"></select></div>
+            <div><label class="form-label" for="pCatS">Categoría secundaria</label><select id="pCatS" class="form-control"></select></div>
+            <div><label class="form-label" for="pSubc">Subcategoría</label><select id="pSubc" class="form-control"></select></div>
+            <div><label class="form-label" for="pUnidad">Unidad</label><select id="pUnidad" class="form-control"></select></div>
+            <div><label class="form-label" for="pUnidadVal">Unidad valor</label><input id="pUnidadVal" type="number" step="0.01" min="0" class="form-control" /></div>
+            <div><label class="form-label" for="pSize">Size</label><select id="pSize" class="form-control"></select></div>
+            <div><label class="form-label" for="pSizeVal">Size valor</label><input id="pSizeVal" class="form-control" maxlength="50" /></div>
+            <div><label class="form-label" for="pMarca">Marca</label><select id="pMarca" class="form-control"></select></div>
+          </div>
+          <div class="modal-actions mt-2"><button type="button" class="btn btn-ghost" id="cancelProductoBtn">Cancelar</button><button type="submit" class="btn btn-primary" id="saveProductoBtn">Guardar</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalCaja" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header"><h3 class="modal-title">Nueva Caja</h3><button class="btn-close" id="closeCajaModalBtn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <form id="cajaForm" novalidate>
+          <div class="filters-grid" style="grid-template-columns: repeat(3, minmax(120px, 1fr));">
+            <div><label class="form-label" for="cajaLetra">Letra</label><input id="cajaLetra" class="form-control" maxlength="2" placeholder="A, B, ..." /></div>
+            <div><label class="form-label" for="cajaCara">Cara</label><select id="cajaCara" class="form-control"><option value="1">1</option><option value="2">2</option></select></div>
+            <div><label class="form-label" for="cajaNivel">Nivel</label><input id="cajaNivel" type="number" min="1" class="form-control" value="1" /></div>
+          </div>
+          <div class="modal-actions mt-2"><button type="button" class="btn btn-ghost" id="cancelCajaBtn">Cancelar</button><button type="submit" class="btn btn-primary" id="saveCajaBtn">Crear</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalStock" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document" style="max-width:1000px;">
+      <div class="modal-header"><h3 class="modal-title">Gestión de stock — <span id="msNombreProd" class="badge"></span></h3><button class="btn-close" id="closeStockModalBtn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="msProductoId" />
+        <div class="grid" style="display:grid; grid-template-columns: 1.2fr .8fr; gap: 16px;">
+          <div>
+            <div class="table-responsive">
+              <table id="tablaDetallesStock" class="display table table-hover w-100">
+                <thead><tr><th>Detalle</th><th>Caja</th><th>Stock</th></tr></thead>
+                <tbody><tr><td colspan="3" class="text-muted">Sin datos.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card p-2 mb-3">
+              <h4 class="mb-2">Agregar a caja</h4>
+              <div class="filters-grid" style="grid-template-columns: repeat(2, minmax(100px,1fr));">
+                <div><label class="form-label" for="msCajaAdd">Caja</label><select id="msCajaAdd" class="form-control"></select></div>
+                <div><label class="form-label" for="msDeltaAdd">Cantidad</label><input id="msDeltaAdd" type="number" min="1" step="1" class="form-control" /></div>
+              </div>
+              <button id="btnStockAdd" class="btn btn-success mt-2"><i class="fa-solid fa-plus"></i> Agregar</button>
+            </div>
+            <div class="card p-2 mb-3">
+              <h4 class="mb-2">Retirar de caja</h4>
+              <div class="filters-grid" style="grid-template-columns: repeat(2, minmax(100px,1fr));">
+                <div><label class="form-label" for="msCajaRemove">Caja</label><select id="msCajaRemove" class="form-control"></select></div>
+                <div><label class="form-label" for="msDeltaRemove">Cantidad</label><input id="msDeltaRemove" type="number" min="1" step="1" class="form-control" /></div>
+              </div>
+              <button id="btnStockRemove" class="btn btn-warning mt-2"><i class="fa-solid fa-minus"></i> Retirar</button>
+            </div>
+            <div class="card p-2 mb-3">
+              <h4 class="mb-2">Fijar stock (por detalle)</h4>
+              <div class="filters-grid" style="grid-template-columns: repeat(2, minmax(100px,1fr));">
+                <div><label class="form-label" for="msDetalleSet">Detalle</label><select id="msDetalleSet" class="form-control"></select></div>
+                <div><label class="form-label" for="msSetStock">Stock</label><input id="msSetStock" type="number" min="0" step="1" class="form-control" /></div>
+              </div>
+              <button id="btnStockSet" class="btn btn-primary mt-2"><i class="fa-regular fa-floppy-disk"></i> Fijar</button>
+            </div>
+            <div class="card p-2 mb-3">
+              <h4 class="mb-2">Mover entre cajas</h4>
+              <div class="filters-grid" style="grid-template-columns: repeat(3, minmax(100px,1fr));">
+                <div><label class="form-label" for="msCajaOrigen">Origen</label><select id="msCajaOrigen" class="form-control"></select></div>
+                <div><label class="form-label" for="msCajaDestino">Destino</label><select id="msCajaDestino" class="form-control"></select></div>
+                <div><label class="form-label" for="msMoverCantidad">Cantidad</label><input id="msMoverCantidad" type="number" min="1" step="1" class="form-control" /></div>
+              </div>
+              <button id="btnStockMove" class="btn btn-outline-primary mt-2"><i class="fa-solid fa-right-left"></i> Mover</button>
+            </div>
+            <div class="card p-2">
+              <h4 class="mb-2">Vaciado de stock</h4>
+              <p class="muted">Fija el stock de todos los detalles del producto a <strong>0</strong>.</p>
+              <button id="btnVaciarStock" class="btn btn-danger"><i class="fa-solid fa-eraser"></i> Vaciar stock</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalConfirm" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header"><h3 class="modal-title">Confirmación</h3><button class="btn-close" id="closeConfirmModalBtn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body"><p id="confirmMessage" class="mb-3">¿Deseas continuar?</p>
+        <div class="modal-actions"><button type="button" class="btn btn-ghost" id="cancelConfirmBtn">Cancelar</button><button type="button" class="btn btn-danger" id="okConfirmBtn"><i class="fa-solid fa-check"></i> Confirmar</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" defer></script>
+  <script type="module" src="/user-resources/scripts/control/panel-consulta-productos.js"></script>
+</body>
+</html>

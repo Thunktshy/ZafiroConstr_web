@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Categorías</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/user-resources/css/admin.css" />
+
+  <!-- Toast styles livianos -->
+  <style>
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
+             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
+             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    .toast i { opacity: .9; }
+    .toast-success { background: #e7f6ec; color: #145a32; }
+    .toast-error   { background: #fdecea; color: #7a2e2e; }
+    .toast-info    { background: #eef2ff; color: #1f3a8a; }
+    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Categorías</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <a class="btn" href="/user-resources/pages/admin.html">Regresar al panel general</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Panel: Categorías</h1>
+      <p class="admin-subtitle">Módulo de administración de categorías.</p>
+    </section>
+
+    <!-- Probar obtener por ID -->
+    <section class="card p-3 mb-4 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Probar obtener por ID</h2>
+        <div class="actions">
+          <div class="input-group">
+            <input type="number" id="inputBuscarId" class="form-control" placeholder="ID de categoría…" min="1" />
+            <button id="btnBuscarId" class="btn btn-ghost">
+              <i class="fa-solid fa-magnifying-glass me-1"></i> Obtener por ID
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3">
+        <table id="tablaCategoriaPorId" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="3" class="text-muted">Ingresa un ID y presiona “Obtener por ID”.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Listado general -->
+    <section class="card p-3 mb-5 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Listado de Categorías</h2>
+        <div class="actions">
+          <button id="btnRefrescar" class="btn btn-outline-info">
+            <i class="fa-solid fa-rotate me-1"></i> Refrescar
+          </button>
+          <button id="btnAbrirAgregar" class="btn btn-success">
+            <i class="fa-solid fa-plus me-1"></i> Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaCategorias" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" class="text-muted">Las categorías se cargarán aquí…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <small class="text-muted">Tip: usa “Modificar” para actualizar y “Eliminar” para borrar una categoría.</small>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Modal (Agregar / Modificar) -->
+  <div class="modal" id="modalCategoria" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalCategoriaTitle">Nueva Categoría</h3>
+        <button class="btn-close" id="closeModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="categoriaForm" novalidate>
+          <input type="hidden" id="categoria_id" name="categoria_id" />
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" maxlength="100" required />
+            <small id="nombreHelp" class="text-muted">2–100 caracteres. Solo letras, números, espacios y - . &</small>
+          </div>
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" name="descripcion" class="form-control" maxlength="255" rows="3"></textarea>
+            <small class="text-muted">Máximo 255 caracteres.</small>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="saveCategoriaBtn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmación de eliminación -->
+  <div class="modal" id="modalConfirmDelete" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar eliminación</h3>
+        <button class="btn-close" id="closeDeleteModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteMessage" class="mb-3">¿Seguro que deseas eliminar esta categoría?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <i class="fa-solid fa-trash-can me-1"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery + DataTables base -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" defer></script>
+
+  <!-- Control del panel -->
+  <script type="module" src="/user-resources/scripts/control/panel-adm-categorias.js"></script>
+</body>
+</html>
