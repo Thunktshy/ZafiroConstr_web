@@ -15,16 +15,6 @@ const path     = require('path');        // Rutas de archivos
 const { db } = require('./db/dbconnector.js');
 
 /**
- * Routers de negocio (usa SIEMPRE el mismo casing: 'Server/routes')
- */
-const authRouter       = require('./Server/Routes/authRouter.js');        // login/logout/status + middlewares
-const CajasRouter      = require('./Server/Routes/cajasRouter.js');
-const CategoriasRouter = require('./Server/Routes/categoriasRouter.js');
-const ProductosRouter  = require('./Server/Routes/productosRouter.js');
-const StockRouter      = require('./Server/Routes/stockRouter.js');
-//const UsuariosRouter   = require('./Server/Routes/usuariosRoute.js');
-
-/**
  * Middlewares de autorización (desde authRoute.js)
  * - requireAuth  -> sesión iniciada (cualquier rol)
  * - requireAdmin -> administrador
@@ -93,6 +83,8 @@ app.use('/user-resources', requireUser, userStatic);
 /**
  * ENDPOINTS DE NEGOCIO
  */
+
+const authRouter       = require('./Server/Routes/authRouter.js');        // login/logout/status + middlewares
 
 const cajasRouter = require('./Server/Routes/cajasRouter.js');
 app.use('/cajas', cajasRouter);
