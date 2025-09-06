@@ -1,7 +1,7 @@
 import { getUsernames, submitNewUser } from "../Database/UsersManager.js";
 // Imports custom error handler that displays messages inside 
 // <div id="error-message" class="alert alert-danger"></div>
-import { showError } from "../errorHandler.js"; // Custom error message 
+import { showError } from "./errorHandler.js"; // Custom error message 
 
 document.addEventListener("DOMContentLoaded", () => {
   // Select the registration form by its class name.

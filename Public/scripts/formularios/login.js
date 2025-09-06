@@ -1,5 +1,5 @@
 // scripts/Formularios/Login.js
-import { showError } from "../errorHandler.js"; //Devuelve mensajes de error
+import { showError } from "./errorHandler.js"; //Devuelve mensajes de error
 
 const form = document.getElementById("form-login");
 const inputUser = document.getElementById("Usuario");
