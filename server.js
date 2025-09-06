@@ -46,81 +46,88 @@ app.get('/', (_req, res) => {
 
 
 /**
- * RECURSOS ESTÁTICOS PROTEGIDOS
- * - Admin: /admin-resources -> requiere admin
- * - Usuarios: /user-resources -> requiere usuario (no admin)
- */
-const PROTECTED_DIR = path.resolve(process.cwd(), 'Protected');
-const adminStatic = express.static(PROTECTED_DIR, {
-  index: false,
-  maxAge: '1h',
-  setHeaders: (res) => res.setHeader('Cache-Control', 'private, max-age=3600')
-});
-app.use('/admin-resources', requireAdmin, adminStatic);
-
-const USERS_DIR = path.resolve(process.cwd(), 'Usuarios');
-const userStatic = express.static(USERS_DIR, {
-  index: false,
-  maxAge: '1h',
-  setHeaders: (res) => res.setHeader('Cache-Control', 'private, max-age=3600')
-});
-app.use('/user-resources', requireUser, userStatic);
-
-/**
  * ENDPOINTS DE NEGOCIO
  */
 
 // RUTA DE AUTENTICACIÓN
-const authRouter       = require('./Server/Routes/authRouter.js');        // login/logout/status + middlewares
+// Exporta el router principal (login/logout/status) y, además, middlewares de autorización.
+const authRouter = require('./Server/Routes/authRouter.js');
+// Extrae los middlewares del mismo módulo (evita un segundo require)
+const { requireAuth, requireAdmin, requireUser } = authRouter;
+
+// Monta /auth después de tener el router definido
 app.use('/auth', authRouter);
 
+/**
+ * RECURSOS ESTÁTICOS PROTEGIDOS
+ * - /admin-resources: requiere rol Admin (p.ej., paneles internos, reportes sensibles)
+ * - /user-resources: requiere solo usuario autenticado
+ *
+ * Ambos sirven estáticos sin índice por defecto y con caché privada de 1h.
+ */
 
-const cajasRouter = require('./Server/Routes/cajasRouter.js');
+// Admin-only
+const PROTECTED_DIR = path.resolve(process.cwd(), 'Protected');
+const adminStatic = express.static(PROTECTED_DIR, {
+  index: false,
+  maxAge: '1h',
+  setHeaders: (res) => res.setHeader('Cache-Control', 'private, max-age=3600'),
+});
+// requiereAdmin valida sesión + rol admin
+app.use('/admin-resources', requireAdmin, adminStatic);
+
+// Users (autenticados, no admin)
+const USERS_DIR = path.resolve(process.cwd(), 'Usuarios');
+const userStatic = express.static(USERS_DIR, {
+  index: false,
+  maxAge: '1h',
+  setHeaders: (res) => res.setHeader('Cache-Control', 'private, max-age=3600'),
+});
+// requireUser valida sesión + asegura que no sea admin 
+app.use('/user-resources', requireUser, userStatic);
+
+/**
+ * Rutas de dominio
+ * Cada router encapsula CRUD/operaciones del recurso y se monta bajo su prefijo.
+ */
+const cajasRouter = require('./Server/Routes/cajasRouter.js');                   // Cajas y movimientos
 app.use('/cajas', cajasRouter);
 
-// Rutas para Categorías Secundarias
-const categoriasSecundariasRouter = require('./Server/Routes/categorias_secundariasRouter.js');
+const categoriasSecundariasRouter = require('./Server/Routes/categorias_secundariasRouter.js'); // Categorías secundarias
 app.use('/categorias-secundarias', categoriasSecundariasRouter);
 
-// Rutas para Subcategorías
-const subcategoriasRouter = require('./Server/Routes/subcategoriasRouter.js');
+const subcategoriasRouter = require('./Server/Routes/subcategoriasRouter.js');  // Subcategorías
 app.use('/subcategorias', subcategoriasRouter);
-//app.use('/usuarios',    UsuariosRouter); // reemplaza a /clientes
 
-// Rutas para Brands
-const brandsRouter = require('./Server/Routes/brandsRouter.js');
+const brandsRouter = require('./Server/Routes/brandsRouter.js');                 // Marcas
 app.use('/brands', brandsRouter);
 
-// Rutas para Sizes
-const sizesRouter = require('./Server/Routes/sizesRouter.js');
+const sizesRouter = require('./Server/Routes/sizesRouter.js');                   // Unidades de tamaños
 app.use('/sizes', sizesRouter);
 
-// Rutas para Units
-const unitsRouter = require('./Server/Routes/unitsRouter.js');
+const unitsRouter = require('./Server/Routes/unitsRouter.js');                   // Unidades de medida
 app.use('/units', unitsRouter);
 
-// Productos
-const productosRouter = require('./Server/Routes/productosRouter.js');
+const productosRouter = require('./Server/Routes/productosRouter.js');           // Productos (CRUD y consultas)
 app.use('/productos', productosRouter);
 
-// Stock (operaciones)
-const stockRouter = require('./Server/Routes/stockRouter.js');
+const stockRouter = require('./Server/Routes/stockRouter.js');                   // Operaciones de stock (entradas/salidas/ajustes)
 app.use('/stock', stockRouter);
 
-// Reportes de Stock
-const reportesStockRouter = require('./Server/Routes/reportes_stockRouter.js');
+const reportesStockRouter = require('./Server/Routes/reportes_stockRouter.js');  // Reportes e indicadores de stock
 app.use('/reportes-stock', reportesStockRouter);
 
-// Rutas para Usuarios
-const usuariosRouter = require('./Server/Routes/usuariosRouter.js');
+const usuariosRouter = require('./Server/Routes/usuariosRouter.js');             // Gestión de usuarios
 app.use('/usuarios', usuariosRouter);
 
-// Después de las otras rutas de productos
-const insertProductoWithStockRouter = require('./routes/insert_producto_with_stock');
+// Extensiones sobre /productos (p.ej., inserción compuesta producto+stock)
+const insertProductoWithStockRouter = require('./Server/Routes/insert_producto_with_stock.js');
 app.use('/productos', insertProductoWithStockRouter);
 
 /**
- * HEALTHCHECK (útil para orquestadores/monitoreo)
+ * HEALTHCHECK (para orquestadores/monitoreo)
+ * - 200 { ok: true,  status: 'up' } si el proceso está vivo y DB conectada
+ * - 503 { ok: false, status: 'db_not_connected' } si no hay conexión a DB
  */
 app.get('/health', (req, res) => {
   if (!db || !db.pool || db.pool.connected === false) {
@@ -128,6 +135,7 @@ app.get('/health', (req, res) => {
   }
   return res.json({ ok: true, status: 'up' });
 });
+
 
 /**
  * ERROR HANDLER GLOBAL 
