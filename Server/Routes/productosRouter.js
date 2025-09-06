@@ -120,43 +120,6 @@ const Rules = {
   }
 };
 
-Router.post('/set_precio', requireAuth, async (req, res) => {
-  try {
-    const B = req.body;
-    const { isValid, errors } = await ValidationService.validateData(B, Rules.SetPrecio);
-    if (!isValid) return res.status(400).json({ success: false, message: 'Datos inválidos (set_precio)', errors });
-
-    const data = await db.executeProc('productos_set_precio', {
-      producto_id: { type: sql.Int, value: Number(B.producto_id) },
-      precio: { type: sql.Decimal(10, 2), value: Number(B.precio) }
-    });
-    
-    return res.status(200).json({ success: true, message: 'Precio actualizado', data });
-  } catch (err) {
-    console.error('productos_set_precio error:', err);
-    return res.status(500).json({ success: false, message: 'Error al actualizar el precio' });
-  }
-});
-
-/* GET DETALLE COMPLETO (public) */
-Router.get('/detalle_completo/:producto_id', async (req, res) => {
-  try {
-    const B = { producto_id: Number(req.params.producto_id) };
-    const { isValid, errors } = await ValidationService.validateData(B, Rules.PorId);
-    if (!isValid) return res.status(400).json({ success: false, message: 'Datos inválidos (detalle_completo)', errors });
-
-    const data = await db.executeProc('productos_get_detalle_completo', {
-      producto_id: { type: sql.Int, value: B.producto_id }
-    });
-
-    if (!data.length) return res.status(404).json({ success: false, message: 'Producto no encontrado' });
-    return res.status(200).json({ success: true, message: 'Detalle completo obtenido', data: data[0] });
-  } catch (err) {
-    console.error('productos_get_detalle_completo error:', err);
-    return res.status(500).json({ success: false, message: 'Error al obtener el detalle completo' });
-  }
-});
-
 const Router = express.Router();
 
 function BuildParams(entries) {
@@ -384,6 +347,43 @@ Router.get('/por_cajas', async (_req, res) => {
   } catch (err) {
     console.error('productos_get_by_cajas error:', err);
     return res.status(500).json({ success:false, message:'Error al obtener productos por cajas' });
+  }
+});
+
+Router.post('/set_precio', requireAuth, async (req, res) => {
+  try {
+    const B = req.body;
+    const { isValid, errors } = await ValidationService.validateData(B, Rules.SetPrecio);
+    if (!isValid) return res.status(400).json({ success: false, message: 'Datos inválidos (set_precio)', errors });
+
+    const data = await db.executeProc('productos_set_precio', {
+      producto_id: { type: sql.Int, value: Number(B.producto_id) },
+      precio: { type: sql.Decimal(10, 2), value: Number(B.precio) }
+    });
+    
+    return res.status(200).json({ success: true, message: 'Precio actualizado', data });
+  } catch (err) {
+    console.error('productos_set_precio error:', err);
+    return res.status(500).json({ success: false, message: 'Error al actualizar el precio' });
+  }
+});
+
+/* GET DETALLE COMPLETO (public) */
+Router.get('/detalle_completo/:producto_id', async (req, res) => {
+  try {
+    const B = { producto_id: Number(req.params.producto_id) };
+    const { isValid, errors } = await ValidationService.validateData(B, Rules.PorId);
+    if (!isValid) return res.status(400).json({ success: false, message: 'Datos inválidos (detalle_completo)', errors });
+
+    const data = await db.executeProc('productos_get_detalle_completo', {
+      producto_id: { type: sql.Int, value: B.producto_id }
+    });
+
+    if (!data.length) return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+    return res.status(200).json({ success: true, message: 'Detalle completo obtenido', data: data[0] });
+  } catch (err) {
+    console.error('productos_get_detalle_completo error:', err);
+    return res.status(500).json({ success: false, message: 'Error al obtener el detalle completo' });
   }
 });
 
