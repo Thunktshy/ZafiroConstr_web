@@ -15,14 +15,6 @@ const path     = require('path');        // Rutas de archivos
 const { db } = require('./db/dbconnector.js');
 
 /**
- * Middlewares de autorización (desde authRoute.js)
- * - requireAuth  -> sesión iniciada (cualquier rol)
- * - requireAdmin -> administrador
- * - requireUser  -> rol usuario (no admin)
- */
-const { requireAuth, requireAdmin, requireUser } = require('./Server/Routes/authRouter.js');
-
-/**
  * APP y MIDDLEWARES BASE
  */
 const app = express();

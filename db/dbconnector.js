@@ -1,20 +1,24 @@
-// db.js
+// db/db.js
 const sql = require('mssql'); // Conector con SQL Server
 
+// Configuracion:
 const config = {
-  user:     process.env.DB_USER,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  server:   process.env.DB_HOST,
+  server: process.env.DB_HOST,
   database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT) || 1433, // Puerto hacia SQL Server
   options: {
-    encrypt: false,
-    trustServerCertificate: true,
+    encrypt: true, // En produccion debe ser true
+    trustServerCertificate: false, // En produccion debe ser false
   },
-  pool: {
-    max: 5,
-    min: 0,
-    idleTimeoutMillis: 30000
-  }
+  pool: { //parametros de conexion
+    max: parseInt(process.env.DB_POOL_MAX) || 10,
+    min: parseInt(process.env.DB_POOL_MIN) || 0,
+    idleTimeoutMillis: parseInt(process.env.DB_POOL_IDLE_TIMEOUT_MS) || 30000
+  },
+  connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT_MS) || 15000,
+  requestTimeout: parseInt(process.env.DB_REQUEST_TIMEOUT_MS) || 30000
 };
 
 class DBConnector {
