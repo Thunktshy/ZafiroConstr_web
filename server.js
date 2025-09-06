@@ -46,12 +46,6 @@ app.get('/', (_req, res) => {
 
 
 /**
- * RUTA DE AUTENTICACIÓN
- * Montada bajo /auth para claridad (/auth/login, /auth/logout, /auth/status)
- */
-app.use('/auth', authRouter);
-
-/**
  * RECURSOS ESTÁTICOS PROTEGIDOS
  * - Admin: /admin-resources -> requiere admin
  * - Usuarios: /user-resources -> requiere usuario (no admin)
@@ -76,7 +70,10 @@ app.use('/user-resources', requireUser, userStatic);
  * ENDPOINTS DE NEGOCIO
  */
 
+// RUTA DE AUTENTICACIÓN
 const authRouter       = require('./Server/Routes/authRouter.js');        // login/logout/status + middlewares
+app.use('/auth', authRouter);
+
 
 const cajasRouter = require('./Server/Routes/cajasRouter.js');
 app.use('/cajas', cajasRouter);
