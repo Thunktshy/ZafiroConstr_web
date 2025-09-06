@@ -10,7 +10,7 @@ const config = {
   port: parseInt(process.env.DB_PORT) || 1433, // Puerto hacia SQL Server
   options: {
     encrypt: true, // En produccion debe ser true
-    trustServerCertificate: false, // En produccion debe ser false
+    trustServerCertificate: true, // En produccion debe ser false (requiere certificado)
   },
   pool: { //parametros de conexion
     max: parseInt(process.env.DB_POOL_MAX) || 10,
