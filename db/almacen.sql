@@ -1,8 +1,3 @@
-CREATE DATABASE Almacen;
-GO
-USE Almacen;
-GO
-
 /* ============================
    Tabla de LOG de errores
    ============================ */
@@ -1911,6 +1906,95 @@ BEGIN
     INSERT INTO logs(origen, mensaje)
     VALUES(N'productos_delete',
            CONCAT('N°',ERROR_NUMBER(),' L',ERROR_LINE(),' [',ISNULL(ERROR_PROCEDURE(),'-'),'] ',ERROR_MESSAGE()));
+    THROW;
+  END CATCH
+END;
+GO
+
+CREATE OR ALTER PROCEDURE producto_insert_with_stock
+  @nombre NVARCHAR(100),
+  @descripcion NVARCHAR(255) = NULL,
+  @precio DECIMAL(10,2),
+  @categoria_principal_id INT,
+  @categoria_secundaria_id INT = NULL,
+  @subcategoria_id INT = NULL,
+  @unit_id INT,
+  @unit_value DECIMAL(10,2),
+  @size_id INT,
+  @size_value NVARCHAR(50),
+  @brand_id INT,
+  @caja_id INT,
+  @stock_inicial INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SET XACT_ABORT ON;
+  
+  BEGIN TRY
+    BEGIN TRANSACTION;
+    
+    -- Validaciones para el producto (replicadas de productos_insert)
+    SET @nombre = LTRIM(RTRIM(@nombre));
+    IF @nombre IS NULL OR @nombre=''   THROW 52031, 'El nombre del producto es obligatorio.', 1;
+    IF @precio IS NULL OR @precio < 0  THROW 52012, 'Precio inválido.', 1;
+    IF @unit_value IS NULL OR @unit_value <= 0  THROW 52032, 'El valor de unidad debe ser mayor a cero.', 1;
+    IF @size_value IS NULL OR LTRIM(RTRIM(@size_value)) = ''  THROW 52033, 'El valor de tamaño es obligatorio.', 1;
+    IF EXISTS (SELECT 1 FROM productos WHERE nombre=@nombre) THROW 52018, 'Ya existe otro producto con ese nombre.', 1;
+    IF NOT EXISTS (SELECT 1 FROM categorias WHERE categoria_id=@categoria_principal_id) THROW 52013, 'Categoría principal no existe.', 1;
+    IF @categoria_secundaria_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM categorias_secundarias WHERE categoria_secundaria_id=@categoria_secundaria_id) THROW 52034, 'Categoría secundaria no existe.', 1;
+    IF @subcategoria_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM subcategorias WHERE subcategoria_id=@subcategoria_id) THROW 52035, 'Subcategoría no existe.', 1;
+    IF NOT EXISTS (SELECT 1 FROM units WHERE unit_id=@unit_id) THROW 52036, 'Unidad de medida no existe.', 1;
+    IF NOT EXISTS (SELECT 1 FROM sizes WHERE size_id=@size_id) THROW 52037, 'Tamaño no existe.', 1;
+    IF NOT EXISTS (SELECT 1 FROM brands WHERE brand_id=@brand_id) THROW 52038, 'Marca no existe.', 1;
+    
+    -- Validaciones para el stock
+    IF @stock_inicial IS NULL OR @stock_inicial < 0 THROW 53001, 'Stock inicial inválido (debe ser >= 0).', 1;
+    IF NOT EXISTS (SELECT 1 FROM cajas WHERE caja_id=@caja_id) THROW 53002, 'Caja no existe.', 1;
+
+    -- Insertar producto
+    INSERT INTO productos (
+        nombre, descripcion, precio, categoria_principal_id, categoria_secundaria_id,
+        subcategoria_id, unit_id, unit_value, size_id, size_value, brand_id
+    ) VALUES (
+        @nombre, @descripcion, @precio, @categoria_principal_id, @categoria_secundaria_id,
+        @subcategoria_id, @unit_id, @unit_value, @size_id, @size_value, @brand_id
+    );
+
+    DECLARE @nuevo_producto_id INT = SCOPE_IDENTITY();
+
+    -- Insertar stock inicial
+    INSERT INTO cajas_detalles (caja_id, producto_id, stock)
+    VALUES (@caja_id, @nuevo_producto_id, @stock_inicial);
+
+    -- Devolver datos completos del producto con stock
+    SELECT 
+        p.producto_id, p.nombre, p.descripcion, p.precio, p.estado,
+        p.categoria_principal_id, cp.nombre AS categoria_principal_nombre,
+        p.categoria_secundaria_id, cs.nombre AS categoria_secundaria_nombre,
+        p.subcategoria_id, sc.nombre AS subcategoria_nombre,
+        p.unit_id, u.nombre AS unit_nombre, p.unit_value,
+        p.size_id, s.nombre AS size_nombre, p.size_value,
+        p.brand_id, b.nombre AS brand_nombre,
+        p.fecha_creacion,
+        cd.stock AS stock_inicial,
+        c.etiqueta AS caja_etiqueta,
+        c.caja_id
+    FROM productos p
+    INNER JOIN categorias cp ON p.categoria_principal_id = cp.categoria_id
+    LEFT JOIN categorias_secundarias cs ON p.categoria_secundaria_id = cs.categoria_secundaria_id
+    LEFT JOIN subcategorias sc ON p.subcategoria_id = sc.subcategoria_id
+    INNER JOIN units u ON p.unit_id = u.unit_id
+    INNER JOIN sizes s ON p.size_id = s.size_id
+    INNER JOIN brands b ON p.brand_id = b.brand_id
+    INNER JOIN cajas_detalles cd ON p.producto_id = cd.producto_id
+    INNER JOIN cajas c ON cd.caja_id = c.caja_id
+    WHERE p.producto_id = @nuevo_producto_id;
+
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+    INSERT INTO logs(origen, mensaje) VALUES(N'producto_insert_with_stock', ERROR_MESSAGE());
     THROW;
   END CATCH
 END;

@@ -9,14 +9,35 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
 
-  <!-- DataTables (base jQuery) -->
+  <!-- DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
 
-  <!-- Estilos propios (usa admin.css) -->
-  <link rel="stylesheet" href="/user-resources/css/admin.css" />
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="../css/admin.css" />
 
-  <!-- Toast styles livianos (compatibles con admin.css) -->
+  <!-- Estilos adicionales específicos -->
   <style>
+    /* Ajustes específicos para el panel de marcas */
+    .admin-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .admin-subtitle {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    #inputBuscarId {
+      max-width: 200px;
+    }
+    
+    /* Toasts */
     #toastContainer {
       position: fixed;
       right: 16px;
@@ -26,13 +47,14 @@
       gap: 8px;
       z-index: 2000;
     }
+    
     .toast {
       min-width: 260px;
       max-width: 420px;
       padding: 12px 14px;
       border-radius: 10px;
-      box-shadow: 0 6px 24px rgba(0,0,0,.12);
-      font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      box-shadow: var(--shadow-lg);
+      font-family: var(--font-body);
       font-size: 14px;
       line-height: 1.35;
       display: flex;
@@ -40,13 +62,58 @@
       gap: 8px;
       animation: slidein .2s ease-out;
     }
-    .toast i { opacity: .9; }
-    .toast-success { background: #e7f6ec; color: #145a32; }
-    .toast-error   { background: #fdecea; color: #7a2e2e; }
-    .toast-info    { background: #eef2ff; color: #1f3a8a; }
+    
+    .toast i { 
+      opacity: .9; 
+    }
+    
+    .toast-success { 
+      background: #e7f6ec; 
+      color: #145a32; 
+    }
+    
+    .toast-error { 
+      background: #fdecea; 
+      color: #7a2e2e; 
+    }
+    
+    .toast-info { 
+      background: #eef2ff; 
+      color: #1f3a8a; 
+    }
+    
     @keyframes slidein {
       from { transform: translateY(8px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    /* Ajustes para botones en tablas */
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    /* Ajustes responsivos */
+    @media (max-width: 768px) {
+      .card-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .input-group {
+        width: 100%;
+      }
+      
+      #inputBuscarId {
+        max-width: none;
+        flex: 1;
+      }
     }
   </style>
 </head>
@@ -57,7 +124,7 @@
     <div class="navbarcontainer">
       <a class="navbar-store-title" href="#">
         <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80"
-             alt="Zafiro Home" height="40" class="navbar-logo me-2">
+             alt="Zafiro Home" height="40" class="navbar-logo">
         <span>Zafiro Home</span>
       </a>
       <a class="btn" href="/user-resources/pages/admin.html">Regresar al panel general</a>
@@ -71,20 +138,18 @@
     </section>
 
     <!-- 1) Probar obtener por id -->
-    <section class="card p-3 mb-4 shadow-sm scroll-reveal">
+    <section class="card scroll-reveal">
       <div class="card-head">
-        <h2 class="mb-3">Probar obtener por ID</h2>
-        <div class="actions">
-          <div class="input-group">
-            <input type="number" id="inputBuscarId" class="form-control" placeholder="ID de marca…" min="1" />
-            <button id="btnBuscarId" class="btn btn-ghost">
-              <i class="fa-solid fa-magnifying-glass me-1"></i> Obtener por ID
-            </button>
-          </div>
+        <h2>Probar obtener por ID</h2>
+        <div class="input-group">
+          <input type="number" id="inputBuscarId" class="form-control" placeholder="ID de marca…" min="1" />
+          <button id="btnBuscarId" class="btn btn-ghost">
+            <i class="fa-solid fa-magnifying-glass"></i> Obtener por ID
+          </button>
         </div>
       </div>
       <div class="table-responsive mt-3">
-        <table id="tablaBrandPorId" class="display table table-hover w-100">
+        <table id="tablaBrandPorId" class="display w-100">
           <thead>
             <tr>
               <th>ID</th>
@@ -92,29 +157,29 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="2" class="text-muted">Ingresa un ID y presiona “Obtener por ID”.</td></tr>
+            <tr><td colspan="2" class="text-muted">Ingresa un ID y presiona "Obtener por ID".</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <!-- 2) Visualización general (DataTables + jQuery) -->
-    <section class="card p-3 mb-5 shadow-sm scroll-reveal">
+    <section class="card scroll-reveal">
       <div class="card-head">
-        <h2 class="mb-3">Listado de Marcas</h2>
+        <h2>Listado de Marcas</h2>
         <div class="actions">
           <button id="btnRefrescar" class="btn btn-outline-info">
-            <i class="fa-solid fa-rotate me-1"></i> Refrescar
+            <i class="fa-solid fa-rotate"></i> Refrescar
           </button>
           <!-- 3) Agregar -->
           <button id="btnAbrirAgregar" class="btn btn-success">
-            <i class="fa-solid fa-plus me-1"></i> Agregar
+            <i class="fa-solid fa-plus"></i> Agregar
           </button>
         </div>
       </div>
 
       <div class="table-responsive">
-        <table id="tablaBrands" class="display table table-hover w-100">
+        <table id="tablaBrands" class="display w-100">
           <thead>
             <tr>
               <th>ID</th>
@@ -127,7 +192,7 @@
           </tbody>
         </table>
       </div>
-      <small class="text-muted">Tip: usa “Modificar” para actualizar y “Eliminar” para borrar una marca.</small>
+      <small class="text-muted">Tip: usa "Modificar" para actualizar y "Eliminar" para borrar una marca.</small>
     </section>
   </main>
 
@@ -147,7 +212,7 @@
       <div class="modal-body">
         <form id="brandForm" novalidate>
           <input type="hidden" id="brand_id" name="brand_id" />
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" id="nombre" name="nombre" class="form-control" maxlength="50" required />
             <small id="nombreHelp" class="text-muted">2–50 caracteres. Solo letras, números, espacios y - . &</small>
@@ -171,11 +236,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <p id="deleteMessage" class="mb-3">¿Seguro que deseas eliminar esta marca?</p>
+        <p id="deleteMessage" class="mb-4">¿Seguro que deseas eliminar esta marca?</p>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
           <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-            <i class="fa-solid fa-trash-can me-1"></i> Eliminar
+            <i class="fa-solid fa-trash-can"></i> Eliminar
           </button>
         </div>
       </div>
@@ -190,6 +255,6 @@
   <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" defer></script>
 
   <!-- Control del panel -->
-  <script type="module" src="/user-resources/scripts/control/panel-adm-brands.js"></script>
+  <script type="module" src="../scripts/panels/panel-adm-brands.js"></script>
 </body>
 </html>

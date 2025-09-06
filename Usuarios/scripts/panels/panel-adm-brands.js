@@ -1,7 +1,9 @@
 // Panel de administración: Marcas (con eliminar, búsqueda por ID y toasts)
 // Requiere: jQuery, DataTables y brandsAPI
 
-import { brandsAPI } from "/user-resources/scripts/apis/brandsManager.js";
+// Variable para almacenar la API, inicialmente null
+let brandsAPI = null;
+let moduleLoaded = false;
 
 /* =========================
    Toasts
@@ -28,8 +30,28 @@ function friendlyError(err) {
     (err && err.name === "TypeError" && /fetch/i.test(msg)) ||
     /Failed to fetch|NetworkError|ERR_NETWORK|ERR_CONNECTION|The network connection was lost/i.test(msg) ||
     (typeof navigator !== "undefined" && navigator.onLine === false);
-  if (isNet) return "No hay conexión con el servidor";
-  return msg || "No hay conexión con el servidor";
+  if (isNet) return "Sin conexión al servidor";
+  
+  // Detectar específicamente errores 404
+  if (msg.includes("404") || msg.includes("Not Found")) {
+    return "Recurso no encontrado (404)";
+  }
+  
+  return msg || "Error desconocido";
+}
+
+function isNetworkError(err) {
+  const msg = (err && err.message) ? String(err.message) : "";
+  return (
+    (err && err.name === "TypeError" && /fetch/i.test(msg)) ||
+    /Failed to fetch|NetworkError|ERR_NETWORK|ERR_CONNECTION|The network connection was lost/i.test(msg) ||
+    (typeof navigator !== "undefined" && navigator.onLine === false)
+  );
+}
+
+function is404Error(err) {
+  const msg = (err && err.message) ? String(err.message) : "";
+  return msg.includes("404") || msg.includes("Not Found");
 }
 
 /* =========================
@@ -61,15 +83,24 @@ function mapBrands(listish) {
   return toArrayData(listish).map(normalizeBrand).filter(Boolean);
 }
 
-function renderDataTable(selector, data, columns) {
+function renderDataTable(selector, data, columns, options = {}) {
   if ($.fn.DataTable.isDataTable(selector)) {
     $(selector).DataTable().clear().destroy();
   }
+  
+  // Configuración de lenguaje para mensajes personalizados
+  const languageOpts = {
+    emptyTable: options.emptyMessage || "No hay datos disponibles en la tabla",
+    zeroRecords: options.zeroRecordsMessage || "No se encontraron coincidencias"
+  };
+  
   return $(selector).DataTable({
     data,
     columns,
     pageLength: 10,
-    autoWidth: false
+    autoWidth: false,
+    language: languageOpts,
+    ...options
   });
 }
 
@@ -77,9 +108,38 @@ function logPaso(boton, api, respuesta) {
   console.log(`se preciono el boton "${boton}" y se llamo a la api "${api}"`);
   if (respuesta !== undefined) console.log("respuesta :", respuesta);
 }
+
 function logError(boton, api, error) {
   console.log(`se preciono el boton "${boton}" y se llamo a la api "${api}"`);
   console.error("respuesta :", error?.message || error);
+}
+
+// Función para deshabilitar todos los botones de interacción
+function disableAllButtons() {
+  const buttons = [
+    btnRefrescar, 
+    btnAbrirAgregar, 
+    btnBuscarId
+  ];
+  
+  buttons.forEach(btn => {
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = "0.6";
+      btn.style.cursor = "not-allowed";
+    }
+  });
+}
+
+// Función para mostrar estado de error en las tablas
+function showErrorStateInTables() {
+  renderDataTable("#tablaBrands", [], columnsGeneral, {
+    emptyMessage: "Error al cargar el módulo de marcas. Verifique la consola para más detalles."
+  });
+  
+  renderDataTable("#tablaBrandPorId", [], columnsSoloDatos, {
+    emptyMessage: "Error al cargar el módulo de marcas. Verifique la consola para más detalles."
+  });
 }
 
 /* =========================
@@ -118,6 +178,11 @@ let currentMode /** @type {"create"|"edit"} */ = "create";
 let deleteTarget = /** @type {{ id: number, nombre: string } | null} */ (null);
 
 function openModal(mode = "create", data = null) {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
+  
   currentMode = mode;
   modalTit.textContent = mode === "create" ? "Nueva Marca" : "Modificar Marca";
 
@@ -142,13 +207,19 @@ function closeModal() {
 }
 
 function openDeleteModal(item) {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
+  
   deleteTarget = item;
-  deleteMsg.textContent = `¿Seguro que deseas eliminar la marca ${item.brand_id} — “${item.nombre}”?`;
+  deleteMsg.textContent = `¿Seguro que deseas eliminar la marca ${item.brand_id} — "${item.nombre}"?`;
   modalDeleteEl.classList.add("show");
   modalDeleteEl.setAttribute("aria-hidden", "false");
   mainEl?.setAttribute("inert", "");
   setTimeout(() => btnConfirmDel?.focus(), 0);
 }
+
 function closeDeleteModal() {
   modalDeleteEl.classList.remove("show");
   modalDeleteEl.setAttribute("aria-hidden", "true");
@@ -200,35 +271,69 @@ const columnsSoloDatos = [
    ========================= */
 async function cargarTabla() {
   try {
+    if (!moduleLoaded) {
+      throw new Error("El módulo de marcas no se cargó correctamente.");
+    }
+    
     const boton = "Refrescar", api = "/get_all";
     const resp = assertOk(await brandsAPI.getAll());
     const data = mapBrands(resp);
-    renderDataTable("#tablaBrands", data, columnsGeneral);
+    
+    if (data.length === 0) {
+      renderDataTable("#tablaBrands", [], columnsGeneral, {
+        emptyMessage: "No hay marcas registradas"
+      });
+      showToast("No se encontraron marcas", "info", "fa-circle-info");
+    } else {
+      renderDataTable("#tablaBrands", data, columnsGeneral);
+    }
+    
     logPaso(boton, api, resp);
   } catch (err) {
     logError("Refrescar", "/get_all", err);
-    showToast(friendlyError(err), "error", "fa-circle-exclamation");
-    renderDataTable("#tablaBrands", [], columnsGeneral);
+    const errorMsg = friendlyError(err);
+    
+    // Mostrar tabla vacía con mensaje de error
+    renderDataTable("#tablaBrands", [], columnsGeneral, {
+      emptyMessage: isNetworkError(err) ? "Sin conexión al servidor" : "Error al cargar los datos"
+    });
+    
+    showToast(errorMsg, "error", "fa-circle-exclamation");
   }
 }
+
 btnRefrescar?.addEventListener("click", cargarTabla);
 
 /* =========================
    3) Agregar (insert)
    ========================= */
-btnAbrirAgregar?.addEventListener("click", () => openModal("create"));
+btnAbrirAgregar?.addEventListener("click", () => {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
+  openModal("create");
+});
 
 /* =========================
    4) Modificar & Eliminar
    ========================= */
 // Delegación en tabla: Modificar
 $(document).on("click", "#tablaBrands tbody .js-modificar", async function() {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
   const id = Number(this.dataset.id);
   if (!id) return;
   try {
     const resp = assertOk(await brandsAPI.getById(id));
     const item = mapBrands(resp)[0] || null;
-    if (item) openModal("edit", item);
+    if (item) {
+      openModal("edit", item);
+    } else {
+      showToast("No se encontró la marca solicitada", "error", "fa-circle-exclamation");
+    }
   } catch (err) {
     logError("Modificar (tabla)", `/por_id/${id}`, err);
     showToast(friendlyError(err), "error", "fa-circle-exclamation");
@@ -237,6 +342,10 @@ $(document).on("click", "#tablaBrands tbody .js-modificar", async function() {
 
 // Delegación en tabla: Eliminar
 $(document).on("click", "#tablaBrands tbody .js-eliminar", function() {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
   const id = Number(this.dataset.id);
   const nombre = String(this.dataset.nombre || "");
   if (!id) return;
@@ -245,6 +354,10 @@ $(document).on("click", "#tablaBrands tbody .js-eliminar", function() {
 
 // Confirmar eliminación
 btnConfirmDel?.addEventListener("click", async () => {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
   if (!deleteTarget) return;
   const { brand_id } = deleteTarget;
   try {
@@ -254,8 +367,7 @@ btnConfirmDel?.addEventListener("click", async () => {
     closeDeleteModal();
     await cargarTabla();
     limpiarTablaPorIdSiCoincide(brand_id);
-    // Toast de éxito requerido
-    showToast("Operación completada", "success", "fa-check-circle");
+    showToast("Marca eliminada correctamente", "success", "fa-check-circle");
   } catch (err) {
     logError("Confirmar eliminar", "/delete", err);
     showToast(friendlyError(err), "error", "fa-circle-exclamation");
@@ -282,6 +394,10 @@ function validateBrandPayload({ brand_id, nombre }, mode) {
    ========================= */
 formEl?.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
   try {
     const payload = validateBrandPayload({
       brand_id: hidId.value ? Number(hidId.value) : undefined,
@@ -292,14 +408,13 @@ formEl?.addEventListener("submit", async (e) => {
       const boton = "Guardar cambios (update)", api = "/update";
       const resp = assertOk(await brandsAPI.update(payload));
       logPaso(boton, api, resp);
-      // (Opcional) podríamos mostrar toast también aquí, pero el requerimiento pide en agregar/eliminar
+      showToast("Marca actualizada correctamente", "success", "fa-check-circle");
     } else {
       const boton = "Agregar (insert)", api = "/insert";
       const { brand_id, ...createData } = payload;
       const resp = assertOk(await brandsAPI.insert(createData));
       logPaso(boton, api, resp);
-      // Toast de éxito requerido
-      showToast("Operación completada", "success", "fa-check-circle");
+      showToast("Marca agregada correctamente", "success", "fa-check-circle");
     }
 
     closeModal();
@@ -317,11 +432,17 @@ function limpiarTablaPorIdSiCoincide(id) {
   const dt = $("#tablaBrandPorId").DataTable();
   const rows = dt ? dt.rows().data().toArray() : [];
   if (rows.length && Number(rows[0]?.brand_id) === Number(id)) {
-    renderDataTable("#tablaBrandPorId", [], columnsSoloDatos);
+    renderDataTable("#tablaBrandPorId", [], columnsSoloDatos, {
+      emptyMessage: "Ingresa un ID y presiona 'Obtener por ID'"
+    });
   }
 }
 
 btnBuscarId?.addEventListener("click", async () => {
+  if (!moduleLoaded) {
+    showToast("El módulo de marcas no está disponible", "error", "fa-circle-exclamation");
+    return;
+  }
   const raw = inputBuscarId?.value;
   const id = Number(raw);
   if (!raw || !Number.isInteger(id) || id <= 0) {
@@ -334,22 +455,59 @@ btnBuscarId?.addEventListener("click", async () => {
     const item = mapBrands(resp)[0] || null;
     if (item) {
       renderDataTable("#tablaBrandPorId", [item], columnsSoloDatos);
+      logPaso(boton, api, resp);
     } else {
-      renderDataTable("#tablaBrandPorId", [], columnsSoloDatos);
+      renderDataTable("#tablaBrandPorId", [], columnsSoloDatos, {
+        emptyMessage: "No se encontró ninguna marca con ese ID"
+      });
+      showToast("No se encontró ninguna marca con ese ID", "info", "fa-circle-info");
     }
-    logPaso(boton, api, resp);
   } catch (err) {
     logError("Obtener por ID", `/por_id/${id}`, err);
-    showToast(friendlyError(err), "error", "fa-circle-exclamation");
-    renderDataTable("#tablaBrandPorId", [], columnsSoloDatos);
+    const errorMsg = friendlyError(err);
+    
+    // Mostrar tabla vacía con mensaje de error
+    renderDataTable("#tablaBrandPorId", [], columnsSoloDatos, {
+      emptyMessage: isNetworkError(err) ? "Sin conexión al servidor" : "Error al buscar la marca"
+    });
+    
+    showToast(errorMsg, "error", "fa-circle-exclamation");
   }
 });
 
 /* =========================
    8) Inicialización
    ========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  renderDataTable("#tablaBrands", [], columnsGeneral);
-  renderDataTable("#tablaBrandPorId", [], columnsSoloDatos);
-  cargarTabla();
+document.addEventListener("DOMContentLoaded", async () => {
+  // Inicializar tablas con mensajes apropiados
+  renderDataTable("#tablaBrands", [], columnsGeneral, {
+    emptyMessage: "Haz clic en 'Refrescar' para cargar las marcas"
+  });
+  
+  renderDataTable("#tablaBrandPorId", [], columnsSoloDatos, {
+    emptyMessage: "Ingresa un ID y presiona 'Obtener por ID'"
+  });
+  
+  try {
+    // Intentar cargar el módulo dinámicamente
+    const module = await import("../apis/brandsManager.js");
+    brandsAPI = module.brandsAPI;
+    moduleLoaded = true;
+    
+    // Cargar datos iniciales
+    await cargarTabla();
+  } catch (error) {
+    console.error("Error al cargar el módulo brandsManager:", error);
+    
+    // Mostrar mensaje específico para error 404
+    if (is404Error(error)) {
+      showToast("Error 404: No se encontró el módulo de marcas. Verifique la ruta del archivo.", "error", "fa-circle-exclamation");
+    } else {
+      showToast("Error al cargar el módulo de marcas. Verifique la consola para más detalles.", "error", "fa-circle-exclamation");
+    }
+    
+    // Deshabilitar botones y mostrar estado de error en las tablas
+    disableAllButtons();
+    showErrorStateInTables();
+  }
 });

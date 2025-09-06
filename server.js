@@ -134,6 +134,9 @@ app.use('/reportes-stock', reportesStockRouter);
 const usuariosRouter = require('./Server/Routes/usuariosRouter.js');
 app.use('/usuarios', usuariosRouter);
 
+// Después de las otras rutas de productos
+const insertProductoWithStockRouter = require('./routes/insert_producto_with_stock');
+app.use('/productos', insertProductoWithStockRouter);
 
 /**
  * HEALTHCHECK (útil para orquestadores/monitoreo)
