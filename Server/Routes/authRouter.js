@@ -34,7 +34,8 @@ function isHtmlRequest(req) {
 // POST /login
 // ---------------------------
 router.post('/login', [
-  body('email').trim().isEmail().withMessage('Email inválido').isLength({ max: 150 }),
+  // Change validation from 'email' to 'login'
+  body('login').trim().isLength({ min: 1, max: 150 }).withMessage('Usuario o email requerido'),
   body('password').notEmpty().withMessage('Se requiere contraseña').isLength({ min: 6 })
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -46,11 +47,11 @@ router.post('/login', [
     });
   }
 
-  const { email, password } = req.body;
+  const { login, password } = req.body; // Changed from email to login
 
   try {
     const rows = await db.executeProc('buscar_id_para_login', {
-      email: { type: sql.NVarChar(150), value: email }
+      login: { type: sql.NVarChar(150), value: login } // Changed parameter name
     });
 
     if (!rows?.length) {
