@@ -51,7 +51,7 @@ function BuildParams(entries) {
 }
 
 /* ============================== INSERT (auth) ============================== */
-Router.post('/insert', async (req, res) => {
+Router.post('/insert', requireAdmin, async (req, res) => {
   try {
     const B = req.body;
     const { isValid, errors } = await ValidationService.validateData(B, InsertRules);
