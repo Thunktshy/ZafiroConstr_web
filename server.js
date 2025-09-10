@@ -84,7 +84,7 @@ const userStatic = express.static(USERS_DIR, {
   setHeaders: (res) => res.setHeader('Cache-Control', 'private, max-age=3600'),
 });
 // requireUser valida sesión + asegura que no sea admin 
-app.use('/user-resources', requireUser, userStatic);
+app.use('/user-resources', requireAuth, userStatic);
 
 /**
  * Rutas de dominio
