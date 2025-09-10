@@ -485,7 +485,11 @@ searchForm?.addEventListener("submit", async (e) => {
   const letraCompleta = letra1 + (letra2 || "");
   
   try {
-    const resp = assertOk(await cajasAPI.getByComponents(letraCompleta, cara, nivel));
+    // Convertir a números antes de enviar
+    const caraNum = Number(cara);
+    const nivelNum = Number(nivel);
+    
+    const resp = assertOk(await cajasAPI.getByComponents(letraCompleta, caraNum, nivelNum));
     const data = mapCajas(resp);
     
     if (data.length > 0) {

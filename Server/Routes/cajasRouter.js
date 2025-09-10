@@ -187,7 +187,7 @@ CajasRouter.get('/por_componentes', async (req, res) => {
   try {
     const { letra, cara, nivel } = req.query;
     
-    // Validaciones
+    // Validaciones - convertir a números
     if (!letra || !cara || !nivel) {
       return res.status(400).json({ 
         success: false, 
@@ -195,14 +195,18 @@ CajasRouter.get('/por_componentes', async (req, res) => {
       });
     }
     
-    if (cara !== 1 && cara !== 2) {
+    // Convertir a números para validación
+    const caraNum = Number(cara);
+    const nivelNum = Number(nivel);
+    
+    if (isNaN(caraNum) || (caraNum !== 1 && caraNum !== 2)) {
       return res.status(400).json({ 
         success: false, 
         message: 'Cara debe ser 1 (FRENTE) o 2 (ATRAS)' 
       });
     }
     
-    if (nivel !== 1 && nivel !== 2) {
+    if (isNaN(nivelNum) || (nivelNum !== 1 && nivelNum !== 2)) {
       return res.status(400).json({ 
         success: false, 
         message: 'Nivel debe ser 1 (ARRIBA) o 2 (ABAJO)' 
@@ -211,8 +215,8 @@ CajasRouter.get('/por_componentes', async (req, res) => {
 
     const params = BuildParams([
       { name: 'letra', type: sql.VarChar(2), value: letra },
-      { name: 'cara',  type: sql.TinyInt,   value: Number(cara) },
-      { name: 'nivel', type: sql.TinyInt,   value: Number(nivel) }
+      { name: 'cara',  type: sql.TinyInt,   value: caraNum },
+      { name: 'nivel', type: sql.TinyInt,   value: nivelNum }
     ]);
 
     const data = await db.executeProc('cajas_get_by_components', params);
