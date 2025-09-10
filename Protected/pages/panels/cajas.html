@@ -13,53 +13,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
 
   <!-- Estilos propios -->
-  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
-
-  <!-- Toast styles -->
-  <style>
-    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
-    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
-             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
-             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
-    .toast i { opacity: .9; }
-    .toast-success { background: #e7f6ec; color: #145a32; }
-    .toast-error   { background: #fdecea; color: #7a2e2e; }
-    .toast-info    { background: #eef2ff; color: #1f3a8a; }
-    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    
-    /* Estilos específicos para cajas */
-    .letra-selects {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .letra-selects select {
-      width: 80px;
-      text-align: center;
-    }
-    .search-panel {
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-    .form-group {
-      flex: 1;
-      min-width: 200px;
-    }
-    .table-message {
-      text-align: center;
-      padding: 20px;
-      color: #6c757d;
-      font-style: italic;
-    }
-  </style>
+  <link rel="stylesheet" href="/admin-resources/css/panels.css" />
 </head>
 <body class="page-body">
   <div class="top-banner">Panel de Administración - Cajas</div>
@@ -78,6 +32,11 @@
     <section class="card scroll-reveal" id="admin-header">
       <h1 class="admin-title">Panel: Cajas</h1>
       <p class="admin-subtitle">Módulo de administración de cajas de almacenamiento.</p>
+      
+      <div class="search-integration">
+        <h3>Sistema Integrado de Búsqueda</h3>
+        <p>Ahora las búsquedas por componentes y por ID están integradas. Al buscar por componentes, el sistema encontrará el ID correspondiente y mostrará los detalles completos en la sección de búsqueda por ID.</p>
+      </div>
     </section>
 
     <!-- Panel de búsqueda por componentes -->
@@ -120,7 +79,7 @@
         </div>
         <div class="form-row">
           <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar y Mostrar por ID
           </button>
           <button type="button" id="btnLimpiarBusqueda" class="btn btn-ghost">
             <i class="fa-solid fa-eraser me-1"></i> Limpiar
@@ -132,7 +91,7 @@
     <!-- Probar obtener por ID -->
     <section class="card p-3 mb-4 shadow-sm scroll-reveal">
       <div class="card-head">
-        <h2 class="mb-3">Buscar por ID</h2>
+        <h2 class="mb-3">Resultados de Búsqueda (por ID)</h2>
         <div class="actions">
           <div class="input-group">
             <input type="number" id="inputBuscarId" class="form-control" placeholder="ID de caja…" min="1" />
@@ -154,7 +113,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="5" class="table-message">Ingresa un ID y presiona "Obtener por ID".</td></tr>
+            <tr><td colspan="5" class="table-message">Realiza una búsqueda para ver los resultados.</td></tr>
           </tbody>
         </table>
       </div>
@@ -190,7 +149,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="6" class="table-message">Presiona "Refrescar" para cargar las cajas.</td></tr>
+            <tr><td colspan="6" class="table-message">Presiona 'Refrescar' para cargar las cajas.</td></tr>
           </tbody>
         </table>
       </div>

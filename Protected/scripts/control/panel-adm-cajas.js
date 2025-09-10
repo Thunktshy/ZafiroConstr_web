@@ -1,5 +1,5 @@
 // Control de panel: Cajas - CRUD con DataTables, jQuery, modales y toasts
-import { cajasAPI } from "/user-resources/scripts/apis/cajasManager.js";
+import { cajasAPI } from "/admin-resources/scripts/api/cajasManager.js";
 
 /* =========================
    Toasts
@@ -454,6 +454,7 @@ btnBuscarId?.addEventListener("click", async () => {
     const item = mapCajas(resp)[0] || null;
     if (item) {
       tablaCajaPorId = renderDataTable("#tablaCajaPorId", [item], columnsSoloDatos);
+      showToast(`Caja encontrada: ${item.etiqueta}`, "success", "fa-check-circle");
     } else {
       showToast("No se encontró ninguna caja con ese ID.", "info", "fa-info-circle");
       tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
@@ -467,7 +468,7 @@ btnBuscarId?.addEventListener("click", async () => {
 });
 
 /* =========================
-   Búsqueda por componentes
+   Búsqueda por componentes - MODIFICADA
    ========================= */
 searchForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -490,29 +491,38 @@ searchForm?.addEventListener("submit", async (e) => {
     const nivelNum = Number(nivel);
     
     const resp = assertOk(await cajasAPI.getByComponents(letraCompleta, caraNum, nivelNum));
-    const data = mapCajas(resp);
     
-    if (data.length > 0) {
-      tablaCajas = renderDataTable("#tablaCajas", data, columnsGeneral);
-      showToast(`Se encontró la caja: ${data[0].etiqueta}`, "success", "fa-check-circle");
+    // MODIFICACIÓN: Extraer el ID de la respuesta y buscar por ID
+    const cajaId = resp.data?.caja_id;
+    
+    if (cajaId) {
+      // Usar el ID para obtener los detalles completos de la caja
+      const respDetalle = assertOk(await cajasAPI.getById(cajaId));
+      const item = mapCajas(respDetalle)[0] || null;
+      
+      if (item) {
+        // Mostrar en la tabla de búsqueda por ID
+        tablaCajaPorId = renderDataTable("#tablaCajaPorId", [item], columnsSoloDatos);
+        showToast(`Se encontró la caja: ${item.etiqueta}`, "success", "fa-check-circle");
+      } else {
+        showToast("No se encontraron detalles para la caja.", "info", "fa-info-circle");
+        tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
+      }
     } else {
       showToast("No se encontró ninguna caja con esos componentes.", "info", "fa-info-circle");
-      // Mostramos tabla vacía
-      tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
+      tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
     }
     
     logPaso("Buscar por componentes", "/por_componentes", resp);
   } catch (err) {
     logError("Buscar por componentes", "/por_componentes", err);
     showToast(friendlyError(err), "error", "fa-circle-exclamation");
-    // En caso de error, mostramos tabla vacía
-    tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
+    tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
   }
 });
 
 btnLimpiarBusqueda?.addEventListener("click", () => {
   searchForm.reset();
-  // No cargamos datos automáticamente, solo limpiamos el formulario
   showToast("Búsqueda limpiada", "info", "fa-info-circle");
 });
 
@@ -542,6 +552,5 @@ document.addEventListener("DOMContentLoaded", () => {
   tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
   tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
   
-  // No cargamos datos automáticamente
   showToast("Panel de cajas listo. Presiona 'Refrescar' para cargar los datos.", "info", "fa-info-circle");
 });
