@@ -57,15 +57,53 @@ function normalizeCaja(row) {
 }
 function mapCajas(listish) { return toArrayData(listish).map(normalizeCaja).filter(Boolean); }
 
+let tablaCajas = null;
+let tablaCajaPorId = null;
+
 function renderDataTable(selector, data, columns) {
-  if ($.fn.DataTable.isDataTable(selector)) $(selector).DataTable().clear().destroy();
-  return $(selector).DataTable({ 
-    data, 
+  const table = $(selector);
+  
+  // Verificar si la tabla ya está inicializada
+  if ($.fn.DataTable.isDataTable(selector)) {
+    const dataTable = table.DataTable();
+    dataTable.clear();
+    if (data && data.length > 0) {
+      dataTable.rows.add(data).draw();
+    } else {
+      dataTable.draw();
+    }
+    return dataTable;
+  }
+  
+  // Si no está inicializada, crear una nueva
+  return table.DataTable({ 
+    data: data || [],
     columns, 
     pageLength: 10, 
     autoWidth: false,
     language: {
-      url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
+      "decimal":        "",
+      "emptyTable":     "No hay datos disponibles en la tabla",
+      "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+      "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
+      "infoFiltered":   "(filtrado de _MAX_ registros totales)",
+      "infoPostFix":    "",
+      "thousands":      ",",
+      "lengthMenu":     "Mostrar _MENU_ registros",
+      "loadingRecords": "Cargando...",
+      "processing":     "Procesando...",
+      "search":         "Buscar:",
+      "zeroRecords":    "No se encontraron registros coincidentes",
+      "paginate": {
+        "first":      "Primero",
+        "last":       "Último",
+        "next":       "Siguiente",
+        "previous":   "Anterior"
+      },
+      "aria": {
+        "sortAscending":  ": activar para ordenar la columna ascendente",
+        "sortDescending": ": activar para ordenar la columna descendente"
+      }
     }
   });
 }
@@ -272,13 +310,14 @@ async function cargarTabla() {
   try {
     const resp = assertOk(await cajasAPI.getAll());
     const data = mapCajas(resp);
-    renderDataTable("#tablaCajas", data, columnsGeneral);
+    tablaCajas = renderDataTable("#tablaCajas", data, columnsGeneral);
     logPaso("Refrescar", "/get_all", resp);
     showToast(`Se cargaron ${data.length} cajas`, "success", "fa-check-circle");
   } catch (err) {
     logError("Refrescar", "/get_all", err);
     showToast(friendlyError(err), "error", "fa-circle-exclamation");
-    renderDataTable("#tablaCajas", [], columnsGeneral);
+    // En caso de error, mostramos tabla vacía
+    tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
   }
 }
 
@@ -395,10 +434,11 @@ formEl?.addEventListener("submit", async (e) => {
    Búsqueda por ID (get_by_id)
    ========================= */
 function limpiarTablaPorIdSiCoincide(id) {
-  const dt = $("#tablaCajaPorId").DataTable();
-  const rows = dt ? dt.rows().data().toArray() : [];
-  if (rows.length && Number(rows[0]?.caja_id) === Number(id)) {
-    renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
+  if (tablaCajaPorId) {
+    const rows = tablaCajaPorId.rows().data().toArray();
+    if (rows.length && Number(rows[0]?.caja_id) === Number(id)) {
+      tablaCajaPorId.clear().draw();
+    }
   }
 }
 
@@ -413,15 +453,16 @@ btnBuscarId?.addEventListener("click", async () => {
     const resp = assertOk(await cajasAPI.getById(id));
     const item = mapCajas(resp)[0] || null;
     if (item) {
-      renderDataTable("#tablaCajaPorId", [item], columnsSoloDatos);
+      tablaCajaPorId = renderDataTable("#tablaCajaPorId", [item], columnsSoloDatos);
     } else {
-      renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
+      showToast("No se encontró ninguna caja con ese ID.", "info", "fa-info-circle");
+      tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
     }
     logPaso("Obtener por ID", `/por_id/${id}`, resp);
   } catch (err) {
     logError("Obtener por ID", `/por_id/${id}`, err);
     showToast(friendlyError(err), "error", "fa-circle-exclamation");
-    renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
+    tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
   }
 });
 
@@ -448,22 +489,27 @@ searchForm?.addEventListener("submit", async (e) => {
     const data = mapCajas(resp);
     
     if (data.length > 0) {
-      renderDataTable("#tablaCajas", data, columnsGeneral);
+      tablaCajas = renderDataTable("#tablaCajas", data, columnsGeneral);
       showToast(`Se encontró la caja: ${data[0].etiqueta}`, "success", "fa-check-circle");
     } else {
       showToast("No se encontró ninguna caja con esos componentes.", "info", "fa-info-circle");
+      // Mostramos tabla vacía
+      tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
     }
     
     logPaso("Buscar por componentes", "/por_componentes", resp);
   } catch (err) {
     logError("Buscar por componentes", "/por_componentes", err);
     showToast(friendlyError(err), "error", "fa-circle-exclamation");
+    // En caso de error, mostramos tabla vacía
+    tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
   }
 });
 
 btnLimpiarBusqueda?.addEventListener("click", () => {
   searchForm.reset();
-  cargarTabla();
+  // No cargamos datos automáticamente, solo limpiamos el formulario
+  showToast("Búsqueda limpiada", "info", "fa-info-circle");
 });
 
 /* =========================
@@ -476,11 +522,22 @@ btnCargarTodos?.addEventListener("click", async () => {
 });
 
 /* =========================
+   Refrescar tabla
+   ========================= */
+btnRefrescar?.addEventListener("click", async () => {
+  await cargarTabla();
+});
+
+/* =========================
    Inicialización
    ========================= */
 document.addEventListener("DOMContentLoaded", () => {
   inicializarSelects();
-  renderDataTable("#tablaCajas", [], columnsGeneral);
-  renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
-  cargarTabla();
+  
+  // Inicializar tablas vacías
+  tablaCajas = renderDataTable("#tablaCajas", [], columnsGeneral);
+  tablaCajaPorId = renderDataTable("#tablaCajaPorId", [], columnsSoloDatos);
+  
+  // No cargamos datos automáticamente
+  showToast("Panel de cajas listo. Presiona 'Refrescar' para cargar los datos.", "info", "fa-info-circle");
 });

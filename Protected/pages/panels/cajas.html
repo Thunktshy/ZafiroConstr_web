@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
 
   <!-- Estilos propios -->
-  <link rel="stylesheet" href="/user-resources/css/admin.css" />
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
 
   <!-- Toast styles -->
   <style>
@@ -53,6 +53,12 @@
       flex: 1;
       min-width: 200px;
     }
+    .table-message {
+      text-align: center;
+      padding: 20px;
+      color: #6c757d;
+      font-style: italic;
+    }
   </style>
 </head>
 <body class="page-body">
@@ -64,7 +70,7 @@
         <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
         <span>Zafiro Home</span>
       </a>
-      <a class="btn" href="/user-resources/pages/admin.html">Regresar al panel general</a>
+      <a class="btn" href="/admin-resources/pages/admin.html">Regresar al panel general</a>
     </div>
   </nav>
 
@@ -85,14 +91,14 @@
             <label for="letra1" class="form-label">Primera Letra</label>
             <select id="letra1" class="form-control" required>
               <option value="">Seleccionar...</option>
-              <!-- Opciones A-Z -->
+              <!-- Opciones A-Z se llenarán con JavaScript -->
             </select>
           </div>
           <div class="form-group">
             <label for="letra2" class="form-label">Segunda Letra (opcional)</label>
             <select id="letra2" class="form-control">
               <option value="">Ninguna</option>
-              <!-- Opciones A-Z -->
+              <!-- Opciones A-Z se llenarán con JavaScript -->
             </select>
           </div>
           <div class="form-group">
@@ -137,7 +143,7 @@
         </div>
       </div>
       <div class="table-responsive mt-3">
-        <table id="tablaCajaPorId" class="display table table-hover w-100">
+        <table id="tablaCajaPorId" class="display table table-hover w-100" style="width:100%">
           <thead>
             <tr>
               <th>ID</th>
@@ -148,7 +154,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="5" class="text-muted">Ingresa un ID y presiona "Obtener por ID".</td></tr>
+            <tr><td colspan="5" class="table-message">Ingresa un ID y presiona "Obtener por ID".</td></tr>
           </tbody>
         </table>
       </div>
@@ -172,7 +178,7 @@
       </div>
 
       <div class="table-responsive">
-        <table id="tablaCajas" class="display table table-hover w-100">
+        <table id="tablaCajas" class="display table table-hover w-100" style="width:100%">
           <thead>
             <tr>
               <th>ID</th>
@@ -184,7 +190,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="6" class="text-muted">Las cajas se cargarán aquí…</td></tr>
+            <tr><td colspan="6" class="table-message">Presiona "Refrescar" para cargar las cajas.</td></tr>
           </tbody>
         </table>
       </div>
@@ -213,12 +219,12 @@
             <div class="letra-selects">
               <select id="modalLetra1" class="form-control" required>
                 <option value="">Seleccionar...</option>
-                <!-- Opciones A-Z -->
+                <!-- Opciones A-Z se llenarán con JavaScript -->
               </select>
               <span>-</span>
               <select id="modalLetra2" class="form-control">
                 <option value="">Ninguna</option>
-                <!-- Opciones A-Z -->
+                <!-- Opciones A-Z se llenarán con JavaScript -->
               </select>
             </div>
             <small class="text-muted">Selecciona una o dos letras (A-Z)</small>
@@ -276,8 +282,8 @@
   <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
   <!-- jQuery + DataTables base -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
-  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 
   <!-- Control del panel -->
   <script type="module" src="/admin-resources/scripts/control/panel-adm-cajas.js"></script>
