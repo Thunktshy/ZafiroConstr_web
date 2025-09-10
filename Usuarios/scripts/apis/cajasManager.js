@@ -113,5 +113,20 @@ export const cajasAPI = {
 
   // Obtener por id
   getById: (caja_id) =>
-    apiFetch(`/por_id/${encodeURIComponent(toIntOrThrow(caja_id, 'caja_id'))}`)
+    apiFetch(`/por_id/${encodeURIComponent(toIntOrThrow(caja_id, 'caja_id'))}`),
+
+  /**
+ * Buscar caja por componentes (letra, cara, nivel)
+ * @param {string} letra - Letra de la caja (1-2 caracteres)
+ * @param {number} cara - Cara (1=Frente, 2=Atrás)
+ * @param {number} nivel - Nivel (1=Arriba, 2=Abajo)
+ * @returns {Promise} Promesa con el resultado de la búsqueda
+ */
+  getByComponents: (letra, cara, nivel) => {
+    const validatedLetra = validarLetra(letra);
+    const validatedCara = toIntInRangeOrThrow(cara, 1, 2, 'cara');
+    const validatedNivel = toIntInRangeOrThrow(nivel, 1, 99, 'nivel');
+    
+    return apiFetch(`/por_componentes?letra=${encodeURIComponent(validatedLetra)}&cara=${validatedCara}&nivel=${validatedNivel}`);
+  }
 };

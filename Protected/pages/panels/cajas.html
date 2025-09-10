@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Cajas</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/user-resources/css/admin.css" />
+
+  <!-- Toast styles -->
+  <style>
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
+             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
+             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    .toast i { opacity: .9; }
+    .toast-success { background: #e7f6ec; color: #145a32; }
+    .toast-error   { background: #fdecea; color: #7a2e2e; }
+    .toast-info    { background: #eef2ff; color: #1f3a8a; }
+    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    /* Estilos específicos para cajas */
+    .letra-selects {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .letra-selects select {
+      width: 80px;
+      text-align: center;
+    }
+    .search-panel {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Cajas</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <a class="btn" href="/user-resources/pages/admin.html">Regresar al panel general</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Panel: Cajas</h1>
+      <p class="admin-subtitle">Módulo de administración de cajas de almacenamiento.</p>
+    </section>
+
+    <!-- Panel de búsqueda por componentes -->
+    <section class="card p-3 mb-4 shadow-sm scroll-reveal search-panel">
+      <div class="card-head">
+        <h2 class="mb-3">Búsqueda por Componentes</h2>
+      </div>
+      <form id="searchForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="letra1" class="form-label">Primera Letra</label>
+            <select id="letra1" class="form-control" required>
+              <option value="">Seleccionar...</option>
+              <!-- Opciones A-Z -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="letra2" class="form-label">Segunda Letra (opcional)</label>
+            <select id="letra2" class="form-control">
+              <option value="">Ninguna</option>
+              <!-- Opciones A-Z -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cara" class="form-label">Cara</label>
+            <select id="cara" class="form-control" required>
+              <option value="">Seleccionar...</option>
+              <option value="1">Frente</option>
+              <option value="2">Atrás</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nivel" class="form-label">Nivel</label>
+            <select id="nivel" class="form-control" required>
+              <option value="">Seleccionar...</option>
+              <option value="1">Arriba</option>
+              <option value="2">Abajo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+          </button>
+          <button type="button" id="btnLimpiarBusqueda" class="btn btn-ghost">
+            <i class="fa-solid fa-eraser me-1"></i> Limpiar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Probar obtener por ID -->
+    <section class="card p-3 mb-4 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Buscar por ID</h2>
+        <div class="actions">
+          <div class="input-group">
+            <input type="number" id="inputBuscarId" class="form-control" placeholder="ID de caja…" min="1" />
+            <button id="btnBuscarId" class="btn btn-ghost">
+              <i class="fa-solid fa-magnifying-glass me-1"></i> Obtener por ID
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3">
+        <table id="tablaCajaPorId" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Letra</th>
+              <th>Cara</th>
+              <th>Nivel</th>
+              <th>Etiqueta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" class="text-muted">Ingresa un ID y presiona "Obtener por ID".</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Listado general -->
+    <section class="card p-3 mb-5 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Listado de Cajas</h2>
+        <div class="actions">
+          <button id="btnRefrescar" class="btn btn-outline-info">
+            <i class="fa-solid fa-rotate me-1"></i> Refrescar
+          </button>
+          <button id="btnAbrirAgregar" class="btn btn-success">
+            <i class="fa-solid fa-plus me-1"></i> Agregar
+          </button>
+          <button id="btnCargarTodos" class="btn btn-primary">
+            <i class="fa-solid fa-database me-1"></i> Cargar todos los registros
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaCajas" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Letra</th>
+              <th>Cara</th>
+              <th>Nivel</th>
+              <th>Etiqueta</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6" class="text-muted">Las cajas se cargarán aquí…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Modal (Agregar / Modificar) -->
+  <div class="modal" id="modalCaja" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalCajaTitle">Nueva Caja</h3>
+        <button class="btn-close" id="closeModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="cajaForm" novalidate>
+          <input type="hidden" id="caja_id" name="caja_id" />
+          
+          <div class="mb-3">
+            <label class="form-label">Letra</label>
+            <div class="letra-selects">
+              <select id="modalLetra1" class="form-control" required>
+                <option value="">Seleccionar...</option>
+                <!-- Opciones A-Z -->
+              </select>
+              <span>-</span>
+              <select id="modalLetra2" class="form-control">
+                <option value="">Ninguna</option>
+                <!-- Opciones A-Z -->
+              </select>
+            </div>
+            <small class="text-muted">Selecciona una o dos letras (A-Z)</small>
+          </div>
+          
+          <div class="mb-3">
+            <label for="modalCara" class="form-label">Cara</label>
+            <select id="modalCara" class="form-control" required>
+              <option value="">Seleccionar...</option>
+              <option value="1">Frente</option>
+              <option value="2">Atrás</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="modalNivel" class="form-label">Nivel</label>
+            <select id="modalNivel" class="form-control" required>
+              <option value="">Seleccionar...</option>
+              <option value="1">Arriba</option>
+              <option value="2">Abajo</option>
+            </select>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="saveCajaBtn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmación de eliminación -->
+  <div class="modal" id="modalConfirmDelete" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar eliminación</h3>
+        <button class="btn-close" id="closeDeleteModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteMessage" class="mb-3">¿Seguro que deseas eliminar esta caja?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <i class="fa-solid fa-trash-can me-1"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery + DataTables base -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" defer></script>
+
+  <!-- Control del panel -->
+  <script type="module" src="/user-resources/scripts/control/panel-adm-cajas.js"></script>
+</body>
+</html>

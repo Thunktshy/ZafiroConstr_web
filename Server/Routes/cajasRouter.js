@@ -178,4 +178,64 @@ CajasRouter.get('/por_id/:caja_id', async (req, res) => {
   }
 });
 
+/* ============================================================================
+   GET /cajas/por_componentes
+   SP: cajas_get_by_components(@letra VARCHAR(2), @cara TINYINT, @nivel TINYINT)
+   RETURNS: [ { caja_id } ] (0 o 1 fila)
+============================================================================ */
+CajasRouter.get('/por_componentes', async (req, res) => {
+  try {
+    const { letra, cara, nivel } = req.query;
+    
+    // Validaciones
+    if (!letra || !cara || !nivel) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Se requieren los parámetros letra, cara y nivel' 
+      });
+    }
+    
+    if (cara !== 1 && cara !== 2) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Cara debe ser 1 (FRENTE) o 2 (ATRAS)' 
+      });
+    }
+    
+    if (nivel !== 1 && nivel !== 2) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Nivel debe ser 1 (ARRIBA) o 2 (ABAJO)' 
+      });
+    }
+
+    const params = BuildParams([
+      { name: 'letra', type: sql.VarChar(2), value: letra },
+      { name: 'cara',  type: sql.TinyInt,   value: Number(cara) },
+      { name: 'nivel', type: sql.TinyInt,   value: Number(nivel) }
+    ]);
+
+    const data = await db.executeProc('cajas_get_by_components', params);
+
+    if (!data.length) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Caja no encontrada con los parámetros proporcionados' 
+      });
+    }
+    
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Caja encontrada', 
+      data: data[0] 
+    });
+  } catch (err) {
+    console.error('cajas_get_by_components error:', err);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error al buscar la caja' 
+    });
+  }
+});
+
 module.exports = CajasRouter;
