@@ -87,10 +87,6 @@ table.dataTable tbody td{vertical-align:middle}
 table.dataTable{border-radius:12px;overflow:hidden}
 table.dataTable.stripe tbody tr:nth-child(odd){background:#fbfcfe}
 
-/* Scroll reveal */
-.scroll-reveal{opacity:0;transform:translateY(24px);transition:all .6s cubic-bezier(.38,.69,.55,1)}
-.scroll-reveal.active{opacity:1;transform:none}
-
 /* Modal */
 .modal{position:fixed;inset:0;background:rgba(17,24,39,.55);display:none;justify-content:center;align-items:center;z-index:1060;padding:1rem}
 .modal.show{display:flex}
