@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Nuevo Producto</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+
+  <!-- Toast styles livianos -->
+  <style>
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
+             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
+             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    .toast i { opacity: .9; }
+    .toast-success { background: #e7f6ec; color: #145a32; }
+    .toast-error   { background: #fdecea; color: #7a2e2e; }
+    .toast-info    { background: #eef2ff; color: #1f3a8a; }
+    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Nuevo Producto</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <div>
+        <a class="btn btn-ghost me-2" href="/admin-resources/pages/admin.html">Panel general</a>
+        <a class="btn" href="/admin-resources/pages/productos.html">Volver a productos</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Nuevo Producto</h1>
+      <p class="admin-subtitle">Complete el formulario para agregar un nuevo producto al inventario.</p>
+    </section>
+
+    <!-- Formulario de creación -->
+    <section class="card p-4 mb-5 shadow-sm scroll-reveal">
+      <form id="productoForm" novalidate>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre *</label>
+              <input type="text" id="nombre" class="form-control" maxlength="100" required />
+              <small class="text-muted">2-100 caracteres</small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="precio" class="form-label">Precio *</label>
+              <input type="number" id="precio" class="form-control" step="0.01" min="0" required />
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label for="descripcion" class="form-label">Descripción</label>
+          <textarea id="descripcion" class="form-control" maxlength="255" rows="3"></textarea>
+          <small class="text-muted">Máximo 255 caracteres</small>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="categoria_principal_id" class="form-label">Categoría Principal *</label>
+              <select id="categoria_principal_id" class="form-control" required>
+                <option value="">Seleccionar...</option>
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="categoria_secundaria_id" class="form-label">Categoría Secundaria</label>
+              <select id="categoria_secundaria_id" class="form-control">
+                <option value="">Seleccionar...</option>
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="subcategoria_id" class="form-label">Subcategoría</label>
+              <select id="subcategoria_id" class="form-control">
+                <option value="">Seleccionar...</option>
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="unit_id" class="form-label">Unidad *</label>
+              <select id="unit_id" class="form-control" required>
+                <option value="">Seleccionar...</option>
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="unit_value" class="form-label">Valor de Unidad *</label>
+              <input type="number" id="unit_value" class="form-control" step="0.01" min="0" required />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="size_id" class="form-label">Tamaño *</label>
+              <select id="size_id" class="form-control" required>
+                <option value="">Seleccionar...</option>
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="size_value" class="form-label">Valor de Tamaño *</label>
+              <input type="text" id="size_value" class="form-control" maxlength="50" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="brand_id" class="form-label">Marca *</label>
+              <select id="brand_id" class="form-control" required>
+                <option value="">Seleccionar...</option>
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caja (por componentes) -->
+        <div class="row">
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label class="form-label">Caja (por etiqueta) *</label>
+              <div class="d-flex gap-2 align-items-end flex-wrap">
+                <div>
+                  <label class="form-label mb-1">Letra</label>
+                  <div class="d-flex gap-2">
+                    <label for="caja_letra1">Selecciona la Primera letra</label>
+                    <select id="caja_letra1" class="form-control" required>
+                      <option value="">A…Z</option>
+                    </select>
+                    <label for="caja_letra2">Selecciona la Segunda letra</label>
+                    <select id="caja_letra2" class="form-control" required>
+                      <option value="">A…Z</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label mb-1">Cara</label>
+                  <label for="caja_cara">Selecciona la posicion de la caja</label>
+                  <select id="caja_cara" class="form-control" required>
+                    <option value="">Seleccionar…</option>
+                    <option value="1">FRENTE (1)</option>
+                    <option value="2">ATRÁS (2)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label mb-1">Nivel</label>
+                  <label for="caja_nivel">Selecciona el nivel de la caja</label>
+                  <select id="caja_nivel" class="form-control" required>
+                    <option value="">Seleccionar…</option>
+                    <option value="1">ARRIBA (1)</option>
+                    <option value="2">ABAJO (2)</option>
+                  </select>
+                </div>
+
+                <button type="button" id="btnResolverCaja" class="btn btn-primary">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar caja
+                </button>
+              </div>
+
+              <input type="hidden" id="caja_id" />
+              <small id="caja_preview" class="text-muted d-block mt-1">Sin caja seleccionada.</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="stock_inicial" class="form-label">Stock inicial *</label>
+              <input type="number" id="stock_inicial" class="form-control" min="0" step="1" required />
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions mt-4">
+          <a href="/admin-resources/pages/productos.html" class="btn btn-ghost me-2">Cancelar</a>
+          <button type="submit" class="btn btn-primary" id="saveProductoBtn">
+            <i class="fa-solid fa-plus me-1"></i> Crear Producto
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- API y Control del panel -->
+  <script type="module" src="/admin-resources/scripts/api/nuevoProductoManager.js"></script>
+  <script type="module" src="/admin-resources/scripts/control/panel-adm-nuevoProducto.js"></script>
+</body>
+</html>
