@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Productos</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+
+  <!-- Toast styles livianos -->
+  <style>
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
+             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
+             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    .toast i { opacity: .9; }
+    .toast-success { background: #e7f6ec; color: #145a32; }
+    .toast-error   { background: #fdecea; color: #7a2e2e; }
+    .toast-info    { background: #eef2ff; color: #1f3a8a; }
+    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Productos</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <a class="btn" href="/admin-resources/pages/admin.html">Regresar al panel general</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Panel: Productos</h1>
+      <p class="admin-subtitle">Administración de productos del inventario.</p>
+    </section>
+
+    <!-- Búsqueda por ID o Nombre -->
+    <section class="card p-3 mb-4 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Búsqueda</h2>
+        <div class="actions">
+          <div class="input-group">
+            <input type="text" id="inputBuscar" class="form-control" placeholder="ID o Nombre…" />
+            <select id="tipoBusqueda" class="form-control" style="max-width: 120px;">
+              <option value="id">ID</option>
+              <option value="nombre">Nombre</option>
+            </select>
+            <button id="btnBuscar" class="btn btn-ghost">
+              <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3">
+        <table id="tablaBusqueda" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Categoría</th>
+              <th>Marca</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6" class="text-muted">Realiza una búsqueda para ver los resultados.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Listado general -->
+    <section class="card p-3 mb-5 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Listado de Productos</h2>
+        <div class="actions">
+          <button id="btnRefrescar" class="btn btn-outline-info">
+            <i class="fa-solid fa-rotate me-1"></i> Refrescar
+          </button>
+          <button id="btnAbrirAgregar" class="btn btn-success">
+            <i class="fa-solid fa-plus me-1"></i> Agregar
+          </button>
+          <button id="btnVerActivos" class="btn btn-primary">
+            <i class="fa-solid fa-eye me-1"></i> Ver Activos
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaProductos" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Categoría</th>
+              <th>Marca</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="8" class="text-muted">Presiona 'Refrescar' para cargar los productos.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Modal (Agregar / Modificar) -->
+  <div class="modal" id="modalProducto" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalProductoTitle">Nuevo Producto</h3>
+        <button class="btn-close" id="closeModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="productoForm" novalidate>
+          <input type="hidden" id="producto_id" name="producto_id" />
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" class="form-control" maxlength="100" required />
+                <small class="text-muted">2-100 caracteres</small>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="precio" class="form-label">Precio</label>
+                <input type="number" id="precio" class="form-control" step="0.01" min="0" required />
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" class="form-control" maxlength="255" rows="3"></textarea>
+            <small class="text-muted">Máximo 255 caracteres</small>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="categoria_principal_id" class="form-label">Categoría Principal</label>
+                <select id="categoria_principal_id" class="form-control" required>
+                  <option value="">Seleccionar...</option>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="categoria_secundaria_id" class="form-label">Categoría Secundaria</label>
+                <select id="categoria_secundaria_id" class="form-control">
+                  <option value="">Seleccionar...</option>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="subcategoria_id" class="form-label">Subcategoría</label>
+                <select id="subcategoria_id" class="form-control">
+                  <option value="">Seleccionar...</option>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="unit_id" class="form-label">Unidad</label>
+                <select id="unit_id" class="form-control" required>
+                  <option value="">Seleccionar...</option>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="unit_value" class="form-label">Valor de Unidad</label>
+                <input type="number" id="unit_value" class="form-control" step="0.01" min="0" required />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="size_id" class="form-label">Tamaño</label>
+                <select id="size_id" class="form-control" required>
+                  <option value="">Seleccionar...</option>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="size_value" class="form-label">Valor de Tamaño</label>
+                <input type="text" id="size_value" class="form-control" maxlength="50" required />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="brand_id" class="form-label">Marca</label>
+                <select id="brand_id" class="form-control" required>
+                  <option value="">Seleccionar...</option>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3" id="grupoEstado">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" class="form-control">
+              <option value="1">Activo</option>
+              <option value="0">Inactivo</option>
+            </select>
+          </div>
+
+          <!-- Caja (por componentes) -->
+            <div class="row">
+            <div class="col-md-8">
+                <div class="mb-3">
+                <label class="form-label">Caja (por etiqueta)</label>
+                <div class="d-flex gap-2 align-items-end flex-wrap">
+                    <div>
+                    <label class="form-label mb-1">Letra</label>
+                    <div class="d-flex gap-2">
+                        <select id="caja_letra1" class="form-control" required>
+                        <option value="">A…Z</option>
+                        </select>
+                        <select id="caja_letra2" class="form-control" required>
+                        <option value="">A…Z</option>
+                        </select>
+                    </div>
+                    </div>
+                    <div>
+                    <label class="form-label mb-1">Cara</label>
+                    <select id="caja_cara" class="form-control" required>
+                        <option value="">Seleccionar…</option>
+                        <option value="1">FRENTE (1)</option>
+                        <option value="2">ATRÁS (2)</option>
+                    </select>
+                    </div>
+                    <div>
+                    <label class="form-label mb-1">Nivel</label>
+                    <select id="caja_nivel" class="form-control" required>
+                        <option value="">Seleccionar…</option>
+                        <option value="1">ARRIBA (1)</option>
+                        <option value="2">ABAJO (2)</option>
+                    </select>
+                    </div>
+
+                    <button type="button" id="btnResolverCaja" class="btn btn-primary">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar caja
+                    </button>
+                </div>
+
+                <input type="hidden" id="caja_id" />
+                <small id="caja_preview" class="text-muted d-block mt-1">Sin caja seleccionada.</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mb-3">
+                <label for="stock_inicial" class="form-label">Stock inicial</label>
+                <input type="number" id="stock_inicial" class="form-control" min="0" step="1" required />
+                </div>
+            </div>
+            </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="saveProductoBtn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmación de eliminación -->
+  <div class="modal" id="modalConfirmDelete" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar eliminación</h3>
+        <button class="btn-close" id="closeDeleteModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteMessage" class="mb-3">¿Seguro que deseas eliminar este producto?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <i class="fa-solid fa-trash-can me-1"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery + DataTables base -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <!-- API y Control del panel -->
+  <script type="module" src="/admin-resources/scripts/api/productosManager.js"></script>
+  <script type="module" src="/admin-resources/scripts/control/panel-adm-productos.js"></script>
+</body>
+</html>

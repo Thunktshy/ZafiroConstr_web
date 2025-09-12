@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Unidades de Medida</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Unidades de Medida</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <a class="btn" href="/admin-resources/pages/admin.html">Regresar al panel general</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Panel: Unidades de Medida</h1>
+      <p class="admin-subtitle">Módulo de administración de unidades de medida para productos.</p>
+    </section>
+
+    <!-- Panel de búsqueda -->
+    <section class="card p-3 mb-4 shadow-sm scroll-reveal search-panel">
+      <div class="card-head">
+        <h2 class="mb-3">Búsqueda por ID</h2>
+        <div class="actions">
+          <div class="input-group">
+            <input type="number" id="inputBuscarId" class="form-control" placeholder="ID de unidad…" min="1" />
+            <button id="btnBuscarId" class="btn btn-ghost">
+              <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar por ID
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3">
+        <table id="tablaUnidadPorId" class="display table table-hover w-100" style="width:100%">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="2" class="table-message">Realiza una búsqueda para ver los resultados.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Listado general -->
+    <section class="card p-3 mb-5 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Listado de Unidades</h2>
+        <div class="actions">
+          <button id="btnRefrescar" class="btn btn-outline-info">
+            <i class="fa-solid fa-rotate me-1"></i> Refrescar
+          </button>
+          <button id="btnAbrirAgregar" class="btn btn-success">
+            <i class="fa-solid fa-plus me-1"></i> Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaUnidades" class="display table table-hover w-100" style="width:100%">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="3" class="table-message">Presiona 'Refrescar' para cargar las unidades.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Modal (Agregar / Modificar) -->
+  <div class="modal" id="modalUnidad" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalUnidadTitle">Nueva Unidad</h3>
+        <button class="btn-close" id="closeModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="unidadForm" novalidate>
+          <input type="hidden" id="unidad_id" name="unidad_id" />
+          
+          <div class="mb-3">
+            <label for="modalNombre" class="form-label">Nombre</label>
+            <input type="text" id="modalNombre" class="form-control" required maxlength="50" />
+            <small class="text-muted">Nombre de la unidad de medida (máx. 50 caracteres)</small>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="saveUnidadBtn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmación de eliminación -->
+  <div class="modal" id="modalConfirmDelete" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar eliminación</h3>
+        <button class="btn-close" id="closeDeleteModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteMessage" class="mb-3">¿Seguro que deseas eliminar esta unidad?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <i class="fa-solid fa-trash-can me-1"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery + DataTables base -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <!-- Control del panel -->
+  <script type="module" src="/admin-resources/scripts/control/panel-adm-unidades.js"></script>
+</body>
+</html>

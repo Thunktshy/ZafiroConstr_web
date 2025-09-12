@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Usuarios</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+
+  <!-- Toast styles livianos -->
+  <style>
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
+             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
+             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    .toast i { opacity: .9; }
+    .toast-success { background: #e7f6ec; color: #145a32; }
+    .toast-error   { background: #fdecea; color: #7a2e2e; }
+    .toast-info    { background: #eef2ff; color: #1f3a8a; }
+    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Usuarios</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <a class="btn" href="/admin-resources/pages/admin.html">Regresar al panel general</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card scroll-reveal" id="admin-header">
+      <h1 class="admin-title">Panel: Usuarios</h1>
+      <p class="admin-subtitle">Administración de usuarios del sistema.</p>
+    </section>
+
+    <!-- Búsqueda por ID o Email -->
+    <section class="card p-3 mb-4 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Búsqueda</h2>
+        <div class="actions">
+          <div class="input-group">
+            <input type="text" id="inputBuscar" class="form-control" placeholder="ID o Email…" />
+            <select id="tipoBusqueda" class="form-control" style="max-width: 120px;">
+              <option value="id">ID</option>
+              <option value="email">Email</option>
+            </select>
+            <button id="btnBuscar" class="btn btn-ghost">
+              <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3">
+        <table id="tablaBusqueda" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" class="text-muted">Realiza una búsqueda para ver los resultados.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Listado general -->
+    <section class="card p-3 mb-5 shadow-sm scroll-reveal">
+      <div class="card-head">
+        <h2 class="mb-3">Listado de Usuarios</h2>
+        <div class="actions">
+          <button id="btnRefrescar" class="btn btn-outline-info">
+            <i class="fa-solid fa-rotate me-1"></i> Refrescar
+          </button>
+          <button id="btnAbrirAgregar" class="btn btn-success">
+            <i class="fa-solid fa-plus me-1"></i> Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaUsuarios" class="display table table-hover w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Fecha Registro</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" class="text-muted">Presiona 'Refrescar' para cargar los usuarios.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Modal (Agregar / Modificar) -->
+  <div class="modal" id="modalUsuario" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalUsuarioTitle">Nuevo Usuario</h3>
+        <button class="btn-close" id="closeModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="usuarioForm" novalidate>
+          <input type="hidden" id="usuario_id" name="usuario_id" />
+          
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" id="nombre" class="form-control" maxlength="100" required />
+            <small class="text-muted">2-100 caracteres. Letras, números, espacios y . - &</small>
+          </div>
+          
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" maxlength="150" required />
+          </div>
+          
+          <div class="mb-3" id="grupoContrasena">
+            <label for="contrasena" class="form-label">Contraseña</label>
+            <input type="password" id="contrasena" class="form-control" maxlength="255" />
+            <small class="text-muted">Mínimo 8 caracteres (solo para crear nuevos usuarios)</small>
+          </div>
+          
+          <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo</label>
+            <select id="tipo" class="form-control">
+              <option value="">Seleccionar...</option>
+              <option value="admin">Administrador</option>
+              <option value="user">Usuario</option>
+            </select>
+          </div>
+          
+          <div class="mb-3" id="grupoEstado">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" class="form-control">
+              <option value="1">Activo</option>
+              <option value="0">Inactivo</option>
+            </select>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="saveUsuarioBtn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmación de eliminación -->
+  <div class="modal" id="modalConfirmDelete" aria-hidden="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar eliminación</h3>
+        <button class="btn-close" id="closeDeleteModalBtn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteMessage" class="mb-3">¿Seguro que deseas eliminar este usuario?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <i class="fa-solid fa-trash-can me-1"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery + DataTables base -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <!-- API y Control del panel -->
+  <script type="module" src="/admin-resources/scripts/api/usuariosManager.js"></script>
+  <script type="module" src="/admin-resources/scripts/control/panel-adm-usuarios.js"></script>
+</body>
+</html>
