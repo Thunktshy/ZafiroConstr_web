@@ -97,7 +97,7 @@ const categoriasRouter = require('./Server/Routes/categoriasRouter.js');        
 app.use('/categorias', categoriasRouter);
 
 const categoriasSecundariasRouter = require('./Server/Routes/categorias_secundariasRouter.js'); // Categorías secundarias
-app.use('/categorias-secundarias', categoriasSecundariasRouter);
+app.use('/categorias_secundarias', categoriasSecundariasRouter);
 
 const subcategoriasRouter = require('./Server/Routes/subcategoriasRouter.js');  // Subcategorías
 app.use('/subcategorias', subcategoriasRouter);
