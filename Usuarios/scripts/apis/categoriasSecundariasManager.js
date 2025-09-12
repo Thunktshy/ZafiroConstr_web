@@ -1,8 +1,8 @@
 // scripts/apis/categoriasSecundariasManager.js
 // Cliente de API para Categorías Secundarias
 // Debe coincidir con el montaje del server:
-//   app.use('/categorias-secundarias', categoriasSecundariasRouter);
-const BASE = '/categorias-secundarias';
+//   app.use('/categorias_secundarias', categoriasSecundariasRouter);
+const BASE = '/categorias_secundarias';
 
 /** Extrae un mensaje de error legible desde { message } | { error } | texto. */
 function extractErrorMessage(data, res) {
@@ -50,25 +50,25 @@ function validarNombre(nombre) {
 /**
  * Rutas del backend usadas:
  *
- * POST /categorias-secundarias/insert          (auth)
+ * POST /categorias_secundarias/insert          (auth)
  *   @body:  { nombre:string<=100 }
  *   @return:{ success, message, data:[{ categoria_secundaria_id, nombre }] }
  *
- * POST /categorias-secundarias/update          (auth)
+ * POST /categorias_secundarias/update          (auth)
  *   @body:  { categoria_secundaria_id:int, nombre:string<=100 }
  *   @return:{ success, message, data:[{ categoria_secundaria_id, nombre }] }
  *
- * POST /categorias-secundarias/delete          (admin)
+ * POST /categorias_secundarias/delete          (admin)
  *   @body:  { categoria_secundaria_id:int }
  *   @return:{ success, message }
  *
- * GET  /categorias-secundarias/get_all         (public)
+ * GET  /categorias_secundarias/get_all         (public)
  *   @return:{ success, message, data:Array<{ categoria_secundaria_id, nombre }> }
  *
- * GET  /categorias-secundarias/get_list        (public)
+ * GET  /categorias_secundarias/get_list        (public)
  *   @return:{ success, message, data:Array<{ categoria_secundaria_id, nombre }> }
  *
- * GET  /categorias-secundarias/por_id/:id      (public)
+ * GET  /categorias_secundarias/por_id/:id      (public)
  *   @return:{ success, message, data:{ categoria_secundaria_id, nombre } } | 404
  */
 export const categoriasSecundariasAPI = {
