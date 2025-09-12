@@ -93,6 +93,9 @@ app.use('/user-resources', requireAuth, userStatic);
 const cajasRouter = require('./Server/Routes/cajasRouter.js');                   // Cajas y movimientos
 app.use('/cajas', cajasRouter);
 
+const categoriasRouter = require('./Server/Routes/categoriasRouter.js');                   // Cajas y movimientos
+app.use('/categorias', categoriasRouter);
+
 const categoriasSecundariasRouter = require('./Server/Routes/categorias_secundariasRouter.js'); // Categorías secundarias
 app.use('/categorias-secundarias', categoriasSecundariasRouter);
 
