@@ -1,5 +1,7 @@
 // Control de panel: Nuevo Producto
 import { nuevoProductoAPI } from "/admin-resources/scripts/api/nuevoProductoManager.js";
+import { sizesAPI } from "/admin-resources/scripts/api/sizesManager.js";
+import { unidadesAPI } from "/admin-resources/scripts/api/unidadesManager.js";
 
 /* =========================
    Toasts
@@ -95,17 +97,18 @@ async function cargarDatosRelacionados() {
       categoriasResp, 
       categoriasSecundariasResp, 
       subcategoriasResp, 
-      unitsResp, 
       sizesResp, 
       brandsResp
     ] = await Promise.all([
       nuevoProductoAPI.getCategorias(),
       nuevoProductoAPI.getCategoriasSecundarias(),
       nuevoProductoAPI.getSubcategorias(),
-      nuevoProductoAPI.getUnits(),
-      nuevoProductoAPI.getSizes(),
+      sizesAPI.getAll(),
       nuevoProductoAPI.getBrands()
     ]);
+    
+    // Cargar unidades desde su API específica
+    const unitsResp = await unidadesAPI.getAll();
     
     datosRelacionados.categorias = toArrayData(categoriasResp);
     datosRelacionados.categoriasSecundarias = toArrayData(categoriasSecundariasResp);
