@@ -199,12 +199,12 @@ function validateProducto({ nombre, descripcion, precio, categoria_principal_id,
 btnResolverCaja?.addEventListener("click", async () => {
   try {
     const l1 = cajaLetra1.value?.trim();
-    const l2 = cajaLetra2.value?.trim();
+    const l2 = cajaLetra2.value?.trim() || ' '; // Use space if not provided
     const cara = Number(cajaCara.value);
     const nivel = Number(cajaNivel.value);
 
-    if (!l1 || !l2 || !cara || !nivel) {
-      showToast("Completa letra, cara y nivel.", "info", "fa-info-circle");
+    if (!l1 || !cara || !nivel) {
+      showToast("Completa letra (al menos la primera), cara y nivel.", "info", "fa-info-circle");
       return;
     }
     const letra = `${l1}${l2}`;
