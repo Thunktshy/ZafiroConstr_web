@@ -256,7 +256,7 @@ formEl?.addEventListener("submit", async (e) => {
     
     // Redirigir después de 1.5 segundos
     setTimeout(() => {
-      window.location.href = "/admin-resources/pages/productos.html";
+      window.location.href = "/admin-resources/pages/panels/productos.html";
     }, 1500);
     
   } catch (err) {
