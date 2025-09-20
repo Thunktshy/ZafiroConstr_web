@@ -15,17 +15,44 @@
   <!-- Estilos propios -->
   <link rel="stylesheet" href="/admin-resources/css/admin.css" />
 
-  <!-- Toast styles livianos -->
+  <!-- Estilos movidos -->
   <style>
-    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
-    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12);
-             font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.35;
-             display: flex; align-items: center; gap: 8px; animation: slidein .2s ease-out; }
+    #toastContainer { 
+      position: fixed; 
+      right: 16px; 
+      bottom: 16px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+      z-index: 2000; 
+    }
+    .toast { 
+      min-width: 260px; 
+      max-width: 420px; 
+      padding: 12px 14px; 
+      border-radius: 10px; 
+      box-shadow: 0 6px 24px rgba(0,0,0,.12);
+      font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+      font-size: 14px; 
+      line-height: 1.35;
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      animation: slidein .2s ease-out; 
+    }
     .toast i { opacity: .9; }
     .toast-success { background: #e7f6ec; color: #145a32; }
     .toast-error   { background: #fdecea; color: #7a2e2e; }
     .toast-info    { background: #eef2ff; color: #1f3a8a; }
-    @keyframes slidein { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slidein { 
+      from { transform: translateY(8px); opacity: 0; } 
+      to   { transform: translateY(0); opacity: 1; } 
+    }
+
+    /* Ajuste de ancho del select de búsqueda */
+    #tipoBusqueda { 
+      max-width: 120px; 
+    }
   </style>
 </head>
 <body class="page-body">
@@ -55,7 +82,7 @@
           <div class="input-group">
             <input type="text" id="inputBuscar" class="form-control" placeholder="ID o Nombre…" />
             <label for="tipoBusqueda">Tipo de búsqueda</label>
-            <select id="tipoBusqueda" class="form-control" style="max-width: 120px;">
+            <select id="tipoBusqueda" class="form-control">
               <option value="id">ID</option>
               <option value="nombre">Nombre</option>
             </select>

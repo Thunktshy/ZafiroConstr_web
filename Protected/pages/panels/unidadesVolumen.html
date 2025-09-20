@@ -14,6 +14,14 @@
 
   <!-- Estilos propios -->
   <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+
+  <!-- Estilos movidos de inline -->
+  <style>
+    #tablaTallaPorId,
+    #tablaTallas {
+      width: 100%;
+    }
+  </style>
 </head>
 <body class="page-body">
   <div class="top-banner">Panel de Administración - Unidades de Volumen</div>
@@ -48,7 +56,7 @@
         </div>
       </div>
       <div class="table-responsive mt-3">
-        <table id="tablaTallaPorId" class="display table table-hover w-100" style="width:100%">
+        <table id="tablaTallaPorId" class="display table table-hover w-100">
           <thead>
             <tr>
               <th>ID</th>
@@ -77,7 +85,7 @@
       </div>
 
       <div class="table-responsive">
-        <table id="tablaTallas" class="display table table-hover w-100" style="width:100%">
+        <table id="tablaTallas" class="display table table-hover w-100">
           <thead>
             <tr>
               <th>ID</th>
