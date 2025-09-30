@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Imágenes Faltantes</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+  <style>
+    /* Ajustes mínimos para que DataTables luzca bien con el theme */
+    table.dataTable thead th,
+    table.dataTable tbody td { padding: .65rem .8rem; }
+    .dt-center { text-align: center; }
+    .img-producto { width: 48px; height: 48px; object-fit: cover; border-radius: 10px; border: 1px solid var(--color-border); }
+  </style>
+</head>
+<body class="page-body">
+  <div class="top-banner">Panel de Administración - Imágenes faltantes</div>
+
+  <nav class="navbar">
+    <div class="navbarcontainer">
+      <a class="navbar-store-title" href="#">
+        <img src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=facearea&w=60&h=60&q=80" alt="Zafiro Home" height="40" class="navbar-logo me-2">
+        <span>Zafiro Home</span>
+      </a>
+      <div>
+        <a class="btn btn-ghost me-2" href="/admin-resources/pages/admin.html">Panel general</a>
+        <a class="btn" href="/admin-resources/pages/productos.html">Volver a productos</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h1>Productos sin imagen</h1>
+          <p class="text-muted">Agrega imágenes a los productos que aún no tienen.</p>
+        </div>
+        <div class="actions">
+          <button id="btnRefrescar" class="btn btn-outline-info">
+            <i class="fa-solid fa-rotate"></i>
+            Refrescar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaFaltantes" class="display stripe" style="width:100%">
+          <thead>
+            <tr>
+              <th>Producto ID</th>
+              <th>Nombre</th>
+              <th class="dt-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Modal Agregar Imagen -->
+  <div id="modalAgregarImagen" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalAgregarImagenTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalAgregarImagenTitle">Agregar imagen al producto</h3>
+        <button type="button" class="btn-close" data-close>&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="formAgregarImagen">
+          <input type="hidden" id="modal_producto_id" />
+          <div class="mb-3">
+            <label for="fileImagen" class="form-label">Selecciona una imagen</label>
+            <input type="file" id="fileImagen" class="form-control" accept="image/*" required />
+            <small class="text-muted">Formatos aceptados: JPG, PNG, WEBP, etc.</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-actions p-3">
+        <button class="btn btn-ghost" data-close>Cancelar</button>
+        <button id="btnConfirmAgregar" class="btn btn-success">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          Subir imagen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- jQuery + DataTables + App -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <!-- API imágenes (existente en tu proyecto) -->
+  <script type="module" src="/admin-resources/scripts/api/imagesManager.js"></script>
+
+  <!-- Control de UI -->
+  <script type="module" src="/admin-resources/scripts/control/panel-adm-missingImagenes.js"></script>
+</body>
+</html>
