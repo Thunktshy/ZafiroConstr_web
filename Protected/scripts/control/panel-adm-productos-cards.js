@@ -22,7 +22,7 @@ const ui = {
     
     // Botones
     btnReset: document.getElementById('btnResetFilters'),
-    btnRefresh: document.getElementById('btnRefresh') // Asegúrate de que este botón exista en tu HTML o usa un condicional
+    btnRefresh: document.getElementById('btnRefresh')
 };
 
 // Estado Global
@@ -33,7 +33,7 @@ let state = {
     categoriesL2: [],  // Categorias Nivel 2
     categoriesL3: [],  // Categorias Nivel 3
     cajas: [],         // Cajas
-    mergedProducts: [] // Productos con imagen y nombres de cat/caja unidos
+    mergedProducts: [] // Productos con imagen y nombres normalizados
 };
 
 /* =========================
@@ -47,14 +47,13 @@ async function init() {
 }
 
 /* =========================
-   Carga de Datos (Estrategia Paralela)
+   Carga de Datos
    ========================= */
 async function loadData() {
     setLoading(true);
     try {
-        console.log("Iniciando carga masiva de datos...");
+        console.log("Iniciando carga de datos...");
 
-        // Ejecutamos todas las peticiones en paralelo para ganar velocidad
         const [
             prodResp, 
             imgResp, 
@@ -63,38 +62,44 @@ async function loadData() {
             cat3Resp, 
             cajaResp
         ] = await Promise.all([
-            productosAPI.getAll(),       // Productos
-            imagenesAPI.getAll(),        // Imágenes
-            categoriasAPI.getAll('1'),   // Categorías Nivel 1
-            categoriasAPI.getAll('2'),   // Categorías Nivel 2
-            categoriasAPI.getAll('3'),   // Categorías Nivel 3 (Sub)
-            cajasAPI.getAll()            // Cajas
+            productosAPI.getAll(),
+            imagenesAPI.getAll(),
+            categoriasAPI.getAll('1'),
+            categoriasAPI.getAll('2'),
+            categoriasAPI.getAll('3'),
+            cajasAPI.getAll()
         ]);
 
-        // Guardamos en el estado (verificando si la respuesta es directa o tiene propiedad .data)
-        // Ajusta .data o la respuesta directa según como tus managers retornen la info
+        // Extracción robusta de datos: soporta respuesta directa array [] o envuelta en { data: [] }
         state.products = Array.isArray(prodResp) ? prodResp : (prodResp.data || []);
         state.images = Array.isArray(imgResp) ? imgResp : (imgResp.data || []);
+        
         state.categoriesL1 = Array.isArray(cat1Resp) ? cat1Resp : (cat1Resp.data || []);
         state.categoriesL2 = Array.isArray(cat2Resp) ? cat2Resp : (cat2Resp.data || []);
         state.categoriesL3 = Array.isArray(cat3Resp) ? cat3Resp : (cat3Resp.data || []);
         state.cajas = Array.isArray(cajaResp) ? cajaResp : (cajaResp.data || []);
 
-        // Procesamos los datos (unimos imágenes con productos)
+        console.log(`Datos cargados: ${state.products.length} productos, ${state.images.length} imágenes.`);
+
+        if (state.products.length === 0) {
+            console.warn("Advertencia: La lista de productos llegó vacía.", prodResp);
+        }
+
+        // Unir datos
         mergeData();
 
-        // Llenamos los selects de los filtros
+        // Llenar filtros
         populateFilters();
 
-        // Renderizamos
-        applyFilters(); // Esto llamará a renderGrid internamente
+        // Renderizar
+        applyFilters();
         
         showToast(`Carga completa: ${state.mergedProducts.length} productos.`, "success", "fa-check");
 
     } catch (err) {
-        console.error("Error cargando datos:", err);
-        showToast("Error al cargar los datos. Revisa la consola.", "error", "fa-circle-exclamation");
-        ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error de conexión</p></div>`;
+        console.error("Error crítico cargando datos:", err);
+        showToast("Error de conexión o datos.", "error", "fa-circle-exclamation");
+        ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error al procesar datos</p></div>`;
     } finally {
         setLoading(false);
     }
@@ -104,45 +109,53 @@ async function loadData() {
    Procesamiento de Datos
    ========================= */
 function mergeData() {
-    // Crear un mapa de imágenes para búsqueda rápida: { producto_id: "url_imagen" }
-    // Asumimos que la API de imagenes retorna objetos tipo { producto_id: 1, url: "..." }
+    // Mapa de imágenes: { producto_id: "url" }
     const imageMap = {};
     state.images.forEach(img => {
-        // Si hay múltiples imágenes, esto guardará la última. 
-        // Idealmente filtrarías por "es_principal" si existe esa bandera.
         if (img.producto_id) {
-            imageMap[img.producto_id] = img.url || img.path; // Ajusta según tu API
+            imageMap[img.producto_id] = img.url || img.path;
         }
     });
 
-    // Mapear productos agregando la imagen y nombres legibles si hiciera falta
     state.mergedProducts = state.products.map(prod => {
-        // Intentar obtener imagen del propio producto, o del mapa de imagenes, o default
-        let imgUrl = prod.imagen || prod.img_url || imageMap[prod.id] || null;
+        // CORRECCIÓN PRINCIPAL: Usamos 'producto_id' que viene de tu DB, no 'id'
+        const pId = prod.producto_id || prod.id; 
+        
+        // Imagen: prioridad campo del producto > mapa de imagenes > null
+        let imgUrl = prod.imagen || prod.img_url || imageMap[pId] || null;
         
         return {
             ...prod,
-            finalImage: imgUrl, // Propiedad normalizada para la vista
-            // Normalizamos nombres para búsqueda (opcional si la API ya trae nombres)
-            searchStr: `${prod.nombre} ${prod.descripcion || ''} ${prod.sku || ''} ${prod.id}`.toLowerCase()
+            _finalId: pId, // ID normalizado para uso interno
+            _finalImage: imgUrl,
+            // CORRECCIÓN STOCK: Tu DB devuelve 'stock_total'
+            _finalStock: (prod.stock_total !== undefined) ? Number(prod.stock_total) : (Number(prod.stock) || 0),
+            // String de búsqueda
+            _searchStr: `${prod.nombre} ${prod.descripcion || ''} ${prod.sku || ''} ${pId} ${prod.brand_nombre || ''}`.toLowerCase()
         };
     });
 }
 
 function populateFilters() {
-    // Helper para llenar select
-    const fillSelect = (selectElement, data, valueKey = 'id', labelKey = 'nombre') => {
+    // Helper inteligente para detectar el ID correcto (id, categoria_id, caja_id, etc.)
+    const fillSelect = (selectElement, data, labelKey = 'nombre') => {
         if (!selectElement) return;
-        // Mantener la primera opción (ej: "Todas las categorías")
+        
+        // Limpiar pero dejar la opción por defecto (la primera)
         const firstOption = selectElement.options[0];
         selectElement.innerHTML = '';
         if (firstOption) selectElement.appendChild(firstOption);
 
         data.forEach(item => {
             const opt = document.createElement('option');
-            opt.value = item[valueKey];
-            opt.textContent = item[labelKey];
-            selectElement.appendChild(opt);
+            // Intentar detectar la llave primaria
+            const val = item.id || item.categoria_id || item.caja_id || item.brand_id;
+            
+            if (val !== undefined) {
+                opt.value = val;
+                opt.textContent = item[labelKey] || item.descripcion || `Item ${val}`;
+                selectElement.appendChild(opt);
+            }
         });
     };
 
@@ -164,10 +177,10 @@ function applyFilters() {
 
     const filtered = state.mergedProducts.filter(p => {
         // Filtro Texto
-        if (term && !p.searchStr.includes(term)) return false;
+        if (term && !p._searchStr.includes(term)) return false;
 
-        // Filtros Selects (Asumiendo que las propiedades en producto son snake_case)
-        // Ajusta p.categoria_principal_id segun tu DB real
+        // Filtros Selects
+        // Comparamos String para evitar problemas de tipo (number vs string)
         if (fCatPri && String(p.categoria_principal_id) !== fCatPri) return false;
         if (fCatSec && String(p.categoria_secundaria_id) !== fCatSec) return false;
         if (fSubCat && String(p.subcategoria_id) !== fSubCat) return false;
@@ -176,9 +189,7 @@ function applyFilters() {
         return true;
     });
 
-    // Actualizar contador
     if(ui.count) ui.count.textContent = filtered.length;
-
     renderGrid(filtered);
 }
 
@@ -190,22 +201,33 @@ function renderGrid(items) {
     }
 
     ui.empty.classList.add('d-none');
-    ui.grid.style.display = 'grid'; // O 'flex' según tu CSS
+    ui.grid.style.display = 'grid'; 
     ui.grid.innerHTML = '';
 
     items.forEach(prod => {
-        // Determinar imagen o placeholder
-        const imgSrc = prod.finalImage 
-            ? `/uploads/${prod.finalImage}` // Ajusta la ruta base si es necesario
-            : '/admin-resources/img/placeholder-product.png'; // Ruta a imagen default
+        const pId = prod._finalId;
+        const stock = prod._finalStock;
+        
+        // Imagen
+        const imgSrc = prod._finalImage 
+            ? `/uploads/${prod._finalImage}` 
+            : '/admin-resources/img/placeholder-product.png';
+
+        // Badge Stock
+        let stockClass = 'bg-danger';
+        let stockText = 'Agotado';
+        
+        if (stock > 10) {
+            stockClass = 'bg-success';
+            stockText = `${stock} un.`;
+        } else if (stock > 0) {
+            stockClass = 'bg-warning text-dark';
+            stockText = `${stock} un.`;
+        }
 
         const card = document.createElement('div');
-        card.className = 'product-card animate-fade-in'; // Asegúrate de tener esta clase o usa 'card'
+        card.className = 'product-card animate-fade-in';
         
-        // Determinar badge de stock
-        const stockClass = prod.stock > 10 ? 'bg-success' : (prod.stock > 0 ? 'bg-warning' : 'bg-danger');
-        const stockText = prod.stock > 0 ? `${prod.stock} un.` : 'Agotado';
-
         card.innerHTML = `
             <div class="product-img-container">
                 <span class="badge position-absolute top-0 end-0 m-2 ${stockClass}">${stockText}</span>
@@ -216,15 +238,17 @@ function renderGrid(items) {
                      onerror="this.onerror=null;this.src='/admin-resources/img/no-image.png';">
             </div>
             <div class="product-body p-3">
-                <small class="text-muted d-block mb-1">ID: ${prod.id}</small>
+                <small class="text-muted d-block mb-1">
+                   ID: ${pId} <span class="mx-1">•</span> ${prod.brand_nombre || 'S/M'}
+                </small>
                 <h5 class="product-title text-truncate" title="${prod.nombre}">${prod.nombre}</h5>
                 <p class="product-price fw-bold text-primary">$${parseFloat(prod.precio).toFixed(2)}</p>
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <button class="btn btn-sm btn-outline-primary btn-action" data-id="${prod.id}" title="Editar">
+                    <button class="btn btn-sm btn-outline-primary btn-action" onclick="window.location.href='/admin-resources/pages/panels/editarProducto.html?id=${pId}'" title="Editar">
                         <i class="fa-solid fa-pen"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-info btn-action" data-id="${prod.id}" title="Ver Detalles">
+                    <button class="btn btn-sm btn-outline-info btn-action" data-id="${pId}" title="Ver Detalles">
                         <i class="fa-solid fa-eye"></i>
                     </button>
                 </div>
@@ -237,22 +261,18 @@ function renderGrid(items) {
 /* =========================
    Event Listeners & Utilidades
    ========================= */
-
 function setupEventListeners() {
-    // Debounce para búsqueda
     let timeout = null;
     ui.search.addEventListener('input', () => {
         clearTimeout(timeout);
         timeout = setTimeout(applyFilters, 300);
     });
 
-    // Filtros directos
     ui.catPri.addEventListener('change', applyFilters);
     ui.catSec.addEventListener('change', applyFilters);
     ui.subCat.addEventListener('change', applyFilters);
     ui.caja.addEventListener('input', applyFilters);
 
-    // Botones
     ui.btnReset.addEventListener('click', () => {
         ui.search.value = '';
         ui.catPri.value = '';
@@ -262,9 +282,7 @@ function setupEventListeners() {
         applyFilters();
     });
 
-    if(ui.btnRefresh) {
-        ui.btnRefresh.addEventListener('click', loadData);
-    }
+    if(ui.btnRefresh) ui.btnRefresh.addEventListener('click', loadData);
 }
 
 function setLoading(isLoading) {
@@ -277,8 +295,7 @@ function setLoading(isLoading) {
     }
 }
 
-// Helper Toast (Si ya existe globalmente en el HTML, no es necesario duplicarlo, 
-// pero se incluye por seguridad si este script corre aislado)
+// Toast
 const toastContainer = document.getElementById("toastContainer");
 function showToast(message, type = "info", icon = null, timeout = 3500) {
   if (!toastContainer) return;
