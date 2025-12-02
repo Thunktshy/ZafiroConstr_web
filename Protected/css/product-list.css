@@ -10,14 +10,23 @@
 
 /* --- Card Design --- */
 .product-card {
-  background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #e6e8ef);
-  border-radius: var(--radius, 12px);
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+    background: var(--color-card, #fff);
+    border: 1px solid var(--color-border, #e6e8ef);
+    border-radius: var(--radius, 12px);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.product-img-container {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    padding-left: 20px;
+    align-content: space-around;
+    align-items: center;
 }
 
 .product-card:hover {
