@@ -3,7 +3,7 @@
 
 const express = require('express');
 const multer  = require('multer');
-const { db, sql } = require('../db/dbconnector'); // Asegúrate que la ruta al conector sea correcta
+const { db, sql } = require('../../db/dbconnector.js'); // Asegúrate que la ruta al conector sea correcta
 const imageService = require('../Services/imageService.js');
 
 const router = express.Router();
