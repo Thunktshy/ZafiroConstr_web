@@ -1,6 +1,10 @@
 // /admin-resources/scripts/panel-adm-productos-cards.js
+
+// Importamos todas las APIs necesarias
 import { productosAPI } from "/admin-resources/scripts/api/productosManager.js";
-import { imagenesAPI } from "/admin-resources/scripts/api/imagesManager.js"; // Para obtener imágenes si no vienen en el objeto producto
+import { imagenesAPI } from "/admin-resources/scripts/api/imagesManager.js";
+import { categoriasAPI } from "/admin-resources/scripts/api/categoriasManager.js";
+import { cajasAPI } from "/admin-resources/scripts/api/cajasManager.js";
 
 // Elementos DOM
 const ui = {
@@ -15,17 +19,21 @@ const ui = {
     catSec: document.getElementById('filterCatSec'),
     subCat: document.getElementById('filterSubCat'),
     caja:   document.getElementById('filterCaja'),
+    
+    // Botones
     btnReset: document.getElementById('btnResetFilters'),
-    btnRefresh: document.getElementById('btnRefresh')
+    btnRefresh: document.getElementById('btnRefresh') // Asegúrate de que este botón exista en tu HTML o usa un condicional
 };
 
 // Estado Global
-let allProducts = [];
-let filteredProducts = [];
-let availableFilters = {
-    catPri: new Set(),
-    catSec: new Set(),
-    subCat: new Set()
+let state = {
+    products: [],      // Productos crudos
+    images: [],        // Lista de imagenes
+    categoriesL1: [],  // Categorias Nivel 1
+    categoriesL2: [],  // Categorias Nivel 2
+    categoriesL3: [],  // Categorias Nivel 3
+    cajas: [],         // Cajas
+    mergedProducts: [] // Productos con imagen y nombres de cat/caja unidos
 };
 
 /* =========================
@@ -38,186 +46,196 @@ async function init() {
     setupEventListeners();
 }
 
+/* =========================
+   Carga de Datos (Estrategia Paralela)
+   ========================= */
 async function loadData() {
     setLoading(true);
     try {
-        // Obtenemos todos los productos activos (o todos si prefieres)
-        const data = await productosAPI.getAll(); 
+        console.log("Iniciando carga masiva de datos...");
+
+        // Ejecutamos todas las peticiones en paralelo para ganar velocidad
+        const [
+            prodResp, 
+            imgResp, 
+            cat1Resp, 
+            cat2Resp, 
+            cat3Resp, 
+            cajaResp
+        ] = await Promise.all([
+            productosAPI.getAll(),       // Productos
+            imagenesAPI.getAll(),        // Imágenes
+            categoriasAPI.getAll('1'),   // Categorías Nivel 1
+            categoriasAPI.getAll('2'),   // Categorías Nivel 2
+            categoriasAPI.getAll('3'),   // Categorías Nivel 3 (Sub)
+            cajasAPI.getAll()            // Cajas
+        ]);
+
+        // Guardamos en el estado (verificando si la respuesta es directa o tiene propiedad .data)
+        // Ajusta .data o la respuesta directa según como tus managers retornen la info
+        state.products = Array.isArray(prodResp) ? prodResp : (prodResp.data || []);
+        state.images = Array.isArray(imgResp) ? imgResp : (imgResp.data || []);
+        state.categoriesL1 = Array.isArray(cat1Resp) ? cat1Resp : (cat1Resp.data || []);
+        state.categoriesL2 = Array.isArray(cat2Resp) ? cat2Resp : (cat2Resp.data || []);
+        state.categoriesL3 = Array.isArray(cat3Resp) ? cat3Resp : (cat3Resp.data || []);
+        state.cajas = Array.isArray(cajaResp) ? cajaResp : (cajaResp.data || []);
+
+        // Procesamos los datos (unimos imágenes con productos)
+        mergeData();
+
+        // Llenamos los selects de los filtros
+        populateFilters();
+
+        // Renderizamos
+        applyFilters(); // Esto llamará a renderGrid internamente
         
-        // Asumimos que data es un array de productos
-        allProducts = Array.isArray(data) ? data : [];
-        
-        // Preparar filtros dinámicos basados en los datos recibidos
-        extractFilterOptions();
-        populateFilterSelects();
-        
-        // Render inicial
-        applyFilters();
-        
+        showToast(`Carga completa: ${state.mergedProducts.length} productos.`, "success", "fa-check");
+
     } catch (err) {
-        console.error("Error cargando productos:", err);
-        showToast("Error al cargar inventario", "error");
-        ui.grid.innerHTML = '<div class="text-danger text-center w-100 py-5">Error de conexión</div>';
+        console.error("Error cargando datos:", err);
+        showToast("Error al cargar los datos. Revisa la consola.", "error", "fa-circle-exclamation");
+        ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error de conexión</p></div>`;
     } finally {
         setLoading(false);
     }
 }
 
 /* =========================
-   Filtros y Búsqueda
+   Procesamiento de Datos
    ========================= */
+function mergeData() {
+    // Crear un mapa de imágenes para búsqueda rápida: { producto_id: "url_imagen" }
+    // Asumimos que la API de imagenes retorna objetos tipo { producto_id: 1, url: "..." }
+    const imageMap = {};
+    state.images.forEach(img => {
+        // Si hay múltiples imágenes, esto guardará la última. 
+        // Idealmente filtrarías por "es_principal" si existe esa bandera.
+        if (img.producto_id) {
+            imageMap[img.producto_id] = img.url || img.path; // Ajusta según tu API
+        }
+    });
 
-function extractFilterOptions() {
-    // Limpiamos Sets
-    availableFilters.catPri.clear();
-    availableFilters.catSec.clear();
-    availableFilters.subCat.clear();
-
-    allProducts.forEach(p => {
-        if (p.categoria_principal) availableFilters.catPri.add(p.categoria_principal);
-        if (p.categoria_secundaria) availableFilters.catSec.add(p.categoria_secundaria);
-        if (p.subcategoria) availableFilters.subCat.add(p.subcategoria);
+    // Mapear productos agregando la imagen y nombres legibles si hiciera falta
+    state.mergedProducts = state.products.map(prod => {
+        // Intentar obtener imagen del propio producto, o del mapa de imagenes, o default
+        let imgUrl = prod.imagen || prod.img_url || imageMap[prod.id] || null;
+        
+        return {
+            ...prod,
+            finalImage: imgUrl, // Propiedad normalizada para la vista
+            // Normalizamos nombres para búsqueda (opcional si la API ya trae nombres)
+            searchStr: `${prod.nombre} ${prod.descripcion || ''} ${prod.sku || ''} ${prod.id}`.toLowerCase()
+        };
     });
 }
 
-function populateFilterSelects() {
-    fillSelect(ui.catPri, availableFilters.catPri);
-    fillSelect(ui.catSec, availableFilters.catSec);
-    fillSelect(ui.subCat, availableFilters.subCat);
+function populateFilters() {
+    // Helper para llenar select
+    const fillSelect = (selectElement, data, valueKey = 'id', labelKey = 'nombre') => {
+        if (!selectElement) return;
+        // Mantener la primera opción (ej: "Todas las categorías")
+        const firstOption = selectElement.options[0];
+        selectElement.innerHTML = '';
+        if (firstOption) selectElement.appendChild(firstOption);
+
+        data.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item[valueKey];
+            opt.textContent = item[labelKey];
+            selectElement.appendChild(opt);
+        });
+    };
+
+    fillSelect(ui.catPri, state.categoriesL1);
+    fillSelect(ui.catSec, state.categoriesL2);
+    fillSelect(ui.subCat, state.categoriesL3);
+    fillSelect(ui.caja, state.cajas);
 }
 
-function fillSelect(selectElement, setValues) {
-    const currentVal = selectElement.value;
-    // Guardar opción seleccionada si existe, o resetear
-    selectElement.innerHTML = '<option value="">Todas</option>';
-    
-    const sorted = Array.from(setValues).sort();
-    sorted.forEach(val => {
-        const opt = document.createElement('option');
-        opt.value = val;
-        opt.textContent = val;
-        selectElement.appendChild(opt);
-    });
-    
-    // Restaurar selección si sigue siendo válida
-    if (setValues.has(currentVal)) selectElement.value = currentVal;
-}
-
+/* =========================
+   Lógica de Filtrado y Renderizado
+   ========================= */
 function applyFilters() {
     const term = ui.search.value.toLowerCase().trim();
     const fCatPri = ui.catPri.value;
     const fCatSec = ui.catSec.value;
     const fSubCat = ui.subCat.value;
-    const fCaja = ui.caja.value.toLowerCase().trim();
+    const fCaja = ui.caja.value;
 
-    filteredProducts = allProducts.filter(p => {
-        // Filtro Texto (Nombre o ID)
-        const matchText = !term || 
-            (p.nombre && p.nombre.toLowerCase().includes(term)) || 
-            (String(p.producto_id).includes(term));
+    const filtered = state.mergedProducts.filter(p => {
+        // Filtro Texto
+        if (term && !p.searchStr.includes(term)) return false;
 
-        // Filtros Categoría
-        const matchCP = !fCatPri || p.categoria_principal === fCatPri;
-        const matchCS = !fCatSec || p.categoria_secundaria === fCatSec;
-        const matchSC = !fSubCat || p.subcategoria === fSubCat;
+        // Filtros Selects (Asumiendo que las propiedades en producto son snake_case)
+        // Ajusta p.categoria_principal_id segun tu DB real
+        if (fCatPri && String(p.categoria_principal_id) !== fCatPri) return false;
+        if (fCatSec && String(p.categoria_secundaria_id) !== fCatSec) return false;
+        if (fSubCat && String(p.subcategoria_id) !== fSubCat) return false;
+        if (fCaja && String(p.caja_id) !== fCaja) return false;
 
-        // Filtro Caja (Buscamos que la concatenación de letra+numero contenga el input)
-        // Ojo: Asumiendo que 'caja_letra' y 'caja_numero' existen en el objeto. 
-        // Si viene como string 'A1', ajustar propiedad.
-        const cajaFull = ((p.caja_letra || '') + (p.caja_numero || '')).toLowerCase();
-        const matchCaja = !fCaja || cajaFull.includes(fCaja);
-
-        return matchText && matchCP && matchCS && matchSC && matchCaja;
+        return true;
     });
 
-    renderGrid(filteredProducts);
+    // Actualizar contador
+    if(ui.count) ui.count.textContent = filtered.length;
+
+    renderGrid(filtered);
 }
 
-/* =========================
-   Renderizado (Tarjetas)
-   ========================= */
-
-function renderGrid(products) {
-    ui.grid.innerHTML = '';
-    ui.count.textContent = products.length;
-
-    if (products.length === 0) {
+function renderGrid(items) {
+    if (items.length === 0) {
         ui.grid.style.display = 'none';
         ui.empty.classList.remove('d-none');
         return;
     }
 
     ui.empty.classList.add('d-none');
-    ui.grid.style.display = 'grid';
+    ui.grid.style.display = 'grid'; // O 'flex' según tu CSS
+    ui.grid.innerHTML = '';
 
-    // Crear fragmento para rendimiento
-    const fragment = document.createDocumentFragment();
+    items.forEach(prod => {
+        // Determinar imagen o placeholder
+        const imgSrc = prod.finalImage 
+            ? `/uploads/${prod.finalImage}` // Ajusta la ruta base si es necesario
+            : '/admin-resources/img/placeholder-product.png'; // Ruta a imagen default
 
-    products.forEach(p => {
-        const card = createCardElement(p);
-        fragment.appendChild(card);
-    });
-
-    ui.grid.appendChild(fragment);
-}
-
-function createCardElement(p) {
-    const el = document.createElement('article');
-    el.className = 'product-card';
-
-    // Formateadores
-    const fmtMoney = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
-    const stockClass = p.stock_total > 5 ? 'bg-stock-ok' : (p.stock_total > 0 ? 'bg-stock-low' : 'bg-stock-out');
-    const stockLabel = p.stock_total > 0 ? `Stock: ${p.stock_total}` : 'Agotado';
-    
-    // Imagen: Usamos image_path si viene en el join de SQL, o placeholder.
-    // Si tu SP 'productos_get_all' no devuelve 'image_path', necesitarás ajustar el SP o hacer fetch lazy.
-    // Asumiremos que el backend ya hace JOIN para traer al menos una imagen principal.
-    const imgSrc = p.image_path || '/admin-resources/img/placeholder.png'; 
-
-    // Caja String
-    const cajaStr = (p.caja_letra && p.caja_numero) 
-        ? `${p.caja_letra}${p.caja_numero}` 
-        : '--';
-
-    el.innerHTML = `
-        <div class="card-header-badge">
-            <span class="badge-id">#${p.producto_id}</span>
-            <span class="badge-stock ${stockClass}">${stockLabel}</span>
-        </div>
+        const card = document.createElement('div');
+        card.className = 'product-card animate-fade-in'; // Asegúrate de tener esta clase o usa 'card'
         
-        <div class="card-img-wrapper">
-            <img src="${imgSrc}" alt="${p.nombre}" loading="lazy" onerror="this.src='/admin-resources/img/placeholder.png'">
-        </div>
-        
-        <div class="card-body">
-            <h3 class="card-title" title="${p.nombre}">${p.nombre}</h3>
-            <div class="card-price">${fmtMoney.format(p.precio || 0)}</div>
-            
-            <div class="card-meta">
-                <div class="meta-row">
-                    <i class="fa-solid fa-layer-group meta-icon"></i>
-                    <span>${p.categoria_principal || 'Sin Cat.'}</span>
-                </div>
-                <div class="meta-row">
-                    <i class="fa-solid fa-box-open meta-icon"></i>
-                    <span>Caja: <strong>${cajaStr}</strong></span>
+        // Determinar badge de stock
+        const stockClass = prod.stock > 10 ? 'bg-success' : (prod.stock > 0 ? 'bg-warning' : 'bg-danger');
+        const stockText = prod.stock > 0 ? `${prod.stock} un.` : 'Agotado';
+
+        card.innerHTML = `
+            <div class="product-img-container">
+                <span class="badge position-absolute top-0 end-0 m-2 ${stockClass}">${stockText}</span>
+                <img src="${imgSrc}" 
+                     alt="${prod.nombre}" 
+                     class="product-img"
+                     loading="lazy"
+                     onerror="this.onerror=null;this.src='/admin-resources/img/no-image.png';">
+            </div>
+            <div class="product-body p-3">
+                <small class="text-muted d-block mb-1">ID: ${prod.id}</small>
+                <h5 class="product-title text-truncate" title="${prod.nombre}">${prod.nombre}</h5>
+                <p class="product-price fw-bold text-primary">$${parseFloat(prod.precio).toFixed(2)}</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <button class="btn btn-sm btn-outline-primary btn-action" data-id="${prod.id}" title="Editar">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-info btn-action" data-id="${prod.id}" title="Ver Detalles">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-
-        <div class="card-footer">
-            <a href="/admin-resources/pages/panels/ver_producto.html?id=${p.producto_id}" class="btn-card btn-view">
-                <i class="fa-solid fa-eye me-1"></i> Ver Detalle
-            </a>
-        </div>
-    `;
-
-    return el;
+        `;
+        ui.grid.appendChild(card);
+    });
 }
 
 /* =========================
-   Eventos y Utilidades
+   Event Listeners & Utilidades
    ========================= */
 
 function setupEventListeners() {
@@ -244,26 +262,34 @@ function setupEventListeners() {
         applyFilters();
     });
 
-    ui.btnRefresh.addEventListener('click', loadData);
+    if(ui.btnRefresh) {
+        ui.btnRefresh.addEventListener('click', loadData);
+    }
 }
 
 function setLoading(isLoading) {
     if (isLoading) {
-        ui.loading.classList.remove('d-none');
-        ui.grid.style.display = 'none';
-        ui.empty.classList.add('d-none');
+        if(ui.loading) ui.loading.classList.remove('d-none');
+        if(ui.grid) ui.grid.style.display = 'none';
+        if(ui.empty) ui.empty.classList.add('d-none');
     } else {
-        ui.loading.classList.add('d-none');
+        if(ui.loading) ui.loading.classList.add('d-none');
     }
 }
 
-// Toast simple (duplicado del helper común)
+// Helper Toast (Si ya existe globalmente en el HTML, no es necesario duplicarlo, 
+// pero se incluye por seguridad si este script corre aislado)
 const toastContainer = document.getElementById("toastContainer");
-function showToast(message, type = "info") {
-    if (!toastContainer) return;
-    const el = document.createElement("div");
-    el.className = `toast toast-${type}`;
-    el.textContent = message;
-    toastContainer.appendChild(el);
-    setTimeout(() => el.remove(), 3000);
+function showToast(message, type = "info", icon = null, timeout = 3500) {
+  if (!toastContainer) return;
+  const el = document.createElement("div");
+  el.className = `toast toast-${type}`;
+  el.setAttribute("role", "status");
+  el.innerHTML = `${icon ? `<i class="fa-solid ${icon}"></i>` : ""}<span>${message}</span>`;
+  toastContainer.appendChild(el);
+  setTimeout(() => { 
+      el.style.opacity = "0"; 
+      el.style.transform = "translateY(4px)"; 
+      setTimeout(() => el.remove(), 180); 
+  }, timeout);
 }
