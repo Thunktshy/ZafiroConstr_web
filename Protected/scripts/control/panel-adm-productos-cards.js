@@ -68,14 +68,15 @@ async function loadData() {
             
             // Si falla la API de imágenes, retornamos array vacío para continuar sin ellas
             imagenesAPI.getAll().catch(err => { 
-                console.warn("Advertencia: No se pudieron cargar las imágenes (Server Error 500 o similar). Se continuará sin ellas.", err);
+                console.warn("Advertencia: No se pudieron cargar las imágenes. Se continuará sin ellas.", err);
                 return []; 
             }),
             
-            // CORRECCIÓN: Usamos getByNivel en lugar de getAll
-            categoriasAPI.getByNivel(1),
-            categoriasAPI.getByNivel(2),
-            categoriasAPI.getByNivel(3),
+            // CORRECCIÓN: Llamamos a los métodos explícitos de cada nivel (como en categorias.html)
+            categoriasAPI.principalesGetAll(),
+            categoriasAPI.secundariasGetAll(),
+            categoriasAPI.subcategoriasGetAll(),
+            
             cajasAPI.getAll()
         ]);
 
@@ -157,8 +158,9 @@ function populateFilters() {
 
         data.forEach(item => {
             const opt = document.createElement('option');
-            // Intentar detectar la llave primaria
-            const val = item.id || item.categoria_id || item.caja_id || item.brand_id;
+            // Intentar detectar la llave primaria. 
+            // IMPORTANTE: Asegúrate que tus categorías traigan 'id' o 'categoria_principal_id', etc.
+            const val = item.id || item.categoria_principal_id || item.categoria_secundaria_id || item.subcategoria_id || item.caja_id || item.brand_id;
             
             if (val !== undefined) {
                 opt.value = val;
