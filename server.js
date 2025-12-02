@@ -4,7 +4,7 @@
 require('dotenv').config();
 
 /**
- * IMPORTS (con comentarios de referencia)
+ * Importación de módulos
  */
 const express  = require('express');     // Servidor HTTP
 const cors     = require('cors');        // CORS
@@ -23,15 +23,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Configuración de sesiones
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'change-this',
+  secret: process.env.SESSION_SECRET, // Clave secreta para firmar la cookie de sesión
   resave: false,
   saveUninitialized: false,
   rolling: true,
   cookie: { maxAge: 60 * 60 * 1000 } // 1h
 }));
 
-const PUBLIC_DIR = path.resolve(process.cwd(), 'Public');
+const PUBLIC_DIR = path.resolve(process.cwd(), 'Public'); // Ruta absoluta a /Public
 
 // Servir archivos estáticos (css/, scripts/, imágenes, etc.)
 app.use(express.static(PUBLIC_DIR, {
