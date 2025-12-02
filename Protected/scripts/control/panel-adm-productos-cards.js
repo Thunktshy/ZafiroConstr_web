@@ -78,13 +78,9 @@ async function loadData() {
             cajasAPI.getAll()
         ]);
 
-        // --- LOGS DE DEPURACIÓN SOLICITADOS ---
+        // --- LOGS DE DEPURACIÓN ---
         console.group("🔍 Inspección de Datos Recibidos");
-        console.log("Productos (Raw):", prodResp);
-        console.log("Categorías L1:", cat1Resp);
-        console.log("Categorías L2:", cat2Resp);
-        console.log("Categorías L3:", cat3Resp);
-        console.log("Cajas:", cajaResp);
+        console.log("Categorías L1 (Raw):", cat1Resp);
         console.groupEnd();
 
         // Extracción robusta de datos
@@ -96,7 +92,7 @@ async function loadData() {
         state.categoriesL3 = Array.isArray(cat3Resp) ? cat3Resp : (cat3Resp.data || []);
         state.cajas = Array.isArray(cajaResp) ? cajaResp : (cajaResp.data || []);
 
-        console.log(`✅ Resumen: ${state.products.length} prods, ${state.images.length} imgs, ${state.categoriesL1.length} catL1.`);
+        console.log(`✅ Resumen: ${state.products.length} prods, ${state.categoriesL1.length} catL1.`);
 
         // Unir datos
         mergeData();
@@ -112,7 +108,7 @@ async function loadData() {
     } catch (err) {
         console.error("Error crítico cargando datos:", err);
         showToast("Error de conexión o datos.", "error", "fa-circle-exclamation");
-        ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error al procesar datos</p><small class="text-muted">${err.message}</small></div>`;
+        if(ui.grid) ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error al procesar datos</p><small class="text-muted">${err.message}</small></div>`;
     } finally {
         setLoading(false);
     }
@@ -148,16 +144,13 @@ function mergeData() {
 function populateFilters() {
     // Helper inteligente y ROBUSTO
     const fillSelect = (selectElement, data, labelKey = 'nombre') => {
-        // 1. Si el elemento no existe en el DOM, salimos
         if (!selectElement) return;
 
-        // 2. CORRECCIÓN: Si el elemento NO es un SELECT (ej. es un input), no intentamos llenarlo
         if (selectElement.tagName !== 'SELECT') {
             console.log(`Info: El filtro #${selectElement.id} es un <${selectElement.tagName}>, no se llenará automáticamente.`);
             return;
         }
         
-        // Limpiar pero dejar la opción por defecto
         const firstOption = selectElement.options[0];
         selectElement.innerHTML = '';
         if (firstOption) selectElement.appendChild(firstOption);
@@ -169,8 +162,9 @@ function populateFilters() {
 
         data.forEach(item => {
             const opt = document.createElement('option');
-            // Intentar detectar la llave primaria
-            const val = item.id || item.categoria_principal_id || item.categoria_secundaria_id || item.subcategoria_id || item.caja_id || item.brand_id;
+            
+            // CORRECCIÓN: Se agregan 'categoria_id' y variantes para cubrir las respuestas del servidor
+            const val = item.id || item.categoria_id || item.categoria_principal_id || item.categoria_secundaria_id || item.subcategoria_id || item.caja_id || item.brand_id;
             
             if (val !== undefined) {
                 opt.value = val;
@@ -183,8 +177,6 @@ function populateFilters() {
     fillSelect(ui.catPri, state.categoriesL1);
     fillSelect(ui.catSec, state.categoriesL2);
     fillSelect(ui.subCat, state.categoriesL3);
-    
-    // Nota: Si 'ui.caja' es un input de texto, fillSelect lo ignorará limpiamente gracias a la validación.
     fillSelect(ui.caja, state.cajas); 
 }
 
@@ -194,7 +186,6 @@ function populateFilters() {
 function applyFilters() {
     const term = ui.search.value.toLowerCase().trim();
     
-    // Obtenemos valores de manera segura
     const fCatPri = ui.catPri ? ui.catPri.value : '';
     const fCatSec = ui.catSec ? ui.catSec.value : '';
     const fSubCat = ui.subCat ? ui.subCat.value : '';
@@ -209,11 +200,7 @@ function applyFilters() {
         if (fCatSec && String(p.categoria_secundaria_id) !== fCatSec) return false;
         if (fSubCat && String(p.subcategoria_id) !== fSubCat) return false;
         
-        // Filtro de Caja: si es input texto, buscamos coincidencia parcial o exacta
-        if (fCaja) {
-             // Si el ID de caja coincide
-             if (String(p.caja_id) !== fCaja) return false;
-        }
+        if (fCaja && String(p.caja_id) !== fCaja) return false;
 
         return true;
     });
@@ -234,17 +221,19 @@ function renderGrid(items) {
     if(ui.empty) ui.empty.classList.add('d-none');
     ui.grid.style.display = 'grid'; 
     ui.grid.innerHTML = '';
+    
+    // URL por defecto si falla la carga de la imagen (Solicitado por el usuario)
+    const fallbackUrl = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=60&h=60&q=80";
 
     items.forEach(prod => {
         const pId = prod._finalId;
         const stock = prod._finalStock;
         
-        // Imagen
+        // Imagen principal (o placeholder si viene nula)
         const imgSrc = prod._finalImage 
             ? `/uploads/${prod._finalImage}` 
-            : '/admin-resources/img/placeholder-product.png';
+            : fallbackUrl; // Usamos la de unsplash como default tambien si no hay imagen
 
-        // Badge Stock
         let stockClass = 'bg-danger';
         let stockText = 'Agotado';
         
@@ -266,7 +255,7 @@ function renderGrid(items) {
                      alt="${prod.nombre}" 
                      class="product-img"
                      loading="lazy"
-                     onerror="this.onerror=null;this.src='/admin-resources/img/no-image.png';">
+                     onerror="this.onerror=null;this.src='${fallbackUrl}';">
             </div>
             <div class="product-body p-3">
                 <small class="text-muted d-block mb-1">
