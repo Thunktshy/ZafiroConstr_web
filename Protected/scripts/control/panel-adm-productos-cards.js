@@ -54,6 +54,8 @@ async function loadData() {
     try {
         console.log("Iniciando carga de datos...");
 
+        // Ejecutamos peticiones en paralelo. 
+        // IMPORTANTE: Manejamos el error de imágenes individualmente para no romper todo el proceso.
         const [
             prodResp, 
             imgResp, 
@@ -63,10 +65,17 @@ async function loadData() {
             cajaResp
         ] = await Promise.all([
             productosAPI.getAll(),
-            imagenesAPI.getAll(),
-            categoriasAPI.getAll('1'),
-            categoriasAPI.getAll('2'),
-            categoriasAPI.getAll('3'),
+            
+            // Si falla la API de imágenes, retornamos array vacío para continuar sin ellas
+            imagenesAPI.getAll().catch(err => { 
+                console.warn("Advertencia: No se pudieron cargar las imágenes (Server Error 500 o similar). Se continuará sin ellas.", err);
+                return []; 
+            }),
+            
+            // CORRECCIÓN: Usamos getByNivel en lugar de getAll
+            categoriasAPI.getByNivel(1),
+            categoriasAPI.getByNivel(2),
+            categoriasAPI.getByNivel(3),
             cajasAPI.getAll()
         ]);
 
@@ -99,7 +108,7 @@ async function loadData() {
     } catch (err) {
         console.error("Error crítico cargando datos:", err);
         showToast("Error de conexión o datos.", "error", "fa-circle-exclamation");
-        ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error al procesar datos</p></div>`;
+        ui.grid.innerHTML = `<div class="text-center text-danger py-5"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p>Error al procesar datos</p><small class="text-muted">${err.message}</small></div>`;
     } finally {
         setLoading(false);
     }
