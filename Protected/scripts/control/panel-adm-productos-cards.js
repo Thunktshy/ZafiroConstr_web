@@ -55,7 +55,6 @@ async function loadData() {
         console.log("Iniciando carga de datos...");
 
         // Ejecutamos peticiones en paralelo. 
-        // IMPORTANTE: Manejamos el error de imágenes individualmente para no romper todo el proceso.
         const [
             prodResp, 
             imgResp, 
@@ -66,13 +65,12 @@ async function loadData() {
         ] = await Promise.all([
             productosAPI.getAll(),
             
-            // Si falla la API de imágenes, retornamos array vacío para continuar sin ellas
+            // Si falla la API de imágenes, retornamos array vacío
             imagenesAPI.getAll().catch(err => { 
-                console.warn("Advertencia: No se pudieron cargar las imágenes. Se continuará sin ellas.", err);
+                console.warn("Advertencia: No se pudieron cargar las imágenes.", err);
                 return []; 
             }),
             
-            // CORRECCIÓN: Llamamos a los métodos explícitos de cada nivel (como en categorias.html)
             categoriasAPI.principalesGetAll(),
             categoriasAPI.secundariasGetAll(),
             categoriasAPI.subcategoriasGetAll(),
@@ -80,7 +78,16 @@ async function loadData() {
             cajasAPI.getAll()
         ]);
 
-        // Extracción robusta de datos: soporta respuesta directa array [] o envuelta en { data: [] }
+        // --- LOGS DE DEPURACIÓN SOLICITADOS ---
+        console.group("🔍 Inspección de Datos Recibidos");
+        console.log("Productos (Raw):", prodResp);
+        console.log("Categorías L1:", cat1Resp);
+        console.log("Categorías L2:", cat2Resp);
+        console.log("Categorías L3:", cat3Resp);
+        console.log("Cajas:", cajaResp);
+        console.groupEnd();
+
+        // Extracción robusta de datos
         state.products = Array.isArray(prodResp) ? prodResp : (prodResp.data || []);
         state.images = Array.isArray(imgResp) ? imgResp : (imgResp.data || []);
         
@@ -89,11 +96,7 @@ async function loadData() {
         state.categoriesL3 = Array.isArray(cat3Resp) ? cat3Resp : (cat3Resp.data || []);
         state.cajas = Array.isArray(cajaResp) ? cajaResp : (cajaResp.data || []);
 
-        console.log(`Datos cargados: ${state.products.length} productos, ${state.images.length} imágenes.`);
-
-        if (state.products.length === 0) {
-            console.warn("Advertencia: La lista de productos llegó vacía.", prodResp);
-        }
+        console.log(`✅ Resumen: ${state.products.length} prods, ${state.images.length} imgs, ${state.categoriesL1.length} catL1.`);
 
         // Unir datos
         mergeData();
@@ -119,7 +122,7 @@ async function loadData() {
    Procesamiento de Datos
    ========================= */
 function mergeData() {
-    // Mapa de imágenes: { producto_id: "url" }
+    // Mapa de imágenes
     const imageMap = {};
     state.images.forEach(img => {
         if (img.producto_id) {
@@ -128,38 +131,45 @@ function mergeData() {
     });
 
     state.mergedProducts = state.products.map(prod => {
-        // CORRECCIÓN PRINCIPAL: Usamos 'producto_id' que viene de tu DB, no 'id'
         const pId = prod.producto_id || prod.id; 
         
-        // Imagen: prioridad campo del producto > mapa de imagenes > null
         let imgUrl = prod.imagen || prod.img_url || imageMap[pId] || null;
         
         return {
             ...prod,
-            _finalId: pId, // ID normalizado para uso interno
+            _finalId: pId, 
             _finalImage: imgUrl,
-            // CORRECCIÓN STOCK: Tu DB devuelve 'stock_total'
             _finalStock: (prod.stock_total !== undefined) ? Number(prod.stock_total) : (Number(prod.stock) || 0),
-            // String de búsqueda
             _searchStr: `${prod.nombre} ${prod.descripcion || ''} ${prod.sku || ''} ${pId} ${prod.brand_nombre || ''}`.toLowerCase()
         };
     });
 }
 
 function populateFilters() {
-    // Helper inteligente para detectar el ID correcto (id, categoria_id, caja_id, etc.)
+    // Helper inteligente y ROBUSTO
     const fillSelect = (selectElement, data, labelKey = 'nombre') => {
+        // 1. Si el elemento no existe en el DOM, salimos
         if (!selectElement) return;
+
+        // 2. CORRECCIÓN: Si el elemento NO es un SELECT (ej. es un input), no intentamos llenarlo
+        if (selectElement.tagName !== 'SELECT') {
+            console.log(`Info: El filtro #${selectElement.id} es un <${selectElement.tagName}>, no se llenará automáticamente.`);
+            return;
+        }
         
-        // Limpiar pero dejar la opción por defecto (la primera)
+        // Limpiar pero dejar la opción por defecto
         const firstOption = selectElement.options[0];
         selectElement.innerHTML = '';
         if (firstOption) selectElement.appendChild(firstOption);
 
+        if (!Array.isArray(data)) {
+            console.warn("Data para select no es un array:", data);
+            return;
+        }
+
         data.forEach(item => {
             const opt = document.createElement('option');
-            // Intentar detectar la llave primaria. 
-            // IMPORTANTE: Asegúrate que tus categorías traigan 'id' o 'categoria_principal_id', etc.
+            // Intentar detectar la llave primaria
             const val = item.id || item.categoria_principal_id || item.categoria_secundaria_id || item.subcategoria_id || item.caja_id || item.brand_id;
             
             if (val !== undefined) {
@@ -173,7 +183,9 @@ function populateFilters() {
     fillSelect(ui.catPri, state.categoriesL1);
     fillSelect(ui.catSec, state.categoriesL2);
     fillSelect(ui.subCat, state.categoriesL3);
-    fillSelect(ui.caja, state.cajas);
+    
+    // Nota: Si 'ui.caja' es un input de texto, fillSelect lo ignorará limpiamente gracias a la validación.
+    fillSelect(ui.caja, state.cajas); 
 }
 
 /* =========================
@@ -181,21 +193,27 @@ function populateFilters() {
    ========================= */
 function applyFilters() {
     const term = ui.search.value.toLowerCase().trim();
-    const fCatPri = ui.catPri.value;
-    const fCatSec = ui.catSec.value;
-    const fSubCat = ui.subCat.value;
-    const fCaja = ui.caja.value;
+    
+    // Obtenemos valores de manera segura
+    const fCatPri = ui.catPri ? ui.catPri.value : '';
+    const fCatSec = ui.catSec ? ui.catSec.value : '';
+    const fSubCat = ui.subCat ? ui.subCat.value : '';
+    const fCaja = ui.caja ? ui.caja.value : '';
 
     const filtered = state.mergedProducts.filter(p => {
         // Filtro Texto
         if (term && !p._searchStr.includes(term)) return false;
 
-        // Filtros Selects
-        // Comparamos String para evitar problemas de tipo (number vs string)
+        // Filtros Selects/Inputs
         if (fCatPri && String(p.categoria_principal_id) !== fCatPri) return false;
         if (fCatSec && String(p.categoria_secundaria_id) !== fCatSec) return false;
         if (fSubCat && String(p.subcategoria_id) !== fSubCat) return false;
-        if (fCaja && String(p.caja_id) !== fCaja) return false;
+        
+        // Filtro de Caja: si es input texto, buscamos coincidencia parcial o exacta
+        if (fCaja) {
+             // Si el ID de caja coincide
+             if (String(p.caja_id) !== fCaja) return false;
+        }
 
         return true;
     });
@@ -205,13 +223,15 @@ function applyFilters() {
 }
 
 function renderGrid(items) {
+    if (!ui.grid) return;
+
     if (items.length === 0) {
         ui.grid.style.display = 'none';
-        ui.empty.classList.remove('d-none');
+        if(ui.empty) ui.empty.classList.remove('d-none');
         return;
     }
 
-    ui.empty.classList.add('d-none');
+    if(ui.empty) ui.empty.classList.add('d-none');
     ui.grid.style.display = 'grid'; 
     ui.grid.innerHTML = '';
 
@@ -274,24 +294,29 @@ function renderGrid(items) {
    ========================= */
 function setupEventListeners() {
     let timeout = null;
-    ui.search.addEventListener('input', () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(applyFilters, 300);
-    });
+    
+    if(ui.search) {
+        ui.search.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(applyFilters, 300);
+        });
+    }
 
-    ui.catPri.addEventListener('change', applyFilters);
-    ui.catSec.addEventListener('change', applyFilters);
-    ui.subCat.addEventListener('change', applyFilters);
-    ui.caja.addEventListener('input', applyFilters);
+    if(ui.catPri) ui.catPri.addEventListener('change', applyFilters);
+    if(ui.catSec) ui.catSec.addEventListener('change', applyFilters);
+    if(ui.subCat) ui.subCat.addEventListener('change', applyFilters);
+    if(ui.caja) ui.caja.addEventListener('input', applyFilters);
 
-    ui.btnReset.addEventListener('click', () => {
-        ui.search.value = '';
-        ui.catPri.value = '';
-        ui.catSec.value = '';
-        ui.subCat.value = '';
-        ui.caja.value = '';
-        applyFilters();
-    });
+    if(ui.btnReset) {
+        ui.btnReset.addEventListener('click', () => {
+            if(ui.search) ui.search.value = '';
+            if(ui.catPri) ui.catPri.value = '';
+            if(ui.catSec) ui.catSec.value = '';
+            if(ui.subCat) ui.subCat.value = '';
+            if(ui.caja) ui.caja.value = '';
+            applyFilters();
+        });
+    }
 
     if(ui.btnRefresh) ui.btnRefresh.addEventListener('click', loadData);
 }
