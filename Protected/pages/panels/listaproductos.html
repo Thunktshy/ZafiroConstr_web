@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Productos</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+  <link rel="stylesheet" href="/admin-resources/css/product-list.css" />
+
+  <style>
+    /* Ajustes rápidos para toast */
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12); background: white; border-left: 5px solid #333; font-family: "Open Sans", sans-serif; font-size: 14px; display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); transition: opacity 0.2s, transform 0.2s; }
+    .toast-success { border-left-color: #2e7d32; }
+    .toast-error { border-left-color: #d32f2f; }
+    .toast-info { border-left-color: #0288d1; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container-fluid d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
+      <h1 class="h4 mb-0" style="font-family: var(--font-heading); color: var(--color-primary);">
+        <i class="fa-solid fa-boxes-stacked me-2"></i>Inventario
+      </h1>
+      <div class="d-flex gap-2">
+        <a href="/admin-resources/pages/panels/nuevo_producto.html" class="btn btn-primary">
+          <i class="fa-solid fa-plus me-1"></i> Nuevo Producto
+        </a>
+        <button id="btnRefresh" class="btn btn-ghost" title="Recargar">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Filtros y Búsqueda -->
+  <section class="filters-section container-fluid py-3 bg-light border-bottom">
+    <div class="container">
+      <div class="row g-3 align-items-end">
+        
+        <!-- Buscador -->
+        <div class="col-md-3">
+          <label class="form-label small text-muted fw-bold">Buscar</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Nombre o ID...">
+          </div>
+        </div>
+
+        <!-- Filtros de Categoría -->
+        <div class="col-md-2">
+          <label class="form-label small text-muted fw-bold">Categoría Principal</label>
+          <select id="filterCatPri" class="form-select form-select-sm">
+            <option value="">Todas</option>
+            <!-- Se llena dinámicamente -->
+          </select>
+        </div>
+        
+        <div class="col-md-2">
+          <label class="form-label small text-muted fw-bold">Cat. Secundaria</label>
+          <select id="filterCatSec" class="form-select form-select-sm">
+            <option value="">Todas</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label small text-muted fw-bold">Subcategoría</label>
+          <select id="filterSubCat" class="form-select form-select-sm">
+            <option value="">Todas</option>
+          </select>
+        </div>
+
+        <!-- Filtro Caja -->
+        <div class="col-md-2">
+          <label class="form-label small text-muted fw-bold">Caja / Repisa</label>
+          <input type="text" id="filterCaja" class="form-control form-select-sm" placeholder="Ej. A1" maxlength="5">
+        </div>
+
+        <!-- Reset -->
+        <div class="col-md-1 d-flex">
+           <button id="btnResetFilters" class="btn btn-ghost btn-sm w-100 text-danger" title="Limpiar Filtros">
+             <i class="fa-solid fa-filter-circle-xmark"></i>
+           </button>
+        </div>
+
+      </div>
+      
+      <!-- Contador de resultados -->
+      <div class="mt-2 text-end">
+        <small class="text-muted"><span id="resultCount">0</span> productos encontrados</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid de Productos -->
+  <main class="container py-4">
+    
+    <div id="loadingState" class="text-center py-5">
+      <i class="fa-solid fa-spinner fa-spin fa-2x text-primary"></i>
+      <p class="mt-2 text-muted">Cargando inventario...</p>
+    </div>
+
+    <div id="productsGrid" class="product-grid" style="display:none;">
+      <!-- Las tarjetas se inyectan aquí -->
+    </div>
+
+    <div id="emptyState" class="text-center py-5 d-none">
+      <img src="/admin-resources/img/no-results.svg" alt="" style="width: 120px; opacity: 0.5;" onerror="this.style.display='none'">
+      <h3 class="h5 mt-3 text-muted">No se encontraron productos</h3>
+      <p class="text-small text-muted">Intenta ajustar los filtros de búsqueda.</p>
+    </div>
+
+  </main>
+
+  <footer class="mt-auto">
+    <p>© 2025 Zafiro Home. Todos los derechos reservados.</p>
+  </footer>
+
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="/admin-resources/scripts/panel-adm-productos-cards.js"></script>
+</body>
+</html>

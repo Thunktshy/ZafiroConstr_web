@@ -1,0 +1,185 @@
+/* /admin-resources/css/product-list.css */
+
+/* --- Grid Layout --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tarjetas adaptables */
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+/* --- Card Design --- */
+.product-card {
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #e6e8ef);
+  border-radius: var(--radius, 12px);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg, 0 12px 24px rgba(0,0,0,0.08));
+  border-color: var(--color-secondary, #648cbc);
+}
+
+/* Header de la tarjeta (ID y Estado) */
+.card-header-badge {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none; /* Dejar pasar clicks a la imagen si fuera necesario */
+}
+
+.badge-id {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  backdrop-filter: blur(2px);
+}
+
+.badge-stock {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bg-stock-ok { background-color: #2e7d32; }
+.bg-stock-low { background-color: #f57f17; }
+.bg-stock-out { background-color: #c62828; }
+
+/* Imagen */
+.card-img-wrapper {
+  width: 100%;
+  height: 200px; /* Altura fija para uniformidad */
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #eee;
+  padding: 1rem;
+}
+
+.card-img-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+
+.product-card:hover .card-img-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Cuerpo de la tarjeta */
+.card-body {
+  padding: 1rem;
+  flex: 1; /* Ocupa el espacio restante */
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limitar a 2 lineas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.4rem; /* Reservar espacio para 2 lineas */
+}
+
+.card-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary, #2d4778);
+  margin-bottom: 0.5rem;
+}
+
+.card-meta {
+  font-size: 0.8rem;
+  color: #777;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.meta-icon {
+  width: 16px;
+  text-align: center;
+  color: #999;
+}
+
+/* Footer de Acciones */
+.card-footer {
+  padding: 0.8rem 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-card {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-view {
+  background-color: white;
+  border-color: #ddd;
+  color: #555;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+}
+
+.btn-view:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* Input group styles overrides for filter bar */
+.filters-section .form-control, 
+.filters-section .form-select {
+  border-color: #ddd;
+  font-size: 0.9rem;
+}
+.filters-section .form-control:focus, 
+.filters-section .form-select:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(100, 140, 188, 0.15);
+}
