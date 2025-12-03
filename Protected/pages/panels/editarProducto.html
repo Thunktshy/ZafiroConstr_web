@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Editar Producto</title>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/admin-resources/css/admin.css" />
+
+  <style>
+    /* Estilos para la zona de carga de imagen */
+    .image-upload-area {
+      border: 2px dashed #ddd;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .image-upload-area:hover {
+      background: #f0f4ff;
+      border-color: #648cbc;
+    }
+    .img-preview {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      object-fit: contain;
+    }
+    .upload-label {
+      cursor: pointer;
+      color: #555;
+      font-weight: 600;
+    }
+    .hidden-input {
+      display: none;
+    }
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
+    .toast { min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12); background: white; border-left: 5px solid #2d4778; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-light">
+
+  <header class="admin-header shadow-sm">
+    <div class="container-fluid py-3 px-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <a href="/admin-resources/pages/panels/productos.html" class="btn btn-outline-secondary btn-sm">
+          <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+        <h1 class="h4 m-0 fw-bold text-primary">Editar Producto</h1>
+      </div>
+      <div class="user-profile d-flex align-items-center gap-2">
+        <span class="fw-semibold text-dark">Administrador</span>
+        <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container py-5">
+    <section class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        
+        <form id="editarProductoForm">
+          <!-- Campo oculto para el ID -->
+          <input type="hidden" id="producto_id">
+
+          <!-- Fila: Imagen y Nombre -->
+          <div class="row g-4 mb-4">
+            
+            <!-- Columna Imagen -->
+            <div class="col-md-4">
+               <label class="form-label fw-bold mb-2">Imagen del Producto</label>
+               <div class="image-upload-area" id="dropZone">
+                  <!-- Vista previa de imagen existente o nueva -->
+                  <img id="imgPreview" src="/admin-resources/img/placeholder-product.png" alt="Vista previa" class="img-preview d-none">
+                  
+                  <div id="uploadPlaceholder">
+                    <i class="fa-solid fa-cloud-arrow-up fa-3x text-secondary mb-3"></i>
+                    <p class="mb-1 text-muted">Haz clic o arrastra para cambiar</p>
+                  </div>
+
+                  <input type="file" id="imagenInput" class="hidden-input" accept="image/png, image/jpeg, image/webp" />
+               </div>
+               <small class="text-muted text-center d-block mt-2">Formatos: JPG, PNG, WEBP (Max 2MB)</small>
+            </div>
+
+            <!-- Columna Datos Principales -->
+            <div class="col-md-8">
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre del Producto *</label>
+                <input type="text" id="nombre" class="form-control" placeholder="Ej. Adaptador PVC 50mm" required />
+              </div>
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea id="descripcion" class="form-control" rows="4" placeholder="Detalles técnicos, uso, etc."></textarea>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="precio" class="form-label">Precio Unitario ($) *</label>
+                  <input type="number" id="precio" class="form-control" step="0.01" min="0" placeholder="0.00" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                   <label for="brand_id" class="form-label">Marca</label>
+                   <select id="brand_id" class="form-select">
+                     <option value="">Seleccione marca...</option>
+                   </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4 text-muted">
+
+          <!-- Categorización -->
+          <h5 class="text-primary mb-3"><i class="fa-solid fa-tags me-2"></i> Categorización</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label for="categoria_principal" class="form-label">Categoría Principal *</label>
+              <select id="categoria_principal" class="form-select" required>
+                <option value="">Cargando...</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="categoria_secundaria" class="form-label">Categoría Secundaria</label>
+              <select id="categoria_secundaria" class="form-select" disabled>
+                <option value="">Seleccione Principal primero</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="subcategoria" class="form-label">Subcategoría</label>
+              <select id="subcategoria" class="form-select" disabled>
+                <option value="">Seleccione Secundaria primero</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="my-4 text-muted">
+
+          <!-- Especificaciones y Stock -->
+          <h5 class="text-primary mb-3"><i class="fa-solid fa-ruler-combined me-2"></i> Especificaciones y Stock</h5>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="unit_id" class="form-label">Unidad Medida *</label>
+              <select id="unit_id" class="form-select" required>
+                <option value="">Seleccione...</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="unit_value" class="form-label">Valor Unidad</label>
+              <input type="number" id="unit_value" class="form-control" step="0.01" />
+            </div>
+            <div class="col-md-3">
+              <label for="size_id" class="form-label">Tipo Talla</label>
+              <select id="size_id" class="form-select">
+                <option value="">Seleccione...</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="size_value" class="form-label">Valor Talla</label>
+              <input type="text" id="size_value" class="form-control" placeholder="Ej. XL, 40mm" />
+            </div>
+          </div>
+
+          <div class="row g-3 mt-2 align-items-end">
+            <div class="col-md-8">
+              <label class="form-label">Ubicación en Caja (Opcional)</label>
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar por letra, nivel..." id="buscarCajaInput" disabled title="Edición de caja en desarrollo">
+                <button class="btn btn-outline-secondary" type="button" disabled>
+                  <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+                </button>
+              </div>
+              <input type="hidden" id="caja_id" />
+              <small class="text-muted">Para cambiar la caja, utilice el módulo de inventario (próximamente).</small>
+            </div>
+
+            <div class="col-md-4">
+              <label for="stock_total" class="form-label">Stock Total</label>
+              <input type="number" id="stock_total" class="form-control" readonly title="El stock se gestiona desde inventario" />
+              <small class="text-muted">Solo lectura</small>
+            </div>
+          </div>
+          
+          <div class="form-actions mt-5 d-flex justify-content-end gap-3">
+            <a href="/admin-resources/pages/panels/productos.html" class="btn btn-ghost">Cancelar</a>
+            <button type="submit" class="btn btn-primary px-4" id="btnGuardar">
+              <i class="fa-solid fa-save me-2"></i> Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast container -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="/admin-resources/scripts/panel-adm-editarProducto.js"></script>
+</body>
+</html>
