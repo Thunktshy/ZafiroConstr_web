@@ -265,7 +265,7 @@ function renderGrid(items) {
                 <p class="product-price fw-bold text-primary">$${parseFloat(prod.precio).toFixed(2)}</p>
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <button class="btn btn-sm btn-outline-primary btn-action" onclick="window.location.href='/admin-resources/pages/panels/editarProducto.html?id=${pId}'" title="Editar">
+                    <button class="btn btn-sm btn-outline-primary btn-action" onclick="window.location.href='/admin-resources/pages/panels/nuevo_producto.html?id=${pId}'" title="Editar">
                         <i class="fa-solid fa-pen"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-info btn-action" data-id="${pId}" title="Ver Detalles">
